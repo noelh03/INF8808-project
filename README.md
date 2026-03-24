@@ -10,7 +10,8 @@ The application is built using Dash and Plotly, and follows a scrollytelling app
 - Team 11, INF8808 – Data Visualization (H2026)
 
 
-**Project Structure :**
+**Project Structure :**    
+```bash
 src/    
 │    
 ├──assets/                      # CSS, dataset, icon    
@@ -33,7 +34,7 @@ src/
 │    
 ├──app.py                       # Main Dash layout    
 └──server.py                    # Server entry point    
-
+```
 
 **Reference :** 
 - Source files were adapted from Lab 4
