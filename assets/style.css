@@ -1,0 +1,101 @@
+body {
+    font-family: 'Arial', 'sans-serif';
+    font-size: 16px;
+    color: #362023;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+header {
+    padding: 25px 100px;
+    text-align: center;
+}
+
+main {
+    height: 100%;
+    padding-right: 25px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.viz-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0 100px;
+}
+
+.viz-container > div {
+    margin-bottom: 40px;
+}
+
+.xy {
+    cursor: default;
+}
+
+h1 {
+    font-family: 'Times', 'serif';
+    font-size: 56px;
+    margin: 0;
+    font-weight: normal;
+}
+
+h2 {
+    font-weight: normal;
+}
+
+/* Sidebar hidden by default */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #f5f5f5;
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+/* Sidebar open */
+.sidebar.open {
+    left: 0;
+}
+.sidebar h3 {
+    margin-top: 50px;
+}
+
+/* links */
+.sidebar a {
+    display: block;
+    margin: 10px 0;
+    text-decoration: none;
+    color: #362023;
+    font-weight: bold;
+}
+
+/* hamburger button */
+.toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
