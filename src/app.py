@@ -18,25 +18,25 @@ import dash_core_components as dcc
 import pandas as pd
 from dash import Output, Input
 
-import viz1_scatter.viz1_scatter
-import viz2_box.viz2_box
-import viz3_line.viz3_line
-import viz4_bubble.viz4_bubble
-import viz5_dot.viz5_dot
-import viz6_violin.viz6_violin
+from viz1_scatter import viz1_scatter
+from viz2_box import viz2_box
+from viz3_line import viz3_line
+from viz4_bubble import viz4_bubble
+from viz5_dot import viz5_dot
+from viz6_violin import viz6_violin
 
 app = dash.Dash(__name__)
 app.title = 'Project | INF8808'
 
-with open('../INF8808-project/assets/data/games.csv', 'r', encoding='utf-8') as data_file:
+with open('../src/assets/data/games.csv', 'r', encoding='utf-8') as data_file:
     data = pd.read_csv(data_file)
 
-viz1_scatter_fig = viz1_scatter.viz1_scatter.create_figure(data)
-viz2_box_fig = viz2_box.viz2_box.create_figure(data)
-viz3_line_fig = viz3_line.viz3_line.create_figure(data)
-viz4_bubble_fig = viz4_bubble.viz4_bubble.create_figure(data)
-viz5_dot_fig = viz5_dot.viz5_dot.create_figure(data)
-viz6_violin_fig = viz6_violin.viz6_violin.create_figure(data)
+viz1_scatter_fig = viz1_scatter.create_figure(data)
+viz2_box_fig = viz2_box.create_figure(data)
+viz3_line_fig = viz3_line.create_figure(data)
+viz4_bubble_fig = viz4_bubble.create_figure(data)
+viz5_dot_fig = viz5_dot.create_figure(data)
+viz6_violin_fig = viz6_violin.create_figure(data)
 
 @app.callback(
     Output("sidebar", "className"),
