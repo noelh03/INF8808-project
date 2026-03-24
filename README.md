@@ -11,28 +11,28 @@ The application is built using Dash and Plotly, and follows a scrollytelling app
 
 
 **Project Structure :**
-src/
-│
-├──assets/                      # CSS, dataset, icon
-│
-├──viz1_scatter/                # Price vs Success
-│   ├──hover_template.py
-│   ├──plot_generate.py
-│   ├──preprocess.py
-│   └──viz1_scatter.py
-│
-├──viz2_box/                    #TODO Add brief title 
-│
-├──viz3_line/                   #TODO Add brief title 
-│
-├──viz4_bubble/                 #TODO Add brief title 
-│
-├──viz5_dot/                    #TODO Add brief title 
-│
-├──viz6_violin/                 #TODO Add brief title 
-│
-├──app.py                       # Main Dash layout
-└──server.py                    # Server entry point
+src/    
+│    
+├──assets/                      # CSS, dataset, icon    
+│    
+├──viz1_scatter/                # Price vs Success    
+│   ├──hover_template.py    
+│   ├──plot_generate.py    
+│   ├──preprocess.py    
+│   └──viz1_scatter.py    
+│    
+├──viz2_box/                    #TODO Add brief title     
+│    
+├──viz3_line/                   #TODO Add brief title     
+│    
+├──viz4_bubble/                 #TODO Add brief title     
+│    
+├──viz5_dot/                    #TODO Add brief title     
+│    
+├──viz6_violin/                 #TODO Add brief title     
+│    
+├──app.py                       # Main Dash layout    
+└──server.py                    # Server entry point    
 
 
 **Reference :** 
