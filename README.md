@@ -1,4 +1,4 @@
-**Overview :**
+**Overview :**   
 This project is an interactive implementation of a data visualization system designed to analyze the determinants of commercial success and popularity of video games on Steam.   
    
 The project aims to answer the following central question: *What factors determine the commercial success and popularity of video games on Steam?*. The target user is a market analyst seeking to understand trends and patterns in the video game industry .   
@@ -6,7 +6,7 @@ The project aims to answer the following central question: *What factors determi
 The application is built using Dash and Plotly, and follows a scrollytelling approach with multiple interactive visualizations.
 
 
-**Authors :**
+**Authors :**    
 - Team 11, INF8808 – Data Visualization (H2026)
 
 
@@ -36,18 +36,18 @@ src/
 └──server.py                    # Server entry point    
 ```
 
-**Reference :** 
+**Reference :**     
 - Source files were adapted from Lab 4
 
 
-**Visualizations & Questions :**
+**Visualizations & Questions :**     
 The application includes 6 interactive visualizations, each answering specific analytical questions :
 
 
-**Installation :**
+**Installation :**     
 - pip install -r requirements.txt
 
-**Run the App :**
+**Run the App :**        
 - cd src & python server.py
 - Open : http://127.0.0.1:8050/
 

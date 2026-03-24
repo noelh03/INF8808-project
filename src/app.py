@@ -24,12 +24,15 @@ from viz3_line import viz3_line
 from viz4_bubble import viz4_bubble
 from viz5_dot import viz5_dot
 from viz6_violin import viz6_violin
+import sidebar
 
 app = dash.Dash(__name__)
 app.title = 'Project | INF8808'
 
 with open('../src/assets/data/games.csv', 'r', encoding='utf-8') as data_file:
     data = pd.read_csv(data_file)
+    
+sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(data)
 viz2_box_layout = viz2_box.create_layout(data)
@@ -40,19 +43,7 @@ viz6_violin_layout = viz6_violin.create_layout(data)
 
 
 app.layout = html.Div(id="content", className='content', children=[
-    html.Button("☰", id="toggle-btn", n_clicks=0, className="toggle-btn"),
-    
-    html.Div(id="overlay", className="overlay"),
-
-    html.Div(id="sidebar", className="sidebar", children=[
-        html.H3("Navigation"),
-        html.A("Scatter Plot", href="#scatter"),
-        html.A("Box Plot", href="#box"),
-        html.A("Line Chart", href="#line"),
-        html.A("Bubble Chart", href="#bubble"),
-        html.A("Dot Plot", href="#dot"),
-        html.A("Violin Plot", href="#violin"),
-    ]),
+    sidebar.create_sidebar(),
     
     html.Header(children=[
         html.H1("Project's Title 1"),
@@ -69,28 +60,3 @@ app.layout = html.Div(id="content", className='content', children=[
         viz6_violin_layout
     ])
 ])
-
-
-@app.callback(
-    Output("sidebar", "className"),
-    Output("overlay", "className"),
-    Output("content", "className"),
-    Input("toggle-btn", "n_clicks"),
-    Input("overlay", "n_clicks"),
-    State("sidebar", "className"),
-)
-def toggle_sidebar(btn, overlay_click, sidebar_class):
-    ctx = callback_context
-    if not ctx.triggered:
-        return "sidebar", "overlay", "content"
-
-    trigger = ctx.triggered[0]["prop_id"].split(".")[0]
-    if trigger == "overlay":
-        return "sidebar", "overlay", "content"
-    if trigger == "toggle-btn":
-        if "open" in sidebar_class:
-            return "sidebar", "overlay", "content"
-        else:
-            return "sidebar open", "overlay open", "content shift"
-
-    return "sidebar", "overlay", "content"
