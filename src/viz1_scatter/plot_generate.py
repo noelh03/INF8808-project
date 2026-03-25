@@ -1,88 +1,124 @@
-'''
-    This file contains the code for the plot.
-'''
+"""
+Visualization generation module for the price vs commercial success scatter plot.
+
+This module:
+- filters the dataset according to the selected price range
+- creates the Plotly scatter figure
+- applies visual styling and layout customization
+- integrates logarithmic scaling to better represent skewed ownership data
+
+It focuses exclusively on figure construction logic.
+"""
 
 import plotly.express as px
-
-import viz1_scatter.hover_template
-
-#TODO : add more functions if needed
-
-def generate_plot(my_df):
-    '''
-        Generates the plot.
-
-        #TODO : add more details about the plot (axes, colors, sizes, etc.)
-
-        Args:
-            my_df: The dataframe to display
-            #TODO : add more arguments if needed
-        Returns:
-            The generated figure
-    '''
-    #TODO : Define figure
-
-    return None
-
-def update_axes_labels(fig):
-    '''
-        Updates the axes labels with their corresponding titles.
-
-        Args:
-            fig: The figure to be updated
-        Returns:
-            The updated figure
-    '''
-    # TODO : Update labels
-    # fig.update_xaxes(title_text="x axis")
-    # fig.update_yaxes(title_text="y axis")
-    return fig
+from .hover_template import get_hover_template
 
 
-def update_template(fig):
-    '''
-        Updates the layout of the figure, setting
-        its template to 'simple_white'
+COL_PRICE = "Price"
+COL_OWNERS = "Estimated owners (average)"
+COL_TYPE = "Type de jeu"
+COL_NAME = "Name"
 
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
-    # TODO : Change if you want to use a different template
-    # fig.update_layout(template='simple_white')
-    return fig
 
-def update_legend(fig):
-    '''
-        Updated the legend title
+def generate_plot(df, max_price=100):
+    required_columns = [COL_PRICE, COL_OWNERS, COL_TYPE, COL_NAME]
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Colonnes manquantes dans le DataFrame : {missing}")
 
-        Args:
-            fig: The figure to be updated
-        Returns:
-            The updated figure
-    '''
-    # TODO : Update legend 
-    # fig.update_layout(legend_title_text="Legend")
-    return fig
+    filtered_df = df[df[COL_PRICE] <= max_price].copy()
 
-def update_hover_template(fig):
-    '''
-        Sets the hover template of the figure
+    if max_price <= 120:
+        x_dtick = 20
+    elif max_price <= 300:
+        x_dtick = 50
+    else:
+        x_dtick = 100
 
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
+    padding = max_price * 0.03 if max_price > 0 else 1
 
-    # DONE : Set the hover template (#TODO : change the hover template if you want to use a different one)
-    template = viz1_scatter.hover_template.get_hover_template()
-    
-    # fig.update_traces(hovertemplate=template)
+    fig = px.scatter(
+        filtered_df,
+        x=COL_PRICE,
+        y=COL_OWNERS,
+        color=COL_TYPE,
+        hover_name=COL_NAME,
+        log_y=True,
+        opacity=0.62,
+        custom_data=[COL_TYPE],
+        color_discrete_map={
+            "Payant": "#6678E8",
+            "Gratuit": "#D98A6C",
+        },
+    )
 
-    # for frame in fig.frames:
-    #     for trace in frame.data:
-    #         trace.hovertemplate = template
-            
+    fig.update_traces(
+        marker=dict(
+            size=5,
+            line=dict(width=0),
+        ),
+        hovertemplate=get_hover_template(),
+    )
+
+    fig.update_layout(
+        template="plotly_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        margin=dict(l=72, r=130, t=28, b=62),
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        legend=dict(
+            title_text="Type de jeu",
+            orientation="v",
+            y=1,
+            x=1.02,
+            xanchor="left",
+            yanchor="top",
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(size=12, color="#2E4057"),
+            title_font=dict(size=13, color="#2E4057"),
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+    )
+
+    fig.update_xaxes(
+        title_text="Prix ($)",
+        range=[-padding, max_price + padding],
+        tickmode="linear",
+        dtick=x_dtick,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
+    fig.update_yaxes(
+        title_text="Succès commercial estimé",
+        range=[3.8, 8.3],
+        tickmode="array",
+        tickvals=[1e4, 1e5, 1e6, 1e7, 1e8],
+        ticktext=["10k", "100k", "1M", "10M", "100M"],
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
     return fig

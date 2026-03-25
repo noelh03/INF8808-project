@@ -1,42 +1,68 @@
-'''
-    Contains source code for the first visualisation of the project. 
-    It is a ? plot, showing the relationship ... TODO
-'''
-from dash import html, dcc
+"""
+Layout and figure controller for the price vs commercial success visualization.
 
-import viz1_scatter.preprocess
-import viz1_scatter.plot_generate
+This module:
+- prepares the dataset specifically for the scatter visualization
+- generates the interactive figure based on user input (price filter)
+- defines the Dash layout structure including graph and filtering controls
 
-def create_figure(my_df):
-    '''
-        Calls the functions to preprocess the data and generate the plot for the first visualisation.
-    '''
-    my_df = viz1_scatter.preprocess.step1(my_df)
-    my_df = viz1_scatter.preprocess.step2(my_df)
-    
-    fig = viz1_scatter.plot_generate.generate_plot(my_df)
-    fig = viz1_scatter.plot_generate.update_template(fig)
-    fig = viz1_scatter.plot_generate.update_legend(fig)
-    fig = viz1_scatter.plot_generate.update_axes_labels(fig)
-    fig = viz1_scatter.plot_generate.update_hover_template(fig)
-    #TODO : call other functions if added in plot_generate.py
+It acts as the interface between data preprocessing, visualization logic,
+and user interaction within the scrollytelling flow.
+"""
 
-    return fig
+from dash import dcc, html
+from viz1_scatter.preprocess import preprocess_data
+from viz1_scatter.plot_generate import generate_plot
 
-def create_layout(my_df):
-    fig = create_figure(my_df)
-    
-    #TODO : uncomment
-    # fig.update_layout(height=600, width=1000)
-    # fig.update_layout(dragmode=False)
 
-    return html.Div(id="scatter", className='viz-block', children=[
-        html.H3("Scatter Plot"),
-        dcc.Graph(className='graph', figure=fig, config=dict(
-            scrollZoom=False,
-            showTips=False,
-            showAxisDragHandles=False,
-            doubleClick=False,
-            displayModeBar=False
-        ))
-    ])
+SLIDER_MIN = 0
+SLIDER_MAX = 1000
+SLIDER_STEP = 10
+SLIDER_HEIGHT = 500
+
+
+def create_figure(df, max_price=100):
+    processed_df = preprocess_data(df)
+    return generate_plot(processed_df, max_price=max_price)
+
+
+def create_layout(df, max_price=100, slider_id="scatter-price-slider", graph_id="scatter-price-graph"):
+    fig = create_figure(df, max_price=max_price)
+    slider_marks = {i: str(i) for i in range(0, SLIDER_MAX + 1, 100)}
+
+    return html.Div(
+        className="viz-inner",
+        children=[
+            html.Div(
+                className="scatter-main-layout",
+                children=[
+                    dcc.Graph(
+                        id=graph_id,
+                        figure=fig,
+                        config={"displayModeBar": False, "responsive": True},
+                        className="graph",
+                    ),
+                    html.Div(
+                        className="scatter-side-panel",
+                        children=[
+                            html.Div("Filtrer par prix", className="slider-title"),
+                            dcc.Slider(
+                                id=slider_id,
+                                min=SLIDER_MIN,
+                                max=SLIDER_MAX,
+                                step=SLIDER_STEP,
+                                value=max_price,
+                                vertical=True,
+                                verticalHeight=SLIDER_HEIGHT,
+                                marks=slider_marks,
+                                tooltip={
+                                    "placement": "left",
+                                    "always_visible": True,
+                                },
+                            ),
+                        ],
+                    ),
+                ],
+            )
+        ],
+    )
