@@ -39,6 +39,9 @@ import sidebar
 SCATTER_SLIDER_ID = "scatter-price-slider"
 SCATTER_GRAPH_ID = "scatter-price-graph"
 
+LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
+LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR / "../src/assets/data/games.csv"
 
@@ -141,9 +144,11 @@ app.layout = html.Div(
                                     className="section-intro",
                                     children=[
                                         html.P("Section 3", className="section-kicker"),
-                                        html.H2("Titre à finaliser", className="section-title"),
+                                        html.H2("Évolution des genres par succès commercial", className="section-title"),
                                         html.P(
-                                            "Description à finaliser.",
+                                            "Comparer l'évolution du nombre estimé de propriétaires par genre "
+                                            "de 1997 à 2025, et observer quels genres ont gagné ou perdu en "
+                                            "importance au fil des années.",
                                             className="section-description"
                                         )
                                     ]
@@ -219,6 +224,14 @@ app.layout = html.Div(
 )
 def update_scatter_price_range(max_price):
     return viz1_scatter.create_figure(data, max_price=max_price)
+
+
+@app.callback(
+    Output(LINE_GRAPH_ID, "figure"),
+    Input(LINE_CHECKLIST_ID, "value")
+)
+def update_line_genres(selected_genres):
+    return viz3_line.create_figure(data, selected_genres=selected_genres or [])
 
 
 if __name__ == "__main__":

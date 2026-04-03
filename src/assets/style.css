@@ -460,6 +460,46 @@ body {
     border-top-color: #ffffff;
 }
 
+/* ===== VIZ 3 ===== */
+
+.line-main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 170px;
+    gap: 26px;
+    align-items: start;
+}
+
+.line-side-panel {
+    display: flex;
+    flex-direction: column;
+    padding-top: 18px;
+}
+
+.genre-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.genre-checklist-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2E4057;
+    cursor: pointer;
+    user-select: none;
+}
+
+.genre-checklist-input {
+    accent-color: #6366f1;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 /* ===== FIX CURSOR PLOTLY ===== */
 
 .js-plotly-plot,
@@ -499,6 +539,21 @@ body {
         width: 100%;
         padding-top: 0;
         align-items: stretch;
+    }
+
+    .line-main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .line-side-panel {
+        width: 100%;
+        padding-top: 0;
+    }
+
+    .genre-checklist {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px 18px;
     }
 
     .viz-card {
