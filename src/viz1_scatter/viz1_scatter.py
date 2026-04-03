@@ -18,7 +18,7 @@ from viz1_scatter.plot_generate import generate_plot
 SLIDER_MIN = 0
 SLIDER_MAX = 1000
 SLIDER_STEP = 10
-SLIDER_HEIGHT = 500
+SLIDER_HEIGHT = 300
 
 
 def create_figure(df, max_price=100):
@@ -41,6 +41,7 @@ def create_layout(df, max_price=100, slider_id="scatter-price-slider", graph_id=
                         figure=fig,
                         config={"displayModeBar": False, "responsive": True},
                         className="graph",
+                        style={"height": "100%"},
                     ),
                     html.Div(
                         className="scatter-side-panel",
