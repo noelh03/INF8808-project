@@ -42,6 +42,69 @@ SCATTER_GRAPH_ID = "scatter-price-graph"
 LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
 LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 
+
+def make_section(section_id, kicker, title, description, viz_layout, prev_href, next_href):
+    """
+    Build a full story section with:
+    - intro block (kicker, title, "?" info toggle, description)
+    - section body: viz card on the left, side-nav arrows on the right
+    """
+    return html.Section(
+        id=section_id,
+        className="story-section",
+        children=[
+            html.Div(
+                className="section-intro",
+                children=[
+                    html.Div(
+                        className="section-title-row",
+                        children=[
+                            html.Div(children=[
+                                html.P(kicker, className="section-kicker"),
+                                html.H2(title, className="section-title"),
+                            ]),
+                            html.Details(
+                                className="section-info-details",
+                                children=[
+                                    html.Summary("?", className="info-toggle-btn"),
+                                    html.Div(
+                                        "Les informations complémentaires seront ajoutées ici.",
+                                        className="section-info-panel",
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    html.P(description, className="section-description"),
+                ],
+            ),
+            html.Div(
+                className="section-body",
+                children=[
+                    html.Div(viz_layout, className="viz-card"),
+                    html.Div(
+                        className="section-side-nav",
+                        children=[
+                            html.A(
+                                href=prev_href,
+                                className="arrow-btn arrow-up",
+                                title="Section précédente",
+                                children=html.Span(className="arrow-chevron chevron-up"),
+                            ),
+                            html.A(
+                                href=next_href,
+                                className="arrow-btn arrow-down",
+                                title="Section suivante",
+                                children=html.Span(className="arrow-chevron chevron-down"),
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+        ],
+    )
+
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR / "../src/assets/data/games.csv"
 
@@ -57,7 +120,7 @@ viz1_scatter_layout = viz1_scatter.create_layout(
     data,
     max_price=100,
     slider_id=SCATTER_SLIDER_ID,
-    graph_id=SCATTER_GRAPH_ID
+    graph_id=SCATTER_GRAPH_ID,
 )
 viz2_box_layout = viz2_box.create_layout(data)
 viz3_line_layout = viz3_line.create_layout(data)
@@ -84,143 +147,80 @@ app.layout = html.Div(
                             className="hero-overlay",
                             children=[
                                 html.P("INF8808 · LIVRABLE FINAL", className="hero-kicker"),
-                                html.H1("Succès\ncommercial des\njeux Steam", className="hero-title"),
-                                html.H2("Prix, mode de jeu et tendances de marché", className="hero-subtitle"),
+                                html.H1(
+                                    "Succès\ncommercial des\njeux Steam",
+                                    className="hero-title",
+                                ),
+                                html.H2(
+                                    "Prix, mode de jeu et tendances de marché",
+                                    className="hero-subtitle",
+                                ),
                                 html.P(
                                     "Cette application de scrollytelling explore plusieurs facteurs susceptibles "
-                                    "d’être associés à la performance commerciale des jeux publiés sur Steam.",
-                                    className="hero-description"
+                                    "d'être associés à la performance commerciale des jeux publiés sur Steam.",
+                                    className="hero-description",
                                 ),
-                                html.A("Commencer l’exploration", href="#scatter", className="hero-button")
-                            ]
-                        )
-                    ]
+                                html.A(
+                                    "Commencer l'exploration",
+                                    href="#scatter",
+                                    className="hero-button",
+                                ),
+                            ],
+                        ),
+                    ],
                 ),
                 html.Main(
                     className="story-container",
                     children=[
-                        html.Section(
-                            id="scatter",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 1", className="section-kicker"),
-                                        html.H2("Prix et succès commercial", className="section-title"),
-                                        html.P(
-                                            "Comparer la performance commerciale estimée des jeux gratuits et payants, "
-                                            "et observer comment la distribution évolue selon l’intervalle de prix sélectionné.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz1_scatter_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "scatter", "Section 1",
+                            "Prix et succès commercial",
+                            "Comparer la performance commerciale estimée des jeux gratuits et payants, "
+                            "et observer comment la distribution évolue selon l'intervalle de prix sélectionné.",
+                            viz1_scatter_layout, "#hero", "#box",
                         ),
-                        html.Section(
-                            id="box",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 2", className="section-kicker"),
-                                        html.H2("Titre à finaliser", className="section-title"),
-                                        html.P(
-                                            "Description à finaliser.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz2_box_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "box", "Section 2",
+                            "Titre à finaliser",
+                            "Description à finaliser.",
+                            viz2_box_layout, "#scatter", "#line",
                         ),
-                        html.Section(
-                            id="line",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 3", className="section-kicker"),
-                                        html.H2("Évolution des genres par succès commercial", className="section-title"),
-                                        html.P(
-                                            "Comparer l'évolution du nombre estimé de propriétaires par genre "
-                                            "de 1997 à 2025, et observer quels genres ont gagné ou perdu en "
-                                            "importance au fil des années.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz3_line_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "line", "Section 3",
+                            "Évolution des genres par succès commercial",
+                            "Comparer l'évolution du nombre estimé de propriétaires par genre de 1997 à 2025, "
+                            "et observer quels genres ont gagné ou perdu en importance au fil des années.",
+                            viz3_line_layout, "#box", "#bubble",
                         ),
-                        html.Section(
-                            id="bubble",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 4", className="section-kicker"),
-                                        html.H2("Titre à finaliser", className="section-title"),
-                                        html.P(
-                                            "Description à finaliser.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz4_bubble_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "bubble", "Section 4",
+                            "Titre à finaliser",
+                            "Description à finaliser.",
+                            viz4_bubble_layout, "#line", "#dot",
                         ),
-                        html.Section(
-                            id="dot",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 5", className="section-kicker"),
-                                        html.H2("Titre à finaliser", className="section-title"),
-                                        html.P(
-                                            "Description à finaliser.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz5_dot_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "dot", "Section 5",
+                            "Titre à finaliser",
+                            "Description à finaliser.",
+                            viz5_dot_layout, "#bubble", "#violin",
                         ),
-                        html.Section(
-                            id="violin",
-                            className="story-section",
-                            children=[
-                                html.Div(
-                                    className="section-intro",
-                                    children=[
-                                        html.P("Section 6", className="section-kicker"),
-                                        html.H2("Titre à finaliser", className="section-title"),
-                                        html.P(
-                                            "Description à finaliser.",
-                                            className="section-description"
-                                        )
-                                    ]
-                                ),
-                                html.Div(viz6_violin_layout, className="viz-card")
-                            ]
+                        make_section(
+                            "violin", "Section 6",
+                            "Titre à finaliser",
+                            "Description à finaliser.",
+                            viz6_violin_layout, "#dot", "#hero",
                         ),
-                    ]
-                )
-            ]
-        )
-    ]
+                    ],
+                ),
+            ],
+        ),
+    ],
 )
 
 
 @app.callback(
     Output(SCATTER_GRAPH_ID, "figure"),
-    Input(SCATTER_SLIDER_ID, "value")
+    Input(SCATTER_SLIDER_ID, "value"),
 )
 def update_scatter_price_range(max_price):
     return viz1_scatter.create_figure(data, max_price=max_price)

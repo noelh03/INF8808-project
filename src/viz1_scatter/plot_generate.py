@@ -61,6 +61,7 @@ def generate_plot(df, max_price=100):
     )
 
     fig.update_layout(
+        autosize=True,
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#F5F7FB",
