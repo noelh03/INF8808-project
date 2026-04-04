@@ -1,25 +1,27 @@
-'''
-    Provides the template for the tooltips.
-'''
+"""
+Tooltip template module for the genre evolution line chart.
+
+This module:
+- defines the hover tooltip content for multi-series line traces
+- displays genre name, release year, and estimated commercial success
+"""
 
 
 def get_hover_template():
-    '''
-        Sets the template for the hover tooltips.
-        
-        Contains labels, followed by their corresponding
-        value and units where appropriate, separated by a
-        colon : #TODO: add labels name.
+    """
+    Return the hover tooltip template for the line chart.
 
-        The labels' font is bold and the values are normal weight
+    Displays:
+        - Genre name (from customdata)
+        - Release year (x-axis value)
+        - Estimated number of owners (y-axis value, formatted with thousands separator)
 
-        returns:
-            The content of the tooltip
-    '''
-    #TODO : Generate tooltip
-    tooltip = (
-        "<b>label1 :</b> %{}<br>" +
-        "<b>label2 :</b> %{}<br>" +
+    Returns:
+        str: Plotly hovertemplate string.
+    """
+    return (
+        "<b>%{customdata[0]}</b><br>"
+        "Année : %{x}<br>"
+        "Propriétaires estimés : %{y:,.0f}"
         "<extra></extra>"
     )
-    return tooltip
