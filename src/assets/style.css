@@ -365,6 +365,10 @@ body {
     color: #111827;
 }
 
+#line .section-title {
+    font-size: clamp(18px, 2vw, 28px);
+}
+
 .section-description {
     margin: 0;
     font-size: 16px;
@@ -595,18 +599,206 @@ body {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 320px;
+    width: min(440px, calc(100vw - 48px));
+    max-height: 620px;
+    overflow-y: auto;
+    overflow-x: visible;
     background: #ffffff;
     border: 1px solid #e2e8f4;
     border-radius: 18px;
-    padding: 18px 20px;
+    padding: 22px 24px;
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.65;
     color: #374151;
     z-index: 200;
-    font-style: italic;
+}
+
+.info-carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-slide {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: fadeSlide 0.25s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(8px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.info-slide-counter {
+    font-size: 11px;
+    font-weight: 600;
     color: #9ca3af;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.info-block-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.info-slide-icon {
+    color: #2563eb;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.info-slide p {
+    margin: 0;
+    font-size: 12.5px;
+    color: #4b5563;
+    line-height: 1.65;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.info-carousel-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.info-progress {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.info-dot {
+    width: 22px;
+    height: 3px;
+    border-radius: 2px;
+    background: #d1d5db;
+    transition: background 0.25s;
+}
+
+.info-dot.active {
+    background: #2563eb;
+}
+
+.info-nav-btn {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, transform 0.15s;
+    line-height: 1;
+    padding: 0;
+}
+
+.info-nav-btn:hover {
+    background: #e5e7eb;
+    transform: scale(1.08);
+}
+
+/* ===== Game logo chips (viz3 info carousel) ===== */
+
+.game-logo-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 10px;
+    padding-top: 8px; /* room for the absolute year-badge overflowing upward */
+    overflow: visible;
+}
+
+a.game-logo-chip {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.game-logo-chip {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: #f8faff;
+    border: 1px solid #e5e9f5;
+    border-radius: 10px;
+    padding: 6px 8px 5px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    min-width: 52px;
+}
+
+.game-logo-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
+    border-color: #93c5fd;
+}
+
+.game-logo-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.game-logo-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #4b5563;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+/* Slide 2 variant — year badge top-left */
+.game-logo-year-badge {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2563eb;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.game-logo-chip--year {
+    padding-top: 12px;
+}
+
+/* Slide 3 variant — trend arrow top-left */
+.game-logo-trend-icon {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    font-size: 9px;
+}
+
+.game-logo-chip--up .game-logo-trend-icon {
+    color: #16a34a;
+}
+
+.game-logo-chip--down .game-logo-trend-icon {
+    color: #dc2626;
 }
 
 /* ===== VIZ 3 ===== */

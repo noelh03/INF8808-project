@@ -25,7 +25,7 @@ the overall storytelling structure.
 import copy
 from pathlib import Path
 
-from dash import Dash, html, Input, Output, State, ctx
+from dash import Dash, html, dcc, Input, Output, State, ctx
 from dash.exceptions import PreventUpdate
 import pandas as pd
 
@@ -115,11 +115,14 @@ def _figure_to_viz3_checklist_values(fig_dict):
 
 
 
-def make_section(section_id, kicker, title, description, viz_layout, prev_href, next_href):
+def make_section(section_id, kicker, title, description, viz_layout, prev_href, next_href, info_content=None):
     """
     Build a full story section with:
     - intro block (kicker, title, "?" info toggle, description)
     - section body: viz card on the left, side-nav arrows on the right
+
+    info_content: optional Dash children for the "?" info panel.
+                  Defaults to a placeholder message.
     """
     return html.Section(
         id=section_id,
@@ -140,7 +143,8 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                                 children=[
                                     html.Summary("?", className="info-toggle-btn"),
                                     html.Div(
-                                        "Les informations complémentaires seront ajoutées ici.",
+                                        info_content if info_content is not None
+                                        else "Les informations complémentaires seront ajoutées ici.",
                                         className="section-info-panel",
                                     ),
                                 ],
@@ -180,7 +184,13 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_PATH = BASE_DIR / "../src/assets/data/games.csv"
 
-app = Dash(__name__)
+app = Dash(
+    __name__,
+    assets_folder=str(BASE_DIR / "assets"),
+    external_stylesheets=[
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+    ],
+)
 server = app.server
 app.title = "Project | INF8808"
 
@@ -259,10 +269,167 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "line", "Section 3",
-                            "Évolution des genres par succès commercial",
+                            "Le succès commercial des différents genres selon leur année de sortie",
                             "Comparer l'évolution du nombre estimé de propriétaires par genre de 1997 à 2025, "
                             "et observer quels genres ont gagné ou perdu en importance au fil des années.",
                             viz3_line_layout, "#box", "#bubble",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz3-info-slide-idx", data=0),
+                                    html.Div(
+                                        id="viz3-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-trophy info-slide-icon"),
+                                                    html.Span(
+                                                        " Certains genres génèrent-ils un succès commercial supérieur aux autres ?",
+                                                    ),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Oui ! Action domine avec 6,7 milliards de propriétaires cumulés. Son pic de 666 M en 2017 est le plus haut du graphique, porté par PUBG (150 M) et Unturned (75 M). Cependant, Dota 2 (150 M, Free To Play/Action) avait déjà créé un premier pic majeur en 2013. Indie (4,7 milliards) et Adventure (4,5 milliards) sont proches pour la seconde place: Adventure culmine à 551 M en 2017 grâce à PUBG, et avait connu un premier pic en 2015 avec GTA V (75 M). RPG (2,8 milliards) et Free To Play (2,3 milliards) complètent le top 5."
+                                            ),
+                                            html.Div(className="game-logo-strip", children=[
+                                                html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                    html.Span("Dota 2", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                    html.Span("PUBG", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/730/CounterStrike_2/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                    html.Span("CS2", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/gtaV.png", className="game-logo-img"),
+                                                    html.Span("GTA V", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                                    html.Span("Palworld", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/304930/Unturned/", target="_blank", className="game-logo-chip", children=[
+                                                    html.Img(src="/assets/logos/unturned.png", className="game-logo-img"),
+                                                    html.Span("Unturned", className="game-logo-label"),
+                                                ]),
+                                            ]),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        id="viz3-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-calendar-days info-slide-icon"),
+                                                    html.Span(
+                                                        " L’année de sortie influence-t-elle le succès commercial moyen d’un jeu ?",
+                                                    ),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Avant 2013, toutes les courbes restent basses. C'est normal: Steam démarrait. Dota 2 crée le premier grand pic en 2013 : Le genre Action monte à 466 M, Free To Play à 298 M. C'est là que la plateforme commence à décoller ! Puis en 2017, PUBG (tagué Action, Adventure, Massively Multiplayer et Free To Play) propulse ces 4 genres à leurs records absolus en même temps. RPG est la seule exception : son record est en 2024 à 383 M, grâce à Palworld (75 M) et Black Myth: Wukong (75 M)."
+                                            ),
+                                            html.Div(className="game-logo-strip", children=[
+                                                html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip game-logo-chip--year", children=[
+                                                    html.Span("2013", className="game-logo-year-badge"),
+                                                    html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                    html.Span("Dota 2", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/", target="_blank", className="game-logo-chip game-logo-chip--year", children=[
+                                                    html.Span("2017", className="game-logo-year-badge"),
+                                                    html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                    html.Span("PUBG", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip game-logo-chip--year", children=[
+                                                    html.Span("2024", className="game-logo-year-badge"),
+                                                    html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                                    html.Span("Palworld", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/2358720/Black_Myth_Wukong/", target="_blank", className="game-logo-chip game-logo-chip--year", children=[
+                                                    html.Span("2024", className="game-logo-year-badge"),
+                                                    html.Img(src="/assets/logos/blackmyth.png", className="game-logo-img"),
+                                                    html.Span("Black Myth", className="game-logo-label"),
+                                                ]),
+                                            ]),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        id="viz3-info-slide-2",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("3 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-chart-line info-slide-icon"),
+                                                    html.Span(" Certains genres ont-ils gagné ou perdu en importance au fil du temps ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Massively Multiplayer est le cas le plus flagrant : PUBG l'a propulsé à 332 M en 2017, mais dès 2019 il s'effondre à 27 M (-92 %). Free To Play a aussi décliné : ancré par Dota 2 dès 2013 (298 M), il culmine à 463 M en 2017, puis retombe à 270 M en 2020 malgré le sursaut d'Apex Legends (150 M). À l'inverse, RPG progresse constamment : 249 M en 2021, 383 M en 2024 (+54 % en 3 ans), grâce à Palworld et Black Myth: Wukong. Pour 2025, une baisse par rapport aux années précédentes est attendue : l'année vient de s'achever et les jeux sortis n'ont pas encore eu le temps d'accumuler autant de propriétaires estimés."
+                                            ),
+                                            html.Div(className="game-logo-strip", children=[
+                                                html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                                    html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                                    html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                    html.Span("Dota 2", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                                    html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                                    html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                    html.Span("PUBG", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/1172470/Apex_Legends/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                                    html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                                    html.Img(src="/assets/logos/apex.png", className="game-logo-img"),
+                                                    html.Span("Apex", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                                    html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                    html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                                    html.Span("Palworld", className="game-logo-label"),
+                                                ]),
+                                                html.A(href="https://store.steampowered.com/app/2358720/Black_Myth_Wukong/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                                    html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                    html.Img(src="/assets/logos/blackmyth.png", className="game-logo-img"),
+                                                    html.Span("Black Myth", className="game-logo-label"),
+                                                ]),
+                                            ]),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        className="info-carousel-footer",
+                                        children=[
+                                            html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(id="viz3-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz3-info-dot-1", className="info-dot"),
+                                                    html.Span(id="viz3-info-dot-2", className="info-dot"),
+                                                ],
+                                            ),
+                                            html.Button(
+                                                "→",
+                                                id="viz3-info-next-btn",
+                                                className="info-nav-btn",
+                                                n_clicks=0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                         make_section(
                             "bubble", "Section 4",
@@ -352,6 +519,28 @@ def sync_all_checkbox(selected_genres):
     if set(selected_genres or []) >= all_genres:
         return ["All"]
     return []
+
+
+# ---------------------------------------------------------------------------
+# Viz 3 info carousel — navigate between the 3 insight slides
+# ---------------------------------------------------------------------------
+@app.callback(
+    Output("viz3-info-slide-idx", "data"),
+    Output("viz3-info-slide-0", "style"),
+    Output("viz3-info-slide-1", "style"),
+    Output("viz3-info-slide-2", "style"),
+    Output("viz3-info-dot-0", "className"),
+    Output("viz3-info-dot-1", "className"),
+    Output("viz3-info-dot-2", "className"),
+    Input("viz3-info-next-btn", "n_clicks"),
+    State("viz3-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def advance_info_carousel(n_clicks, current_idx):
+    next_idx = ((current_idx or 0) + 1) % 3
+    styles = [{"display": "flex"  if i == next_idx else "none"} for i in range(3)]
+    dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
+    return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
 
 if __name__ == "__main__":
