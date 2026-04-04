@@ -22,9 +22,11 @@ It serves as the entry point of the web application and orchestrates
 the overall storytelling structure.
 """
 
+import copy
 from pathlib import Path
 
-from dash import Dash, html, Input, Output
+from dash import Dash, html, Input, Output, State, ctx
+from dash.exceptions import PreventUpdate
 import pandas as pd
 
 from viz1_scatter import viz1_scatter
@@ -33,14 +35,84 @@ from viz3_line import viz3_line
 from viz4_bubble import viz4_bubble
 from viz5_dot import viz5_dot
 from viz6_violin import viz6_violin
+from viz3_line.preprocess import MAIN_GENRES as VIZ3_MAIN_GENRES
 import sidebar
-
 
 SCATTER_SLIDER_ID = "scatter-price-slider"
 SCATTER_GRAPH_ID = "scatter-price-graph"
 
 LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
 LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
+LINE_ALL_ID = viz3_line.LINE_ALL_ID
+def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
+    """
+    Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
+    restyle_data: [patch_dict, trace_indices] as emitted by dcc.Graph restyleData.
+    """
+    if not fig_dict or not restyle_data or len(restyle_data) < 2:
+        return fig_dict
+    patch, indices = restyle_data[0], restyle_data[1]
+    if patch is None or indices is None:
+        return fig_dict
+
+    fig = copy.deepcopy(fig_dict)
+    n = len(fig.get("data", []))
+    if n == 0:
+        return fig
+
+    if isinstance(indices, int):
+        indices = [indices]
+    else:
+        indices = list(indices)
+
+    for key, val in patch.items():
+        if key == "visible" and isinstance(val, list) and len(val) == n:
+            for i in range(n):
+                fig["data"][i][key] = val[i]
+            continue
+
+        for i, idx in enumerate(indices):
+            if idx < 0 or idx >= n:
+                continue
+            if isinstance(val, list):
+                if len(val) == len(indices):
+                    fig["data"][idx][key] = val[i]
+                elif len(val) == 1:
+                    fig["data"][idx][key] = val[0]
+                else:
+                    fig["data"][idx][key] = val[i] if i < len(val) else val[-1]
+            else:
+                fig["data"][idx][key] = val
+    return fig
+
+
+def _figure_to_viz3_checklist_values(fig_dict):
+    """Derive checklist values from trace visibility (matches legend state)."""
+
+    def trace_on_plot(tr):
+        v = tr.get("visible")
+        if v is None or v is True:
+            return True
+        if v in (False, "legendonly"):
+            return False
+        return True
+
+    visible_main = set()
+    others_on = False
+    for tr in fig_dict.get("data", []):
+        if not trace_on_plot(tr):
+            continue
+        name = tr.get("name")
+        if name == "Others":
+            others_on = True
+        elif name in VIZ3_MAIN_GENRES:
+            visible_main.add(name)
+
+    ordered = [g for g in VIZ3_MAIN_GENRES if g in visible_main]
+    if others_on:
+        ordered.append("Others")
+    return ordered
+
 
 
 def make_section(section_id, kicker, title, description, viz_layout, prev_href, next_href):
@@ -228,10 +300,58 @@ def update_scatter_price_range(max_price):
 
 @app.callback(
     Output(LINE_GRAPH_ID, "figure"),
-    Input(LINE_CHECKLIST_ID, "value")
+    Input(LINE_CHECKLIST_ID, "value"),
 )
 def update_line_genres(selected_genres):
     return viz3_line.create_figure(data, selected_genres=selected_genres or [])
+
+
+@app.callback(
+    Output(LINE_CHECKLIST_ID, "value"),
+    Input(LINE_ALL_ID, "value"),
+    Input(LINE_GRAPH_ID, "restyleData"),
+    State(LINE_GRAPH_ID, "figure"),
+    State(LINE_CHECKLIST_ID, "value"),
+    prevent_initial_call=True,
+)
+def update_checklist(all_value, restyle_data, figure, current_checklist):
+    """
+    Single source of checklist mutations:
+    - 'Tout' checkbox toggled → select or clear all genres
+    - Legend click/double-click → sync checkboxes to what is visible on graph
+    """
+    triggered = ctx.triggered_id
+
+    if triggered == LINE_ALL_ID:
+        if "All" in (all_value or []):
+            return list(viz3_line.CHECKLIST_GENRES)
+        if set(current_checklist or []) >= set(viz3_line.CHECKLIST_GENRES):
+            return []
+        raise PreventUpdate
+
+    if triggered == LINE_GRAPH_ID:
+        if not restyle_data or not figure:
+            raise PreventUpdate
+        merged = _apply_restyle_patch_to_figure(figure, restyle_data)
+        new_vals = _figure_to_viz3_checklist_values(merged)
+        if new_vals == list(current_checklist or []):
+            raise PreventUpdate
+        return new_vals
+
+    raise PreventUpdate
+
+
+@app.callback(
+    Output(LINE_ALL_ID, "value"),
+    Input(LINE_CHECKLIST_ID, "value"),
+    prevent_initial_call=True,
+)
+def sync_all_checkbox(selected_genres):
+    """Keep the 'Tous les genres' checkbox in sync with individual genre checkboxes."""
+    all_genres = set(viz3_line.CHECKLIST_GENRES)
+    if set(selected_genres or []) >= all_genres:
+        return ["All"]
+    return []
 
 
 if __name__ == "__main__":

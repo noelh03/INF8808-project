@@ -12,7 +12,7 @@ This module:
 
 import plotly.graph_objects as go
 from .hover_template import get_hover_template
-from .preprocess import MAIN_GENRES, get_other_genres
+from .preprocess import MAIN_GENRES, get_other_genres, YEAR_MIN, YEAR_MAX
 
 GENRE_COLORS = {
     "Action": "#F4A535",
@@ -48,6 +48,20 @@ def generate_plot(df_long, selected_genres=None):
 
     other_genres = get_other_genres(df_long)
     show_others = "Others" in selected_genres
+
+    visible_main = [g for g in MAIN_GENRES if g in selected_genres]
+    visible_other = other_genres if show_others else []
+    visible_genres = visible_main + list(visible_other)
+
+    if visible_genres:
+        mask = df_long["Genre"].isin(visible_genres)
+        visible_df = df_long[mask]
+        y_max = visible_df["Owners"].max() * 1.08  # 8 % headroom
+        x_range = [YEAR_MIN, YEAR_MAX]
+        y_range = [0, y_max]
+    else:
+        x_range = [YEAR_MIN, YEAR_MAX]
+        y_range = [0, 700_000_000]
 
     fig = go.Figure()
 
@@ -104,10 +118,11 @@ def generate_plot(df_long, selected_genres=None):
         )
 
     fig.update_layout(
+        autosize=True,
+        showlegend=True,
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#F5F7FB",
-        height=500,
         margin=dict(l=72, r=20, t=56, b=62),
         font=dict(
             family="Inter, Arial, sans-serif",
@@ -122,6 +137,8 @@ def generate_plot(df_long, selected_genres=None):
             yanchor="bottom",
             bgcolor="rgba(0,0,0,0)",
             font=dict(size=12, color="#2E4057"),
+            itemclick="toggle",
+            itemdoubleclick="toggleothers",
         ),
         hoverlabel=dict(
             bgcolor="white",
@@ -143,6 +160,7 @@ def generate_plot(df_long, selected_genres=None):
         zeroline=False,
         showline=False,
         dtick=2,
+        range=x_range,
         title_font=dict(size=16, color="#2E4057"),
         tickfont=dict(size=12, color="#506784"),
     )
@@ -155,6 +173,7 @@ def generate_plot(df_long, selected_genres=None):
         gridwidth=1,
         zeroline=False,
         showline=False,
+        range=y_range,
         title_font=dict(size=16, color="#2E4057"),
         tickfont=dict(size=12, color="#506784"),
     )

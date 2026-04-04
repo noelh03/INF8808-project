@@ -15,6 +15,7 @@ from viz3_line.plot_generate import generate_plot, GENRE_COLORS, CHECKLIST_GENRE
 
 LINE_CHECKLIST_ID = "line-genre-checklist"
 LINE_GRAPH_ID = "line-genre-graph"
+LINE_ALL_ID = "line-all-toggle"
 
 _df_long_cache = None
 
@@ -95,15 +96,31 @@ def create_layout(my_df):
                         figure=fig,
                         config={"displayModeBar": False, "responsive": True},
                         className="graph",
+                        style={"height": "100%"},
                     ),
                     html.Div(
                         className="line-side-panel",
                         children=[
-                            html.Div("Filtrer par genre", className="slider-title"),
+                            html.Div("Filtrez par genre:", className="slider-title"),
                             dcc.Checklist(
                                 id=LINE_CHECKLIST_ID,
                                 options=genre_options,
                                 value=CHECKLIST_GENRES,
+                                className="genre-checklist",
+                                labelClassName="genre-checklist-label",
+                                inputClassName="genre-checklist-input",
+                            ),
+                            html.Hr(className="genre-checklist-divider"),
+                            dcc.Checklist(
+                                id=LINE_ALL_ID,
+                                options=[{
+                                    "label": html.Span(
+                                        "Tous les genres",
+                                        style={"fontWeight": "700", "color": "#111827"},
+                                    ),
+                                    "value": "All",
+                                }],
+                                value=["All"],
                                 className="genre-checklist",
                                 labelClassName="genre-checklist-label",
                                 inputClassName="genre-checklist-input",
