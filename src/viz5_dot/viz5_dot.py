@@ -1,42 +1,80 @@
 '''
     Contains source code for the fifth visualisation of the project. 
-    It is a ? plot, showing the relationship ... TODO
+    It is a dot plot, showing the relationship between satisfaction and playtime, 
+    with the color of the dots representing the number of reviews.
 '''
 from dash import html, dcc
+import viz5_dot.preprocess as preprocess
+import viz5_dot.plot_generate as plot_generate
 
-import viz5_dot.preprocess
-import viz5_dot.plot_generate
+DOT_SLIDER_MIN = 0
+DOT_SLIDER_MAX = 6000
+DOT_SLIDER_STEP = 100
+DOT_SLIDER_HEIGHT = 320
 
-def create_figure(my_df):
+def create_figure(df, max_playtime=6000):
     '''
         Calls the functions to preprocess the data and generate the plot for the fifth visualisation.
+        
+        Args:
+            df: The dataframe to display
+            max_playtime: The maximum playtime to display (used for filtering the data)
+        Returns:
+            The generated figure
     '''
-    my_df = viz5_dot.preprocess.step1(my_df)
-    my_df = viz5_dot.preprocess.step2(my_df)
-    
-    fig = viz5_dot.plot_generate.generate_plot(my_df)
-    fig = viz5_dot.plot_generate.update_template(fig)
-    fig = viz5_dot.plot_generate.update_legend(fig)
-    fig = viz5_dot.plot_generate.update_axes_labels(fig)
-    fig = viz5_dot.plot_generate.update_hover_template(fig)
-    #TODO : call other functions if added in plot_generate.py
+    df = preprocess.compute_metrics(df)
+    df = preprocess.filter_data(df)
+    fig = plot_generate.generate_plot(df, max_playtime)
 
     return fig
 
-def create_layout(my_df):
-    fig = create_figure(my_df)
+def create_layout(df, max_playtime=6000, slider_id="dot-slider", graph_id="dot-graph"):
+    '''
+        Creates the layout for the fifth visualisation (dot plot).
+        
+        Args:
+            df: The dataframe to display
+            max_playtime: The maximum playtime to display (used for filtering the data)
+            slider_id: The ID for the slider component
+            graph_id: The ID for the graph component
+        Returns:
+            The layout for the fifth visualisation
+    '''
     
-    #TODO : uncomment
-    # fig.update_layout(height=600, width=1000)
-    # fig.update_layout(dragmode=False)
+    fig = create_figure(df, max_playtime)
+    slider_marks = {i: f"{i//1000}k" for i in range(0, DOT_SLIDER_MAX + 1, 1000)}
 
-    return html.Div(id="dot", className='viz-block', children=[
-        html.H3("Dot Plot"),
-        dcc.Graph(className='graph', figure=fig, config=dict(
-            scrollZoom=False,
-            showTips=False,
-            showAxisDragHandles=False,
-            doubleClick=False,
-            displayModeBar=False
-        ))
+    return html.Div(className="viz-inner", children=[
+        html.Div(className="dot-main-layout", children=[
+            html.Div(
+                className="dot-graph-column",
+                children=[
+                    dcc.Graph(
+                        id=graph_id,
+                        figure=fig,
+                        config={"displayModeBar": False, "responsive": True},
+                        className="graph",
+                        style={"height": "100%", "minHeight": "480px"},
+                    ),
+                ],
+            ),
+
+            html.Div(className="dot-side-panel", children=[
+                html.Div("Filtrer par temps de jeu moyen", className="slider-title"),
+                dcc.Slider(
+                    id=slider_id,
+                    min=DOT_SLIDER_MIN,
+                    max=DOT_SLIDER_MAX,
+                    step=DOT_SLIDER_STEP,
+                    value=DOT_SLIDER_MAX,
+                    vertical=True,
+                    verticalHeight=DOT_SLIDER_HEIGHT,
+                    marks=slider_marks,
+                    tooltip={
+                        "placement": "left",
+                        "always_visible": True,
+                    },
+                ),
+            ])
+        ])
     ])

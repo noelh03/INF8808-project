@@ -1,30 +1,53 @@
 '''
     Contains some functions to preprocess the data used in the visualisation.
 '''
-import pandas as pd
 
-#TODO: each function should have a specific purpose
+COL_POS = "Positive"
+COL_NEG = "Negative"
+COL_PLAYTIME = "Average playtime forever"
+COL_NAME = "Name"
 
-def step1(my_df):
+COL_VIS = "Visibility"
+COL_SAT = "Satisfaction"
+COL_SAT_ROUNDED = "Satisfaction rounded"
+COL_PLAYTIME_HOURS = "Playtime hours"
+
+
+def compute_metrics(df):
     '''
-        #TODO: add detailed descriptions of the function and its arguments and return value
+        Compute satisfaction, visibility and playtime.
 
         Args:
-            #TODO: add description of the arguments
-        Returns:
-            #TODO: add description of the return value
-    '''
-    #TODO: implement the function 
-    return None
+            df: Raw dataset
 
-def step2(my_df):
+        Returns:
+            pd.DataFrame: Enriched dataset
     '''
-        #TODO: add detailed descriptions of the function and its arguments and return value
+    df = df.copy()
+
+    df[COL_VIS] = df[COL_POS] + df[COL_NEG]
+    df[COL_SAT] = df[COL_POS] / df[COL_VIS]
+    df[COL_SAT] = df[COL_SAT].fillna(0)
+    df[COL_SAT_ROUNDED] = df[COL_SAT].round(1)
+    df[COL_PLAYTIME_HOURS] = df[COL_PLAYTIME] / 60
+
+    return df
+
+
+def filter_data(df):
+    '''
+        Filter invalid rows and sort by visibility
 
         Args:
-            #TODO: add description of the arguments
+            df : The dataframe to filter
+
         Returns:
-            #TODO: add description of the return value
+            DataFrame
     '''
-    #TODO: implement the function 
-    return None
+    df = df[
+        (df["Visibility"] > 0) &
+        (df["Playtime hours"] >= 0)
+    ]
+    df = df.sort_values(by="Visibility", ascending=True)
+
+    return df

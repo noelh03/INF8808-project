@@ -1,70 +1,153 @@
 '''
     This file contains the code for the plot.
 '''
+import math
 
 import plotly.express as px
+from .hover_template import get_hover_template
 
-import viz1_scatter.hover_template
+COL_SAT = "Satisfaction rounded"
+COL_PLAYTIME = "Playtime hours"
+COL_VIS = "Visibility"
+COL_NAME = "Name"
 
-#TODO : add more functions if needed
 
-def generate_plot(my_df):
+def generate_plot(df, max_playtime=6000):
     '''
         Generates the plot.
 
-        #TODO : add more details about the plot (axes, colors, sizes, etc.)
-
         Args:
-            my_df: The dataframe to display
-            #TODO : add more arguments if needed
+            df: The dataframe to display
+            max_playtime: The maximum playtime to display (used for filtering the data)
         Returns:
             The generated figure
     '''
-    #TODO : Define figure
+    filtered_df = df[df[COL_PLAYTIME] <= max_playtime]
 
-    return None
+    fig = px.scatter(
+        filtered_df,
+        x=COL_SAT,
+        y=COL_PLAYTIME,
+        color=COL_VIS,
+        hover_name=COL_NAME,
+        color_continuous_scale=[
+            [0.0, "#6fb6ff"],
+            [0.5, "#0062ff"],
+            [1.0, "#0a1f6b"],
+        ],
+        opacity=0.65,
+    )
 
-def update_axes_labels(fig):
+    fig.update_traces(
+        marker=dict(size=7),
+    )
+
+    fig = update_axes(fig, max_playtime=max_playtime)
+    fig = update_layout(fig)
+    fig = update_hover_template(fig)
+
+    return fig
+
+def update_axes(fig, max_playtime=6000):
     '''
-        Updates the axes labels with their corresponding titles.
+        Updates the axes labels with their corresponding titles and styling.
 
         Args:
             fig: The figure to be updated
+            max_playtime: The maximum playtime to display (used for filtering the data)
         Returns:
             The updated figure
     '''
-    # TODO : Update labels
-    # fig.update_xaxes(title_text="x axis")
-    # fig.update_yaxes(title_text="y axis")
+    fig.update_xaxes(
+        title_text="Satisfaction (arrondie)",
+        range=[-0.02, 1.02],
+        tickmode="linear",
+        dtick=0.1,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
+    n_ticks = 6
+    if max_playtime == 0:
+        y_dtick = 1
+        padding = 1
+    else:
+        raw_dtick = max_playtime / n_ticks
+        padding = max_playtime * 0.03
+
+        magnitude = 10 ** math.floor(math.log10(raw_dtick))
+        y_dtick = round(raw_dtick / magnitude) * magnitude
+
+    fig.update_yaxes(
+        title_text="Temps de jeu moyen (heures)",
+        range=[-padding, max_playtime + padding],
+        tickmode="linear",
+        dtick=y_dtick,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
     return fig
 
 
-def update_template(fig):
+def update_layout(fig):
     '''
-        Updates the layout of the figure, setting
-        its template to 'simple_white'
+        Updates the layout of the figure.
 
         Args:
             fig: The figure to update
         Returns:
             The updated figure
     '''
-    # TODO : Change if you want to use a different template
-    # fig.update_layout(template='simple_white')
+    fig.update_layout(
+        autosize=True,
+        template="plotly_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        # Même esprit que viz3 (ligne) : tracé pleine hauteur, peu de marge perdue
+        margin=dict(l=72, r=24, t=52, b=62),
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+        # Barre de couleur horizontale en haut, comme la légende de la viz3
+        coloraxis_colorbar=dict(
+            orientation="h",
+            title=dict(text="Nombre d'avis", side="right", font=dict(size=12)),
+            x=0,
+            y=1.06,
+            xanchor="left",
+            yanchor="bottom",
+            len=0.42,
+            thickness=12,
+            nticks=6,
+            tickformat="~s",
+            outlinewidth=0,
+        ),
+    )
+
     return fig
 
-def update_legend(fig):
-    '''
-        Updated the legend title
-
-        Args:
-            fig: The figure to be updated
-        Returns:
-            The updated figure
-    '''
-    # TODO : Update legend 
-    # fig.update_layout(legend_title_text="Legend")
-    return fig
 
 def update_hover_template(fig):
     '''
@@ -76,13 +159,7 @@ def update_hover_template(fig):
             The updated figure
     '''
 
-    # DONE : Set the hover template (#TODO : change the hover template if you want to use a different one)
-    template = viz1_scatter.hover_template.get_hover_template()
-    
-    # fig.update_traces(hovertemplate=template)
-
-    # for frame in fig.frames:
-    #     for trace in frame.data:
-    #         trace.hovertemplate = template
+    template = get_hover_template()
+    fig.update_traces(hovertemplate=template)
             
     return fig
