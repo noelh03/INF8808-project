@@ -44,6 +44,10 @@ SCATTER_GRAPH_ID = "scatter-price-graph"
 LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
 LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 LINE_ALL_ID = viz3_line.LINE_ALL_ID
+
+BUBBLE_GRAPH_ID = "bubble-graph"
+BUBBLE_SLIDER_ID = "bubble-slider"
+
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
     Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
@@ -433,8 +437,8 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "bubble", "Section 4",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
+                            "Visibilité et succès commercial",
+                            "Comparer la performance commerciale estimée des jeux selon leur nombre d’avis, et observer comment la distribution évolue selon l’intervalle de visibilité sélectionné.",
                             viz4_bubble_layout, "#line", "#dot",
                         ),
                         make_section(
@@ -463,6 +467,13 @@ app.layout = html.Div(
 )
 def update_scatter_price_range(max_price):
     return viz1_scatter.create_figure(data, max_price=max_price)
+
+@app.callback(
+    Output(BUBBLE_GRAPH_ID, "figure"),
+    Input(BUBBLE_SLIDER_ID, "value"),
+)
+def update_bubble_visibility(max_visibility):
+    return viz4_bubble.create_figure(data, max_visibility=max_visibility)
 
 
 @app.callback(

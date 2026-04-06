@@ -3,68 +3,144 @@
 '''
 
 import plotly.express as px
+import math
+from .hover_template import get_hover_template
 
-import viz1_scatter.hover_template
+COL_SAT = "Satisfaction"
+COL_VIS = "Visibility"
+COL_OWNERS = "Estimated owners (average)"
+COL_NAME = "Name"
 
-#TODO : add more functions if needed
-
-def generate_plot(my_df):
+def generate_plot(df, max_visibility=None):
     '''
         Generates the plot.
 
-        #TODO : add more details about the plot (axes, colors, sizes, etc.)
-
         Args:
-            my_df: The dataframe to display
-            #TODO : add more arguments if needed
+            df: The dataframe to display
+            max_visibility: The maximum visibility to display (used for filtering the data)
         Returns:
             The generated figure
     '''
-    #TODO : Define figure
+    
+    required_columns = [COL_SAT, COL_VIS, COL_OWNERS, COL_NAME]
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Colonnes manquantes : {missing}")
 
-    return None
+    filtered_df = df.copy()
 
-def update_axes_labels(fig):
+    if max_visibility is not None:
+        filtered_df = filtered_df[filtered_df[COL_VIS] <= max_visibility]
+
+    fig = px.scatter(
+        filtered_df,
+        x=COL_SAT,
+        y=COL_VIS,
+        size=COL_OWNERS,
+        hover_name=COL_NAME,
+        log_y=False,
+        opacity=0.6,
+        size_max=60,
+    )
+
+    fig.update_traces(
+        marker=dict(
+            line=dict(width=0),
+        )
+    )
+    
+    fig = update_axes(fig, max_visibility=max_visibility)
+    fig = update_layout(fig)
+    fig = update_hover_template(fig)
+
+    return fig
+
+def update_axes(fig, max_visibility=None):
     '''
-        Updates the axes labels with their corresponding titles.
+        Updates the axes labels with their corresponding titles and styling.
 
         Args:
             fig: The figure to be updated
         Returns:
             The updated figure
     '''
-    # TODO : Update labels
-    # fig.update_xaxes(title_text="x axis")
-    # fig.update_yaxes(title_text="y axis")
+    
+    n_ticks = 10
+    if max_visibility == 0:
+        y_dtick = 1
+    else:
+        raw_dtick = max_visibility / n_ticks
+        
+        magnitude = 10 ** math.floor(math.log10(raw_dtick))
+        y_dtick = round(raw_dtick / magnitude) * magnitude
+
+    padding = max_visibility * 0.03 if max_visibility > 0 else 1
+    
+    fig.update_xaxes(
+        title_text="Satisfaction (ratio)",
+        range=[-0.02, 1.02],
+        tickmode="linear",
+        dtick=0.1,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+    
+    fig.update_yaxes(
+        title_text="Visibilité (nombre d’avis)",
+        range=[-padding, max_visibility + padding],
+        tickmode="linear",
+        dtick=y_dtick,
+        tickformat="~s",
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+    
     return fig
 
 
-def update_template(fig):
+def update_layout(fig):
     '''
-        Updates the layout of the figure, setting
-        its template to 'simple_white'
+        Updates the layout of the figure with styling and formatting.
 
         Args:
             fig: The figure to update
         Returns:
             The updated figure
     '''
-    # TODO : Change if you want to use a different template
-    # fig.update_layout(template='simple_white')
+    fig.update_layout(
+        autosize=True,
+        template="plotly_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        margin=dict(l=72, r=130, t=28, b=62),
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+    )
+    
     return fig
 
-def update_legend(fig):
-    '''
-        Updated the legend title
-
-        Args:
-            fig: The figure to be updated
-        Returns:
-            The updated figure
-    '''
-    # TODO : Update legend 
-    # fig.update_layout(legend_title_text="Legend")
-    return fig
 
 def update_hover_template(fig):
     '''
@@ -75,14 +151,7 @@ def update_hover_template(fig):
         Returns:
             The updated figure
     '''
-
-    # DONE : Set the hover template (#TODO : change the hover template if you want to use a different one)
-    template = viz1_scatter.hover_template.get_hover_template()
-    
-    # fig.update_traces(hovertemplate=template)
-
-    # for frame in fig.frames:
-    #     for trace in frame.data:
-    #         trace.hovertemplate = template
+    template = get_hover_template()
+    fig.update_traces(hovertemplate=template)
             
     return fig
