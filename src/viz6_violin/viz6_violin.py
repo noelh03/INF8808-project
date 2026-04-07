@@ -30,7 +30,7 @@ def create_layout(my_df):
     # fig.update_layout(height=600, width=1000)
     # fig.update_layout(dragmode=False)
 
-    return html.Div(id="violin", className='viz-block', children=[
+    return html.Div(id="violin-viz", className='viz-block', children=[
         html.H3("Violin Plot"),
         dcc.Graph(className='graph', figure=fig, config=dict(
             scrollZoom=False,

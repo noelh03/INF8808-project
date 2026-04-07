@@ -44,6 +44,8 @@ SCATTER_GRAPH_ID = "scatter-price-graph"
 LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
 LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 LINE_ALL_ID = viz3_line.LINE_ALL_ID
+DOT_GRAPH_ID = "dot-graph"
+DOT_SLIDER_ID = "dot-slider"
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
     Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
@@ -207,7 +209,11 @@ viz1_scatter_layout = viz1_scatter.create_layout(
 viz2_box_layout = viz2_box.create_layout(data)
 viz3_line_layout = viz3_line.create_layout(data)
 viz4_bubble_layout = viz4_bubble.create_layout(data)
-viz5_dot_layout = viz5_dot.create_layout(data)
+viz5_dot_layout = viz5_dot.create_layout(
+    data,
+    slider_id=DOT_SLIDER_ID,
+    graph_id=DOT_GRAPH_ID,
+)
 viz6_violin_layout = viz6_violin.create_layout(data)
 
 app.layout = html.Div(
@@ -484,10 +490,98 @@ app.layout = html.Div(
                             viz4_bubble_layout, "#line", "#dot",
                         ),
                         make_section(
-                            "dot", "Section 5",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
-                            viz5_dot_layout, "#bubble", "#violin",
+                            "dot",
+                            "Section 5",
+                            "Satisfaction, temps de jeu et succès commercial",
+                            "Comparer la satisfaction et le temps de jeu moyen des jeux selon leur nombre d’avis, et observer comment la distribution évolue selon l’intervalle de temps de jeu sélectionné.",
+                            viz5_dot_layout,
+                            "#bubble",
+                            "#violin",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz5-info-slide-idx", data=0),
+                                    html.Div(
+                                        id="viz5-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 2", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(
+                                                        className="fa-solid fa-clock info-slide-icon",
+                                                    ),
+                                                    html.Span(
+                                                        " Le temps de jeu moyen est-il lié à la satisfaction ?",
+                                                    ),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Chaque point est un jeu : en abscisse, le ratio de satisfaction "
+                                                "(avis positifs / total, arrondi à une décimale) ; en ordonnée, le "
+                                                "temps de jeu moyen à vie issu des données Steam, converti en heures. "
+                                                "Une grappe vers le bas montre beaucoup de titres peu joués en moyenne "
+                                                "malgré une note correcte : la satisfaction ne suffit pas à garantir "
+                                                "un engagement long. Les points plus hauts correspondent souvent à des "
+                                                "jeux très suivis ; le survol affiche le nom du jeu."
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        id="viz5-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 2", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(
+                                                        className="fa-solid fa-palette info-slide-icon",
+                                                    ),
+                                                    html.Span(
+                                                        " Couleur du point et curseur vertical",
+                                                    ),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "La couleur représente le volume total d’avis (positifs + négatifs) : "
+                                                "plus la teinte est foncée, plus le jeu a été évalué souvent. Les points "
+                                                "très clairs ont peu d’avis : le ratio de satisfaction y est plus sensible "
+                                                "à quelques votes. Le curseur à droite fixe le temps de jeu moyen "
+                                                "maximum affiché sur l’axe vertical : en le baissant, tu te concentres "
+                                                "sur les jeux moins chronophages en moyenne et tu vois comment le nuage "
+                                                "se réorganise."
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        className="info-carousel-footer",
+                                        children=[
+                                            html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(
+                                                        id="viz5-info-dot-0",
+                                                        className="info-dot active",
+                                                    ),
+                                                    html.Span(
+                                                        id="viz5-info-dot-1",
+                                                        className="info-dot",
+                                                    ),
+                                                ],
+                                            ),
+                                            html.Button(
+                                                "→",
+                                                id="viz5-info-next-btn",
+                                                className="info-nav-btn",
+                                                n_clicks=0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                         make_section(
                             "violin", "Section 6",
@@ -521,25 +615,28 @@ def update_line_genres(selected_genres):
 
 @app.callback(
     Output(LINE_CHECKLIST_ID, "value"),
+    Output(LINE_ALL_ID, "value"),
+    Input(LINE_CHECKLIST_ID, "value"),
     Input(LINE_ALL_ID, "value"),
     Input(LINE_GRAPH_ID, "restyleData"),
     State(LINE_GRAPH_ID, "figure"),
     State(LINE_CHECKLIST_ID, "value"),
     prevent_initial_call=True,
 )
-def update_checklist(all_value, restyle_data, figure, current_checklist):
+def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, current_checklist):
     """
-    Single source of checklist mutations:
-    - 'Tout' checkbox toggled → select or clear all genres
-    - Legend click/double-click → sync checkboxes to what is visible on graph
+    Checklist + « Tous les genres » in one callback to avoid a Dash circular dependency
+    (two callbacks that each output the other's input create a cycle at layout validation).
     """
     triggered = ctx.triggered_id
+    all_genres_set = set(viz3_line.CHECKLIST_GENRES)
+    full_list = list(viz3_line.CHECKLIST_GENRES)
 
     if triggered == LINE_ALL_ID:
         if "All" in (all_value or []):
-            return list(viz3_line.CHECKLIST_GENRES)
-        if set(current_checklist or []) >= set(viz3_line.CHECKLIST_GENRES):
-            return []
+            return full_list, ["All"]
+        if set(current_checklist or []) >= all_genres_set:
+            return [], []
         raise PreventUpdate
 
     if triggered == LINE_GRAPH_ID:
@@ -549,22 +646,16 @@ def update_checklist(all_value, restyle_data, figure, current_checklist):
         new_vals = _figure_to_viz3_checklist_values(merged)
         if new_vals == list(current_checklist or []):
             raise PreventUpdate
-        return new_vals
+        all_out = ["All"] if set(new_vals or []) >= all_genres_set else []
+        return new_vals, all_out
+
+    if triggered == LINE_CHECKLIST_ID:
+        cl = list(checklist_value or [])
+        if set(cl) >= all_genres_set:
+            return cl, ["All"]
+        return cl, []
 
     raise PreventUpdate
-
-
-@app.callback(
-    Output(LINE_ALL_ID, "value"),
-    Input(LINE_CHECKLIST_ID, "value"),
-    prevent_initial_call=True,
-)
-def sync_all_checkbox(selected_genres):
-    """Keep the 'Tous les genres' checkbox in sync with individual genre checkboxes."""
-    all_genres = set(viz3_line.CHECKLIST_GENRES)
-    if set(selected_genres or []) >= all_genres:
-        return ["All"]
-    return []
 
 
 # ---------------------------------------------------------------------------
@@ -584,10 +675,40 @@ def sync_all_checkbox(selected_genres):
 )
 def advance_info_carousel(n_clicks, current_idx):
     next_idx = ((current_idx or 0) + 1) % 3
-    styles = [{"display": "flex"  if i == next_idx else "none"} for i in range(3)]
+    styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
+
+# ---------------------------------------------------------------------------
+# Viz 5 info carousel — 2 slides
+# ---------------------------------------------------------------------------
+@app.callback(
+    Output("viz5-info-slide-idx", "data"),
+    Output("viz5-info-slide-0", "style"),
+    Output("viz5-info-slide-1", "style"),
+    Output("viz5-info-dot-0", "className"),
+    Output("viz5-info-dot-1", "className"),
+    Input("viz5-info-next-btn", "n_clicks"),
+    State("viz5-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def advance_viz5_info_carousel(n_clicks, current_idx):
+    next_idx = ((current_idx or 0) + 1) % 2
+    styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
+    dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
+    return next_idx, styles[0], styles[1], dots[0], dots[1]
+
+
+@app.callback(
+    Output(DOT_GRAPH_ID, "figure"),
+    Input(DOT_SLIDER_ID, "value"),
+)
+def update_dot(max_playtime):
+    return viz5_dot.create_figure(
+        data,
+        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
+    )
 
 
 if __name__ == "__main__":
