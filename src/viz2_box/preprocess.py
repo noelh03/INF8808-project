@@ -8,7 +8,7 @@ import pandas as pd
 
 COL_OWNERS = "Estimated owners"
 COL_OWNERS_AVG = "Estimated owners (average)"
-COL_GENRES = "Genres"
+COL_GENRES = "Categories"
 COL_GAME_TYPE = "game_type"
 COL_NAME = "Name"
 
