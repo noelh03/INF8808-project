@@ -466,9 +466,55 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "box", "Section 2",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
+                            "Mode de jeu et succès commercial",
+                            "Explorer si les jeux solo, hybrides ou exclusivement multijoueur "
+                            "se distinguent par leur performance commerciale estimée, "
+                            "et observer comment chaque catégorie se répartit sur l'échelle des propriétaires.",
                             viz2_box_layout, "#scatter", "#line",
+                            info_content=html.Div(
+                                className="info-slide",
+                                children=[
+                                    html.H4(
+                                        className="info-block-title",
+                                        children=[
+                                            html.I(className="fa-solid fa-circle-question info-slide-icon"),
+                                            html.Span(" Le mode de jeu est-il associé à des différences de performance commerciale ?"),
+                                        ],
+                                    ),
+                                    html.P(
+                                        "Oui, mais de façon asymétrique. La majorité des jeux échouent "
+                                        "commercialement peu importe le mode (77 % des Solo, 63 % des Hybrides "
+                                        "et 66 % des Multijoueurs n'atteignent qu'environ 10 000 propriétaires). "
+                                        "Cependant, les jeux Multijoueurs et Hybrides ont une queue droite bien "
+                                        "plus longue : 13 % d'entre eux atteignent 350 000 propriétaires ou plus, "
+                                        "contre seulement 3,7 % des jeux Solo. La moyenne des Multijoueurs "
+                                        "(578 000) est 10x supérieure à celle des Solo (54 000). "
+                                        "Les mégahits absolus comme CS2, Dota 2, PUBG et Apex Legends (100 M+) "
+                                        "sont presque exclusivement multijoueurs ou hybrides."
+                                    ),
+                                    html.Div(className="game-logo-strip", children=[
+                                        html.A(href="https://store.steampowered.com/app/730/CounterStrike_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                            html.Span("CS2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                            html.Span("Dota 2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip", children=[
+                                            html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                            html.Span("Palworld", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/2358720/Black_Myth_Wukong/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/blackmyth.png", className="game-logo-img"),
+                                            html.Span("Black Myth", className="game-logo-label"),
+                                        ]),
+                                    ]),
+                                ],
+                            ),
                         ),
                         make_section(
                             "line", "Section 3",
