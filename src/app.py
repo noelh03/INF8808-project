@@ -46,7 +46,8 @@ LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 LINE_ALL_ID = viz3_line.LINE_ALL_ID
 
 BUBBLE_GRAPH_ID = "bubble-graph"
-BUBBLE_SLIDER_ID = "bubble-slider"
+BUBBLE_Y_SLIDER_ID = "bubble-slider"
+BUBBLE_X_SLIDER_ID = "bubble-slider-x"
 
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
@@ -460,7 +461,6 @@ app.layout = html.Div(
     ],
 )
 
-
 @app.callback(
     Output(SCATTER_GRAPH_ID, "figure"),
     Input(SCATTER_SLIDER_ID, "value"),
@@ -470,10 +470,11 @@ def update_scatter_price_range(max_price):
 
 @app.callback(
     Output(BUBBLE_GRAPH_ID, "figure"),
-    Input(BUBBLE_SLIDER_ID, "value"),
+    Input(BUBBLE_Y_SLIDER_ID, "value"),
+    Input(BUBBLE_X_SLIDER_ID, "value"),
 )
-def update_bubble_visibility(max_visibility):
-    return viz4_bubble.create_figure(data, max_visibility=max_visibility)
+def update_bubble_visibility(max_visibility, max_satisfaction):
+    return viz4_bubble.create_figure(data, max_visibility=max_visibility, max_satisfaction=max_satisfaction)
 
 
 @app.callback(

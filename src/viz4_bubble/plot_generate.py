@@ -11,13 +11,14 @@ COL_VIS = "Visibility"
 COL_OWNERS = "Estimated owners (average)"
 COL_NAME = "Name"
 
-def generate_plot(df, max_visibility=None):
+def generate_plot(df, max_visibility=None, max_satisfaction=1):
     '''
         Generates the plot.
 
         Args:
             df: The dataframe to display
             max_visibility: The maximum visibility to display (used for filtering the data)
+            max_satisfaction: The maximum satisfaction to display (used for filtering the data)
         Returns:
             The generated figure
     '''
@@ -31,6 +32,8 @@ def generate_plot(df, max_visibility=None):
 
     if max_visibility is not None:
         filtered_df = filtered_df[filtered_df[COL_VIS] <= max_visibility]
+    if max_satisfaction is not None:
+        filtered_df = filtered_df[filtered_df[COL_SAT] <= max_satisfaction]
 
     fig = px.scatter(
         filtered_df,
@@ -49,18 +52,20 @@ def generate_plot(df, max_visibility=None):
         )
     )
     
-    fig = update_axes(fig, max_visibility=max_visibility)
+    fig = update_axes(fig, max_visibility=max_visibility, max_satisfaction=max_satisfaction)
     fig = update_layout(fig)
     fig = update_hover_template(fig)
 
     return fig
 
-def update_axes(fig, max_visibility=None):
+def update_axes(fig, max_visibility=None, max_satisfaction=1):
     '''
         Updates the axes labels with their corresponding titles and styling.
 
         Args:
             fig: The figure to be updated
+            max_visibility: The maximum visibility to display
+            max_satisfaction: The maximum satisfaction to display
         Returns:
             The updated figure
     '''
@@ -78,7 +83,7 @@ def update_axes(fig, max_visibility=None):
     
     fig.update_xaxes(
         title_text="Satisfaction (ratio)",
-        range=[-0.02, 1.02],
+        range=[-0.02, max_satisfaction + 0.02],
         tickmode="linear",
         dtick=0.1,
         showgrid=True,

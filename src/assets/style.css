@@ -944,9 +944,29 @@ a.game-logo-chip {
 
 .bubble-side-panel {
     display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    padding-left: 10px;
+}
+
+.slider-block {
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.slider-block .slider-title {
+    margin-bottom: 12px;
+}
+
+.bubble-side-panel > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     height: 100%;
 }
 
