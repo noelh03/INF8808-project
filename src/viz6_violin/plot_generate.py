@@ -20,9 +20,17 @@ def generate_plot(my_df):
         Returns:
             The generated figure
     '''
-    #TODO : Define figure
+    fig = px.violin(
+        my_df,
+        x="nb_games_dev",
+        y="estimated_owners",
+        color="publisher_type",
+        hover_name="name",
+        box=True,
+        points="all"
+    )
 
-    return None
+    return fig
 
 def update_axes_labels(fig):
     '''
@@ -33,9 +41,14 @@ def update_axes_labels(fig):
         Returns:
             The updated figure
     '''
-    # TODO : Update labels
-    # fig.update_xaxes(title_text="x axis")
-    # fig.update_yaxes(title_text="y axis")
+    fig.update_xaxes(
+        title_text="Nombre de jeux publiés (expérience développeur)"
+    )
+
+    fig.update_yaxes(
+        title_text="Succès commercial (Estimated Owners)"
+    )
+
     return fig
 
 
@@ -49,8 +62,11 @@ def update_template(fig):
         Returns:
             The updated figure
     '''
-    # TODO : Change if you want to use a different template
-    # fig.update_layout(template='simple_white')
+    fig.update_layout(
+        template='simple_white',
+        dragmode=False
+    )
+
     return fig
 
 def update_legend(fig):
@@ -62,8 +78,10 @@ def update_legend(fig):
         Returns:
             The updated figure
     '''
-    # TODO : Update legend 
-    # fig.update_layout(legend_title_text="Legend")
+    fig.update_layout(
+        legend_title_text="Type d’éditeur"
+    )
+
     return fig
 
 def update_hover_template(fig):

@@ -539,8 +539,8 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "violin", "Section 6",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
+                            "Expérience des développeurs et succès commercial",
+                            "Ce diagramme en violon montre la distribution du succès commercial des jeux selon l’expérience des développeurs, et compare les éditeurs indépendants aux éditeurs majeurs.",
                             viz6_violin_layout, "#dot", "#hero",
                         ),
                     ],

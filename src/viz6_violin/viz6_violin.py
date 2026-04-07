@@ -27,11 +27,10 @@ def create_layout(my_df):
     fig = create_figure(my_df)
     
     #TODO : uncomment
-    # fig.update_layout(height=600, width=1000)
-    # fig.update_layout(dragmode=False)
+    fig.update_layout(height=600, width=1000)
+    fig.update_layout(dragmode=False)
 
     return html.Div(id="violin-viz", className='viz-block', children=[
-        html.H3("Violin Plot"),
         dcc.Graph(className='graph', figure=fig, config=dict(
             scrollZoom=False,
             showTips=False,
