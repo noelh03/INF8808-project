@@ -105,7 +105,7 @@ def create_layout(my_df):
                             dcc.Checklist(
                                 id=LINE_CHECKLIST_ID,
                                 options=genre_options,
-                                value=CHECKLIST_GENRES,
+                                value=[g for g in CHECKLIST_GENRES if g != "Others"],
                                 className="genre-checklist",
                                 labelClassName="genre-checklist-label",
                                 inputClassName="genre-checklist-input",
@@ -120,7 +120,7 @@ def create_layout(my_df):
                                     ),
                                     "value": "All",
                                 }],
-                                value=["All"],
+                                value=[],
                                 className="genre-checklist",
                                 labelClassName="genre-checklist-label",
                                 inputClassName="genre-checklist-input",

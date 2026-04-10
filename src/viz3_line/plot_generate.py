@@ -26,6 +26,8 @@ GENRE_COLORS = {
 OTHERS_COLOR = "#B0BAC9"
 CHECKLIST_GENRES = MAIN_GENRES + ["Others"]
 
+MILLIONS = 1_000_000.0
+
 
 def generate_plot(df_long, selected_genres=None):
     """
@@ -56,12 +58,12 @@ def generate_plot(df_long, selected_genres=None):
     if visible_genres:
         mask = df_long["Genre"].isin(visible_genres)
         visible_df = df_long[mask]
-        y_max = visible_df["Owners"].max() * 1.08  # 8 % headroom
+        y_max_m = (visible_df["Owners"].max() / MILLIONS) * 1.08
         x_range = [YEAR_MIN, YEAR_MAX]
-        y_range = [0, y_max]
+        y_range = [0, y_max_m]
     else:
         x_range = [YEAR_MIN, YEAR_MAX]
-        y_range = [0, 700_000_000]
+        y_range = [0, 700.0]
 
     fig = go.Figure()
 
@@ -76,7 +78,7 @@ def generate_plot(df_long, selected_genres=None):
             fig.add_trace(
                 go.Scatter(
                     x=genre_df["Year"],
-                    y=genre_df["Owners"],
+                    y=genre_df["Owners"] / MILLIONS,
                     mode="lines",
                     name="Others",
                     legendgroup="others",
@@ -103,7 +105,7 @@ def generate_plot(df_long, selected_genres=None):
         fig.add_trace(
             go.Scatter(
                 x=genre_df["Year"],
-                y=genre_df["Owners"],
+                y=genre_df["Owners"] / MILLIONS,
                 mode="lines",
                 name=genre,
                 line=dict(
@@ -167,7 +169,8 @@ def generate_plot(df_long, selected_genres=None):
 
     fig.update_yaxes(
         title_text="Propriétaires estimés",
-        tickformat=",",
+        tickformat=",.0f",
+        ticksuffix="M",
         showgrid=True,
         gridcolor="#DCE6F2",
         gridwidth=1,
