@@ -1,25 +1,17 @@
 '''
-    Provides the template for the tooltips.
+    Provides the tooltip templates for the second visualisation (beeswarm).
 '''
 
 
 def get_hover_template():
     '''
-        Sets the template for the hover tooltips.
-        
-        Contains labels, followed by their corresponding
-        value and units where appropriate, separated by a
-        colon : #TODO: add labels name.
+    Tooltip shown when hovering an individual game point.
 
-        The labels' font is bold and the values are normal weight
-
-        returns:
-            The content of the tooltip
+    Returns:
+        str: Plotly hovertemplate string.
     '''
-    #TODO : Generate tooltip
-    tooltip = (
-        "<b>label1 :</b> %{}<br>" +
-        "<b>label2 :</b> %{}<br>" +
+    return (
+        "<b>%{customdata[0]}</b><br>"
+        "<b>Propriétaires estimés :</b> %{customdata[1]}<br>"
         "<extra></extra>"
     )
-    return tooltip

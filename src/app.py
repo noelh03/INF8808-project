@@ -266,12 +266,255 @@ app.layout = html.Div(
                             "Comparer la performance commerciale estimée des jeux gratuits et payants, "
                             "et observer comment la distribution évolue selon l'intervalle de prix sélectionné.",
                             viz1_scatter_layout, "#hero", "#box",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz1-info-slide-idx", data=0),
+
+                                    html.Div(
+                                        id="viz1-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-tag info-slide-icon"),
+                                                    html.Span(" Le prix de vente influence-t-il le succès commercial des jeux sur Steam ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "À partir de cette visualisation, on observe que la relation entre le prix et le succès commercial est très faible." 
+                                                " Des jeux peu performants apparaissent à presque tous les niveaux de prix, tandis que certains jeux atteignent un succès élevé autant parmi les titres peu chers que parmi les titres plus coûteux."
+                                                " Le prix seul ne semble donc pas être un facteur déterminant du succès commercial."
+                                            ),
+                                            html.P(
+                                                "Dans les données observées entre 0 $ et 100 $, certains jeux payants très accessibles, comme Left 4 Dead 2 (1,99 $), Stardew Valley (8,99 $) ou Among Us (2,99 $), atteignent des niveaux de succès très élevés, ce qui montre qu’un faible prix n’empêche pas une large adoption."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/550/Left_4_Dead_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/left4dead2.png", className="game-logo-img"),
+                                                            html.Span("Left 4 Dead 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew Valley", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/945360/Among_Us/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/amongus.png", className="game-logo-img"),
+                                                            html.Span("Among Us", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz1-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-gamepad info-slide-icon"),
+                                                    html.Span(" Les jeux gratuits présentent-ils une dynamique de succès différente des jeux payants ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Non. À partir de cette visualisation, on observe que les jeux gratuits sont regroupés à prix nul, et que certains d’entre eux atteignent des niveaux de succès commercial très élevés."
+                                                " Cependant, des jeux payants atteignent également des niveaux similaires, ce qui indique qu’il n’existe pas de différence systématique de succès entre jeux gratuits et payants. "
+                                                "Les données suggèrent donc que la gratuité peut favoriser un fort succès, sans pour autant garantir une performance supérieure aux jeux payants."
+                                            ),
+                                            html.P(
+                                                "Des jeux gratuits comme Dota 2, Counter-Strike 2 et PUBG: BATTLEGROUNDS figurent parmi "
+                                                "les titres les plus élevés du graphique, avec des niveaux de propriétaires estimés extrêmement importants."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                            html.Span("PUBG", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz1-info-slide-2",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("3 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-chart-column info-slide-icon"),
+                                                    html.Span(" Le succès commercial est-il fortement concentré sur une minorité de jeux ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Oui, de manière très marquée. "
+                                                "La grande majorité des jeux se concentre dans la partie basse du graphique, tandis qu’un nombre très limité de titres atteint des niveaux de succès exceptionnellement élevés. "
+                                                "La distribution du succès commercial apparaît donc fortement inégale."
+                                            ),
+                                            html.P(
+                                                "Les données montrent qu'environ 91 % des jeux se situent à 100 000 propriétaires estimés ou moins, "
+                                                "et près de 99 % restent sous 1 million. À l’inverse, seuls quelques titres dominent réellement le marché."
+                                                ", illustrant une forte concentration du succès sur une minorité de titres."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/1172470/Apex_Legends/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/apex.png", className="game-logo-img"),
+                                                            html.Span("Apex Legends", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        className="info-carousel-footer",
+                                        children=[
+                                            html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(id="viz1-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz1-info-dot-1", className="info-dot"),
+                                                    html.Span(id="viz1-info-dot-2", className="info-dot"),
+                                                ],
+                                            ),
+                                            html.Div(
+                                                className="info-nav-buttons",
+                                                children=[
+                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn"),
+                                                    html.Button("→", id="viz1-info-next-btn", className="info-nav-btn"),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                         make_section(
                             "box", "Section 2",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
+                            "Mode de jeu et succès commercial",
+                            "Explorer si les jeux solo, hybrides ou exclusivement multijoueur "
+                            "se distinguent par leur performance commerciale estimée, "
+                            "et observer comment chaque catégorie se répartit sur l'échelle des propriétaires.",
                             viz2_box_layout, "#scatter", "#line",
+                            info_content=html.Div(
+                                className="info-slide",
+                                children=[
+                                    html.H4(
+                                        className="info-block-title",
+                                        children=[
+                                            html.I(className="fa-solid fa-circle-question info-slide-icon"),
+                                            html.Span(" Le mode de jeu est-il associé à des différences de performance commerciale ?"),
+                                        ],
+                                    ),
+                                    html.P(
+                                        "Oui, mais de façon asymétrique. La majorité des jeux échouent "
+                                        "commercialement peu importe le mode (77 % des Solo, 63 % des Hybrides "
+                                        "et 66 % des Multijoueurs n'atteignent qu'environ 10 000 propriétaires). "
+                                        "Cependant, les jeux Multijoueurs et Hybrides ont une queue droite bien "
+                                        "plus longue : 13 % d'entre eux atteignent 350 000 propriétaires ou plus, "
+                                        "contre seulement 3,7 % des jeux Solo. La moyenne des Multijoueurs "
+                                        "(578 000) est 10x supérieure à celle des Solo (54 000). "
+                                        "Les mégahits absolus comme CS2, Dota 2, PUBG et Apex Legends (100 M+) "
+                                        "sont presque exclusivement multijoueurs ou hybrides."
+                                    ),
+                                    html.Div(className="game-logo-strip", children=[
+                                        html.A(href="https://store.steampowered.com/app/730/CounterStrike_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                            html.Span("CS2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                            html.Span("Dota 2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip", children=[
+                                            html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                            html.Span("Palworld", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/2358720/Black_Myth_Wukong/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/blackmyth.png", className="game-logo-img"),
+                                            html.Span("Black Myth", className="game-logo-label"),
+                                        ]),
+                                    ]),
+                                ],
+                            ),
                         ),
                         make_section(
                             "line", "Section 3",
@@ -611,6 +854,36 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, cu
 
     raise PreventUpdate
 
+# ---------------------------------------------------------------------------
+# Viz 1 info carousel — navigate between the 3 insight slides
+# ---------------------------------------------------------------------------
+@app.callback(
+    Output("viz1-info-slide-idx", "data"),
+    Output("viz1-info-slide-0", "style"),
+    Output("viz1-info-slide-1", "style"),
+    Output("viz1-info-slide-2", "style"),
+    Output("viz1-info-dot-0", "className"),
+    Output("viz1-info-dot-1", "className"),
+    Output("viz1-info-dot-2", "className"),
+    Input("viz1-info-next-btn", "n_clicks"),
+    Input("viz1-info-prev-btn", "n_clicks"),
+    State("viz1-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def update_viz1_carousel(next_clicks, prev_clicks, current_idx):
+    triggered = ctx.triggered_id
+
+    idx = current_idx or 0
+
+    if triggered == "viz1-info-next-btn":
+        idx = (idx + 1) % 3
+    elif triggered == "viz1-info-prev-btn":
+        idx = (idx - 1) % 3
+
+    styles = [{"display": "flex" if i == idx else "none"} for i in range(3)]
+    dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]
+
+    return idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
 # ---------------------------------------------------------------------------
 # Viz 3 info carousel — navigate between the 3 insight slides
