@@ -4,7 +4,8 @@ Preprocessing module for the genre evolution line chart.
 This module:
 - converts Steam ownership intervals into numeric averages
 - extracts the release year from the 'Release date' column
-- explodes the comma-separated 'Tags' column so each game×tag pair is a row
+- explodes the comma-separated 'Genres' column (Steam store genres, not user Tags)
+  so each game×genre pair is a row
 - aggregates total estimated owners per (Year, Genre) pair
 - excludes 2026 (incomplete data) and keeps years 1997–2025
 - keeps every genre as its own series; minor genres become individual gray lines
@@ -17,7 +18,7 @@ MAIN_GENRES = ["Action", "Adventure", "Indie", "Massively Multiplayer", "Free To
 
 COL_YEAR = "Release date"
 COL_OWNERS = "Estimated owners"
-COL_TAGS = "Tags"
+COL_GENRES = "Genres"
 
 YEAR_MIN = 1997
 YEAR_MAX = 2025
@@ -49,13 +50,13 @@ def preprocess_data(df):
 
     Steps:
         1. Convert 'Estimated owners' ranges to numeric averages.
-        2. Drop rows with missing year, zero owners, or missing tags.
+        2. Drop rows with missing year, zero owners, or missing genres.
         3. Filter to years YEAR_MIN–YEAR_MAX (excludes 2026).
-        4. Split the comma-separated 'Tags' column and explode to one row per tag.
+        4. Split the comma-separated 'Genres' column and explode to one row per genre.
         5. Group by (Year, Genre) and sum the estimated owners.
 
-    Each game contributes its owner count to every one of its tags, so genres
-    are not mutually exclusive.
+    Each game contributes its owner count to every one of its Steam genres, so
+    genres are not mutually exclusive.
 
     Args:
         df: The raw games DataFrame loaded from games.csv.
@@ -68,14 +69,21 @@ def preprocess_data(df):
     df["Owners_avg"] = df[COL_OWNERS].apply(_parse_owners_range)
     df[COL_YEAR] = pd.to_numeric(df[COL_YEAR], errors="coerce")
 
-    df = df.dropna(subset=[COL_YEAR, "Owners_avg", COL_TAGS])
+    if COL_GENRES not in df.columns:
+        raise ValueError(
+            f"Column '{COL_GENRES}' is missing from the dataset. "
+            "Viz3 expects Steam 'Genres' (not user 'Tags')."
+        )
+
+    df = df.dropna(subset=[COL_YEAR, "Owners_avg", COL_GENRES])
+    df = df[df[COL_GENRES].astype(str).str.strip() != ""]
     df = df[df["Owners_avg"] > 0]
     df[COL_YEAR] = df[COL_YEAR].astype(int)
     df = df[(df[COL_YEAR] >= YEAR_MIN) & (df[COL_YEAR] <= YEAR_MAX)]
 
-    df["Tags_list"] = df[COL_TAGS].astype(str).str.split(",")
-    df_exploded = df.explode("Tags_list")
-    df_exploded["Genre"] = df_exploded["Tags_list"].str.strip()
+    df["Genres_list"] = df[COL_GENRES].astype(str).str.split(",")
+    df_exploded = df.explode("Genres_list")
+    df_exploded["Genre"] = df_exploded["Genres_list"].str.strip()
     df_exploded = df_exploded[df_exploded["Genre"] != ""]
 
     df_agg = (

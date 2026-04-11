@@ -37,11 +37,17 @@ def create_layout(my_df):
     fig.update_layout(dragmode=False)
 
     return html.Div(id="box-viz", className='viz-block', children=[
-        dcc.Graph(className='graph', figure=fig, config=dict(
-            scrollZoom=False,
-            showTips=False,
-            showAxisDragHandles=False,
-            doubleClick=False,
-            displayModeBar=False,
-        ))
+        dcc.Graph(
+            className='graph',
+            figure=fig,
+            config=dict(
+                scrollZoom=False,
+                showTips=False,
+                showAxisDragHandles=False,
+                doubleClick=False,
+                displayModeBar=False,
+                responsive=True,
+            ),
+            style={"width": "100%"},
+        ),
     ])
