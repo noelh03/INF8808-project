@@ -140,17 +140,6 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                                 html.P(kicker, className="section-kicker"),
                                 html.H2(title, className="section-title"),
                             ]),
-                            html.Details(
-                                className="section-info-details",
-                                children=[
-                                    html.Summary("?", className="info-toggle-btn"),
-                                    html.Div(
-                                        info_content if info_content is not None
-                                        else "Les informations complémentaires seront ajoutées ici.",
-                                        className="section-info-panel",
-                                    ),
-                                ],
-                            ),
                         ],
                     ),
                     html.P(description, className="section-description"),
@@ -160,6 +149,14 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                 className="section-body",
                 children=[
                     html.Div(viz_layout, className="viz-card"),
+                    (
+                        html.Div(
+                            info_content,
+                            className="section-inline-info",
+                        )
+                        if info_content is not None
+                        else None
+                    ),
                     html.Div(
                         className="section-side-nav",
                         children=[
@@ -443,8 +440,8 @@ app.layout = html.Div(
 
                                     html.Div(
                                         className="info-carousel-footer",
-                                        children=[
-                                            html.Div(
+                            children=[
+                                html.Div(
                                                 className="info-progress",
                                                 children=[
                                                     html.Span(id="viz1-info-dot-0", className="info-dot active"),
@@ -454,8 +451,7 @@ app.layout = html.Div(
                                             ),
                                             html.Div(
                                                 className="info-nav-buttons",
-                                                children=[
-                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn"),
+                                    children=[
                                                     html.Button("→", id="viz1-info-next-btn", className="info-nav-btn"),
                                                 ],
                                             ),
@@ -473,15 +469,15 @@ app.layout = html.Div(
                             viz2_box_layout, "#scatter", "#line",
                             info_content=html.Div(
                                 className="info-slide",
-                                children=[
+                            children=[
                                     html.H4(
                                         className="info-block-title",
-                                        children=[
+                                    children=[
                                             html.I(className="fa-solid fa-circle-question info-slide-icon"),
                                             html.Span(" Le mode de jeu est-il associé à des différences de performance commerciale ?"),
                                         ],
                                     ),
-                                    html.P(
+                                        html.P(
                                         "Oui, mais de façon asymétrique. La majorité des jeux échouent "
                                         "commercialement peu importe le mode (77 % des Solo, 63 % des Hybrides "
                                         "et 66 % des Multijoueurs n'atteignent qu'environ 10 000 propriétaires). "
@@ -579,7 +575,7 @@ app.layout = html.Div(
                                             html.Span("2 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                            children=[
                                                     html.I(className="fa-solid fa-calendar-days info-slide-icon"),
                                                     html.Span(
                                                         " L’année de sortie influence-t-elle le succès commercial moyen d’un jeu ?",
@@ -613,7 +609,7 @@ app.layout = html.Div(
                                             ]),
                                         ],
                                     ),
-                                    html.Div(
+                                html.Div(
                                         id="viz3-info-slide-2",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -621,12 +617,12 @@ app.layout = html.Div(
                                             html.Span("3 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                                    children=[
                                                     html.I(className="fa-solid fa-chart-line info-slide-icon"),
                                                     html.Span(" Certains genres ont-ils gagné ou perdu en importance au fil du temps ?"),
                                                 ],
                                             ),
-                                            html.P(
+                                        html.P(
                                                 "Massively Multiplayer est le cas le plus flagrant : PUBG l'a propulsé à 332 M en 2017, mais dès 2019 il s'effondre à 27 M (-92 %). Free To Play a aussi décliné : ancré par Dota 2 dès 2013 (298 M), il culmine à 463 M en 2017, puis retombe à 270 M en 2020 malgré le sursaut d'Apex Legends (150 M). À l'inverse, RPG progresse constamment : 249 M en 2021, 383 M en 2024 (+54 % en 3 ans), grâce à Palworld et Black Myth: Wukong. Pour 2025, une baisse par rapport aux années précédentes est attendue : l'année vient de s'achever et les jeux sortis n'ont pas encore eu le temps d'accumuler autant de propriétaires estimés."
                                             ),
                                             html.Div(className="game-logo-strip", children=[
@@ -660,10 +656,10 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                                        children=[
-                                            html.Div(
+                            children=[
+                                html.Div(
                                                 className="info-progress",
-                                                children=[
+                                    children=[
                                                     html.Span(id="viz3-info-dot-0", className="info-dot active"),
                                                     html.Span(id="viz3-info-dot-1", className="info-dot"),
                                                     html.Span(id="viz3-info-dot-2", className="info-dot"),
@@ -683,7 +679,7 @@ app.layout = html.Div(
                         make_section(
                             "bubble", "Section 4",
                             "Titre à finaliser",
-                            "Description à finaliser.",
+                                            "Description à finaliser.",
                             viz4_bubble_layout, "#line", "#dot",
                         ),
                         make_section(
@@ -705,7 +701,7 @@ app.layout = html.Div(
                                             html.Span("1 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                            children=[
                                                     html.I(
                                                         className="fa-solid fa-clock info-slide-icon",
                                                     ),
@@ -725,7 +721,7 @@ app.layout = html.Div(
                                             ),
                                         ],
                                     ),
-                                    html.Div(
+                                html.Div(
                                         id="viz5-info-slide-1",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -733,7 +729,7 @@ app.layout = html.Div(
                                             html.Span("2 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                                    children=[
                                                     html.I(
                                                         className="fa-solid fa-palette info-slide-icon",
                                                     ),
@@ -742,7 +738,7 @@ app.layout = html.Div(
                                                     ),
                                                 ],
                                             ),
-                                            html.P(
+                                        html.P(
                                                 "La couleur représente le volume total d’avis (positifs + négatifs) : "
                                                 "plus la teinte est foncée, plus le jeu a été évalué souvent. Les points "
                                                 "très clairs ont peu d’avis : le ratio de satisfaction y est plus sensible "
@@ -755,10 +751,10 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                                        children=[
-                                            html.Div(
+                            children=[
+                                html.Div(
                                                 className="info-progress",
-                                                children=[
+                                    children=[
                                                     html.Span(
                                                         id="viz5-info-dot-0",
                                                         className="info-dot active",
@@ -816,11 +812,12 @@ def update_line_genres(selected_genres):
     Input(LINE_CHECKLIST_ID, "value"),
     Input(LINE_ALL_ID, "value"),
     Input(LINE_GRAPH_ID, "restyleData"),
+    Input("viz3-info-slide-idx", "data"),
     State(LINE_GRAPH_ID, "figure"),
     State(LINE_CHECKLIST_ID, "value"),
     prevent_initial_call=True,
 )
-def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, current_checklist):
+def sync_line_genre_filters(checklist_value, all_value, restyle_data, info_idx, figure, current_checklist):
     """
     Checklist + « Tous les genres » in one callback to avoid a Dash circular dependency
     (two callbacks that each output the other's input create a cycle at layout validation).
@@ -846,6 +843,17 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, cu
         all_out = ["All"] if set(new_vals or []) >= all_genres_set else []
         return new_vals, all_out
 
+    if triggered == "viz3-info-slide-idx":
+        # Keep line chart state coherent with the active narrative question.
+        presets = {
+            0: [g for g in viz3_line.CHECKLIST_GENRES if g != "Others"],  # Q1: core genres only
+            1: list(viz3_line.CHECKLIST_GENRES),  # Q2: full context
+            2: ["Massively Multiplayer", "Free To Play", "RPG"],  # Q3: focus genres
+        }
+        new_vals = presets.get(info_idx or 0, [g for g in viz3_line.CHECKLIST_GENRES if g != "Others"])
+        all_out = ["All"] if set(new_vals) >= all_genres_set else []
+        return new_vals, all_out
+
     if triggered == LINE_CHECKLIST_ID:
         cl = list(checklist_value or [])
         if set(cl) >= all_genres_set:
@@ -866,19 +874,12 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, cu
     Output("viz1-info-dot-1", "className"),
     Output("viz1-info-dot-2", "className"),
     Input("viz1-info-next-btn", "n_clicks"),
-    Input("viz1-info-prev-btn", "n_clicks"),
     State("viz1-info-slide-idx", "data"),
     prevent_initial_call=True,
 )
-def update_viz1_carousel(next_clicks, prev_clicks, current_idx):
-    triggered = ctx.triggered_id
-
+def update_viz1_carousel(next_clicks, current_idx):
     idx = current_idx or 0
-
-    if triggered == "viz1-info-next-btn":
-        idx = (idx + 1) % 3
-    elif triggered == "viz1-info-prev-btn":
-        idx = (idx - 1) % 3
+    idx = (idx + 1) % 3
 
     styles = [{"display": "flex" if i == idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]

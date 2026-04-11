@@ -54,7 +54,7 @@ def create_layout(df, max_playtime=6000, slider_id="dot-slider", graph_id="dot-g
                         figure=fig,
                         config={"displayModeBar": False, "responsive": True},
                         className="graph",
-                        style={"height": "100%", "minHeight": "480px"},
+                        style={"height": "100%"},
                     ),
                 ],
             ),
