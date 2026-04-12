@@ -145,6 +145,10 @@ def update_layout(fig):
                 color="#2E4057",
             ),
         ),
+        transition=dict(
+            duration=500,
+            easing="cubic-in-out"
+        )
     )
     
     return fig

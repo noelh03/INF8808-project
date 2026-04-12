@@ -21,11 +21,22 @@ BUBBLE_GRAPH_ID = "bubble-graph"
 BUBBLE_Y_SLIDER_ID = "bubble-slider-y"
 BUBBLE_X_SLIDER_ID = "bubble-slider-x"
 
-def create_figure(df, max_visibility=None, sat_range=None):
+def create_figure(df, max_visibility=None, sat_range=None, question_idx=None):
     '''
         Calls the functions to preprocess the data and generate the plot for the bubble plot.
     '''
     processed_df = preprocess_data(df)
+    if question_idx == 0:
+        max_visibility = BUBBLE_SLIDER_MAX
+        sat_range = [0, 1]
+
+    elif question_idx == 1:
+        max_visibility = 3_000_000
+        sat_range = [0.7, 1]
+
+    elif question_idx == 2:
+        max_visibility = 2_000_000
+        sat_range = [0, 1]
     fig = generate_plot(processed_df, max_visibility=max_visibility, sat_range=sat_range)
     return fig
 
