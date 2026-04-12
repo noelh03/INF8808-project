@@ -4,19 +4,13 @@
 
 import plotly.express as px
 
-import viz1_scatter.hover_template
-
-#TODO : add more functions if needed
+from . import hover_template
 
 def generate_plot(my_df):
     '''
         Generates the plot.
-
-        #TODO : add more details about the plot (axes, colors, sizes, etc.)
-
         Args:
             my_df: The dataframe to display
-            #TODO : add more arguments if needed
         Returns:
             The generated figure
     '''
@@ -27,11 +21,29 @@ def generate_plot(my_df):
         color="publisher_type",
         hover_name="name",
         box=True,
-        points="all"
+        points="all",
+        orientation="h",
+        color_discrete_map={
+            "Independent": "#6fb6ff",
+            "Major": "#D98A6C"
+        }
     )
-
+ 
+    fig.update_traces(
+        line=dict(width=1),
+        meanline_visible=True,
+        opacity=0.7,
+        marker=dict(size=4, opacity=0.5),
+        pointpos=0,
+        jitter=0.3,
+    )
+    
+    fig = update_axes_labels(fig)
+    fig = update_layout(fig)
+    fig = update_hover_template(fig)
+ 
     return fig
-
+ 
 def update_axes_labels(fig):
     '''
         Updates the axes labels with their corresponding titles.
@@ -42,15 +54,42 @@ def update_axes_labels(fig):
             The updated figure
     '''
     fig.update_xaxes(
-        title_text="Nombre de jeux publiés (expérience développeur)"
+        title_text="Nombre de jeux publiés (expérience développeur)",
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
     )
-
+ 
     fig.update_yaxes(
-        title_text="Succès commercial (Estimated Owners)"
+        title_text="Succès commercial (Estimated Owners)",
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+        categoryorder="array",
+        categoryarray=[
+            "0 - 20000",
+            "20000 - 50000",
+            "50000 - 100000",
+            "100000 - 200000",
+            "200000 - 500000",
+            "500000 - 1000000",
+            "1000000 - 2000000",
+            "2000000 - 5000000",
+            "5000000 - 10000000",
+            "10000000 - 20000000"
+        ]
     )
-
+ 
     return fig
-
+ 
 
 def update_template(fig):
     '''
@@ -63,12 +102,10 @@ def update_template(fig):
             The updated figure
     '''
     fig.update_layout(
-        template='simple_white',
         dragmode=False
     )
-
     return fig
-
+ 
 def update_legend(fig):
     '''
         Updated the legend title
@@ -79,28 +116,79 @@ def update_legend(fig):
             The updated figure
     '''
     fig.update_layout(
-        legend_title_text="Type d’éditeur"
+        autosize=True,
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+        margin=dict(l=72, r=24, t=80, b=62),
+        legend=dict(
+            orientation="h",
+            x=0,
+            y=1.05,
+            xanchor="left",
+            yanchor="bottom",
+        ),
+        legend_title_text="Type d'éditeur"
     )
-
     return fig
-
+ 
 def update_hover_template(fig):
-    '''
-        Sets the hover template of the figure
-
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
-
-    # DONE : Set the hover template (#TODO : change the hover template if you want to use a different one)
-    template = viz1_scatter.hover_template.get_hover_template()
-    
-    # fig.update_traces(hovertemplate=template)
-
-    # for frame in fig.frames:
-    #     for trace in frame.data:
-    #         trace.hovertemplate = template
-            
+    template = hover_template.get_hover_template()
+    fig.update_traces(hovertemplate=template)
+    for frame in fig.frames:
+        for trace in frame.data:
+            trace.hovertemplate = template
     return fig
+ 
+def update_layout(fig):
+    fig.update_layout(
+        autosize=True,
+        template="plotly_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        margin=dict(l=72, r=24, t=52, b=62),
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+        legend_title_text="Type d'éditeur",
+        violingap=0.05,
+        violinmode="overlay",
+    )
+    return fig
+
+def filter_by_max_games(my_df, max_games):
+    '''
+        Filters the dataframe to only keep rows where nb_games_dev <= max_games.
+        Called by the slider callback before regenerating the figure.
+ 
+        Args:
+            my_df     : preprocessed dataframe
+            max_games : int, maximum value of nb_games_dev to display
+        Returns:
+            Filtered dataframe
+    '''
+    return my_df[my_df['nb_games_dev'] <= max_games]

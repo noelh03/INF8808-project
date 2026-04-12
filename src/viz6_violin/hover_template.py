@@ -9,17 +9,19 @@ def get_hover_template():
         
         Contains labels, followed by their corresponding
         value and units where appropriate, separated by a
-        colon : #TODO: add labels name.
+        colon : Game name, publisher type, number of games published, 
+        commercial success.
 
         The labels' font is bold and the values are normal weight
 
         returns:
             The content of the tooltip
     '''
-    #TODO : Generate tooltip
     tooltip = (
-        "<b>label1 :</b> %{}<br>" +
-        "<b>label2 :</b> %{}<br>" +
+        "<b>%{hovertext}</b><br>"
+        "<b>Type d'éditeur :</b> %{data.name}<br>"
+        "<b>Nb jeux publiés :</b> %{x}<br>"
+        "<b>Succès commercial :</b> %{y}<br>"
         "<extra></extra>"
     )
     return tooltip
