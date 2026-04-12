@@ -37,6 +37,7 @@ from viz5_dot import viz5_dot
 from viz6_violin import viz6_violin
 from viz3_line.preprocess import MAIN_GENRES as VIZ3_MAIN_GENRES
 import sidebar
+from dash import callback_context
 
 SCATTER_SLIDER_ID = "scatter-price-slider"
 SCATTER_GRAPH_ID = "scatter-price-graph"
@@ -199,7 +200,7 @@ sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(
     data,
-    max_price=100,
+    price_range=(0, 100),
     slider_id=SCATTER_SLIDER_ID,
     graph_id=SCATTER_GRAPH_ID,
 )
@@ -452,6 +453,7 @@ app.layout = html.Div(
                                             html.Div(
                                                 className="info-nav-buttons",
                                     children=[
+                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn"),
                                                     html.Button("→", id="viz1-info-next-btn", className="info-nav-btn"),
                                                 ],
                                             ),
@@ -793,9 +795,14 @@ app.layout = html.Div(
 @app.callback(
     Output(SCATTER_GRAPH_ID, "figure"),
     Input(SCATTER_SLIDER_ID, "value"),
+    Input("viz1-info-slide-idx", "data"),
 )
-def update_scatter_price_range(max_price):
-    return viz1_scatter.create_figure(data, max_price=max_price)
+def update_scatter_price_range(max_price, question_idx):
+    return viz1_scatter.create_figure(
+        data,
+        max_price=max_price,
+        question_idx=question_idx or 0,
+    )
 
 
 @app.callback(
@@ -873,18 +880,43 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, info_idx, 
     Output("viz1-info-dot-0", "className"),
     Output("viz1-info-dot-1", "className"),
     Output("viz1-info-dot-2", "className"),
+    Input("viz1-info-prev-btn", "n_clicks"),
     Input("viz1-info-next-btn", "n_clicks"),
     State("viz1-info-slide-idx", "data"),
     prevent_initial_call=True,
 )
-def update_viz1_carousel(next_clicks, current_idx):
+def update_viz1_carousel(prev_clicks, next_clicks, current_idx):
     idx = current_idx or 0
-    idx = (idx + 1) % 3
+
+    ctx = callback_context
+    if not ctx.triggered:
+        return dash.no_update
+
+    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    if button_id == "viz1-info-next-btn":
+        idx = (idx + 1) % 3
+    elif button_id == "viz1-info-prev-btn":
+        idx = (idx - 1) % 3
 
     styles = [{"display": "flex" if i == idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]
 
     return idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
+@app.callback(
+    Output(SCATTER_GRAPH_ID, "figure"),
+    Input(SCATTER_SLIDER_ID, "value"),
+    Input("viz1-info-slide-idx", "data"),
+)
+def update_scatter_price_range(price_range, question_idx):
+    if not price_range or len(price_range) != 2:
+        price_range = [0, 100]
+
+    return viz1_scatter.create_figure(
+        data,
+        price_range=tuple(price_range),
+        question_idx=question_idx or 0,
+    )
 
 # ---------------------------------------------------------------------------
 # Viz 3 info carousel — navigate between the 3 insight slides
@@ -926,17 +958,6 @@ def advance_viz5_info_carousel(n_clicks, current_idx):
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
     return next_idx, styles[0], styles[1], dots[0], dots[1]
-
-
-@app.callback(
-    Output(DOT_GRAPH_ID, "figure"),
-    Input(DOT_SLIDER_ID, "value"),
-)
-def update_dot(max_playtime):
-    return viz5_dot.create_figure(
-        data,
-        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
-    )
 
 
 if __name__ == "__main__":

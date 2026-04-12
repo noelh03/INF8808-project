@@ -18,17 +18,25 @@ from viz1_scatter.plot_generate import generate_plot
 SLIDER_MIN = 0
 SLIDER_MAX = 1000
 SLIDER_STEP = 10
-SLIDER_HEIGHT = 300
 
 
-def create_figure(df, max_price=100):
+def create_figure(df, price_range=(0, 100), question_idx=0):
     processed_df = preprocess_data(df)
-    return generate_plot(processed_df, max_price=max_price)
+    return generate_plot(
+        processed_df,
+        price_range=price_range,
+        question_idx=question_idx,
+    )
 
 
-def create_layout(df, max_price=100, slider_id="scatter-price-slider", graph_id="scatter-price-graph"):
-    fig = create_figure(df, max_price=max_price)
-    slider_marks = {i: str(i) for i in range(0, SLIDER_MAX + 1, 100)}
+def create_layout(
+    df,
+    price_range=(0, 100),
+    slider_id="scatter-price-slider",
+    graph_id="scatter-price-graph",
+    range_label_id="scatter-price-range-label",
+):
+    fig = create_figure(df, price_range=price_range, question_idx=0)
 
     return html.Div(
         className="viz-inner",
@@ -39,25 +47,33 @@ def create_layout(df, max_price=100, slider_id="scatter-price-slider", graph_id=
                     dcc.Graph(
                         id=graph_id,
                         figure=fig,
-                        config={"displayModeBar": False, "responsive": True},
-                        className="graph",
-                        style={"height": "100%"},
+                        config={"displayModeBar": False},
+                        className="graph scatter-graph",
                     ),
                     html.Div(
-                        className="scatter-side-panel",
+                        className="scatter-bottom-filter",
                         children=[
-                            html.Div("Filtrer par prix", className="slider-title"),
-                            dcc.Slider(
+                            html.Div(
+                                [
+                                    html.Span("Filtrer par prix", className="slider-title"),
+                                    html.Span(
+                                        f"{price_range[0]} $ – {price_range[1]} $",
+                                        id=range_label_id,
+                                        className="slider-range-value",
+                                    ),
+                                ],
+                                className="slider-header",
+                            ),
+                            dcc.RangeSlider(
                                 id=slider_id,
                                 min=SLIDER_MIN,
                                 max=SLIDER_MAX,
                                 step=SLIDER_STEP,
-                                value=max_price,
-                                vertical=True,
-                                verticalHeight=SLIDER_HEIGHT,
-                                marks=slider_marks,
+                                value=list(price_range),
+                                allowCross=False,
+                                marks={},
                                 tooltip={
-                                    "placement": "left",
+                                    "placement": "bottom",
                                     "always_visible": True,
                                 },
                             ),
