@@ -803,6 +803,17 @@ def update_scatter_price_range(max_price, question_idx):
         max_price=max_price,
         question_idx=question_idx or 0,
     )
+    
+
+@app.callback(
+    Output(DOT_GRAPH_ID, "figure"),
+    Input(DOT_SLIDER_ID, "value"),
+)
+def update_dot(max_playtime):
+    return viz5_dot.create_figure(
+        data,
+        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
+    )
 
 
 @app.callback(
