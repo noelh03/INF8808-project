@@ -46,7 +46,7 @@ LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 LINE_ALL_ID = viz3_line.LINE_ALL_ID
 
 BUBBLE_GRAPH_ID = "bubble-graph"
-BUBBLE_Y_SLIDER_ID = "bubble-slider"
+BUBBLE_Y_SLIDER_ID = "bubble-slider-y"
 BUBBLE_X_SLIDER_ID = "bubble-slider-x"
 
 DOT_GRAPH_ID = "dot-graph"
@@ -811,8 +811,12 @@ def update_scatter_price_range(max_price):
     Input(BUBBLE_Y_SLIDER_ID, "value"),
     Input(BUBBLE_X_SLIDER_ID, "value"),
 )
-def update_bubble_visibility(max_visibility, max_satisfaction):
-    return viz4_bubble.create_figure(data, max_visibility=max_visibility, max_satisfaction=max_satisfaction)
+def update_bubble(max_visibility, sat_range):
+    return viz4_bubble.create_figure(
+        data,
+        max_visibility=max_visibility,
+        sat_range=sat_range
+    )
 
 
 @app.callback(
