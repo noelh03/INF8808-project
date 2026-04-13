@@ -37,6 +37,7 @@ from viz5_dot import viz5_dot
 from viz6_violin import viz6_violin
 from viz3_line.preprocess import MAIN_GENRES as VIZ3_MAIN_GENRES
 import sidebar
+from dash import callback_context
 
 SCATTER_SLIDER_ID = "scatter-price-slider"
 SCATTER_GRAPH_ID = "scatter-price-graph"
@@ -140,17 +141,6 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                                 html.P(kicker, className="section-kicker"),
                                 html.H2(title, className="section-title"),
                             ]),
-                            html.Details(
-                                className="section-info-details",
-                                children=[
-                                    html.Summary("?", className="info-toggle-btn"),
-                                    html.Div(
-                                        info_content if info_content is not None
-                                        else "Les informations complémentaires seront ajoutées ici.",
-                                        className="section-info-panel",
-                                    ),
-                                ],
-                            ),
                         ],
                     ),
                     html.P(description, className="section-description"),
@@ -160,6 +150,14 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                 className="section-body",
                 children=[
                     html.Div(viz_layout, className="viz-card"),
+                    (
+                        html.Div(
+                            info_content,
+                            className="section-inline-info",
+                        )
+                        if info_content is not None
+                        else None
+                    ),
                     html.Div(
                         className="section-side-nav",
                         children=[
@@ -202,7 +200,7 @@ sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(
     data,
-    max_price=100,
+    price_range=(0, 100),
     slider_id=SCATTER_SLIDER_ID,
     graph_id=SCATTER_GRAPH_ID,
 )
@@ -266,12 +264,255 @@ app.layout = html.Div(
                             "Comparer la performance commerciale estimée des jeux gratuits et payants, "
                             "et observer comment la distribution évolue selon l'intervalle de prix sélectionné.",
                             viz1_scatter_layout, "#hero", "#box",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz1-info-slide-idx", data=0),
+
+                                    html.Div(
+                                        id="viz1-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-tag info-slide-icon"),
+                                                    html.Span(" Le prix de vente influence-t-il le succès commercial des jeux sur Steam ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "À partir de cette visualisation, on observe que la relation entre le prix et le succès commercial est très faible." 
+                                                " Des jeux peu performants apparaissent à presque tous les niveaux de prix, tandis que certains jeux atteignent un succès élevé autant parmi les titres peu chers que parmi les titres plus coûteux."
+                                                " Le prix seul ne semble donc pas être un facteur déterminant du succès commercial."
+                                            ),
+                                            html.P(
+                                                "Dans les données observées entre 0 $ et 100 $, certains jeux payants très accessibles, comme Left 4 Dead 2 (1,99 $), Stardew Valley (8,99 $) ou Among Us (2,99 $), atteignent des niveaux de succès très élevés, ce qui montre qu’un faible prix n’empêche pas une large adoption."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/550/Left_4_Dead_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/left4dead2.png", className="game-logo-img"),
+                                                            html.Span("Left 4 Dead 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew Valley", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/945360/Among_Us/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/amongus.png", className="game-logo-img"),
+                                                            html.Span("Among Us", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz1-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-gamepad info-slide-icon"),
+                                                    html.Span(" Les jeux gratuits présentent-ils une dynamique de succès différente des jeux payants ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Non. À partir de cette visualisation, on observe que les jeux gratuits sont regroupés à prix nul, et que certains d’entre eux atteignent des niveaux de succès commercial très élevés."
+                                                " Cependant, des jeux payants atteignent également des niveaux similaires, ce qui indique qu’il n’existe pas de différence systématique de succès entre jeux gratuits et payants. "
+                                                "Les données suggèrent donc que la gratuité peut favoriser un fort succès, sans pour autant garantir une performance supérieure aux jeux payants."
+                                            ),
+                                            html.P(
+                                                "Des jeux gratuits comme Dota 2, Counter-Strike 2 et PUBG: BATTLEGROUNDS figurent parmi "
+                                                "les titres les plus élevés du graphique, avec des niveaux de propriétaires estimés extrêmement importants."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                            html.Span("PUBG", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz1-info-slide-2",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("3 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-chart-column info-slide-icon"),
+                                                    html.Span(" Le succès commercial est-il fortement concentré sur une minorité de jeux ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Oui, de manière très marquée. "
+                                                "La grande majorité des jeux se concentre dans la partie basse du graphique, tandis qu’un nombre très limité de titres atteint des niveaux de succès exceptionnellement élevés. "
+                                                "La distribution du succès commercial apparaît donc fortement inégale."
+                                            ),
+                                            html.P(
+                                                "Les données montrent qu'environ 91 % des jeux se situent à 100 000 propriétaires estimés ou moins, "
+                                                "et près de 99 % restent sous 1 million. À l’inverse, seuls quelques titres dominent réellement le marché."
+                                                ", illustrant une forte concentration du succès sur une minorité de titres."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/1172470/Apex_Legends/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/apex.png", className="game-logo-img"),
+                                                            html.Span("Apex Legends", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        className="info-carousel-footer",
+                            children=[
+                                html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(id="viz1-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz1-info-dot-1", className="info-dot"),
+                                                    html.Span(id="viz1-info-dot-2", className="info-dot"),
+                                                ],
+                                            ),
+                                            html.Div(
+                                                className="info-nav-buttons",
+                                    children=[
+                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn"),
+                                                    html.Button("→", id="viz1-info-next-btn", className="info-nav-btn"),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                         make_section(
                             "box", "Section 2",
-                            "Titre à finaliser",
-                            "Description à finaliser.",
+                            "Mode de jeu et succès commercial",
+                            "Explorer si les jeux solo, hybrides ou exclusivement multijoueur "
+                            "se distinguent par leur performance commerciale estimée, "
+                            "et observer comment chaque catégorie se répartit sur l'échelle des propriétaires.",
                             viz2_box_layout, "#scatter", "#line",
+                            info_content=html.Div(
+                                className="info-slide",
+                            children=[
+                                    html.H4(
+                                        className="info-block-title",
+                                    children=[
+                                            html.I(className="fa-solid fa-circle-question info-slide-icon"),
+                                            html.Span(" Le mode de jeu est-il associé à des différences de performance commerciale ?"),
+                                        ],
+                                    ),
+                                        html.P(
+                                        "Oui, mais de façon asymétrique. La majorité des jeux échouent "
+                                        "commercialement peu importe le mode (77 % des Solo, 63 % des Hybrides "
+                                        "et 66 % des Multijoueurs n'atteignent qu'environ 10 000 propriétaires). "
+                                        "Cependant, les jeux Multijoueurs et Hybrides ont une queue droite bien "
+                                        "plus longue : 13 % d'entre eux atteignent 350 000 propriétaires ou plus, "
+                                        "contre seulement 3,7 % des jeux Solo. La moyenne des Multijoueurs "
+                                        "(578 000) est 10x supérieure à celle des Solo (54 000). "
+                                        "Les mégahits absolus comme CS2, Dota 2, PUBG et Apex Legends (100 M+) "
+                                        "sont presque exclusivement multijoueurs ou hybrides."
+                                    ),
+                                    html.Div(className="game-logo-strip", children=[
+                                        html.A(href="https://store.steampowered.com/app/730/CounterStrike_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                            html.Span("CS2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/570/Dota_2/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--up", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                            html.Span("Dota 2", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/1623730/Palworld/", target="_blank", className="game-logo-chip", children=[
+                                            html.Img(src="/assets/logos/palworld.png", className="game-logo-img"),
+                                            html.Span("Palworld", className="game-logo-label"),
+                                        ]),
+                                        html.A(href="https://store.steampowered.com/app/2358720/Black_Myth_Wukong/", target="_blank", className="game-logo-chip game-logo-chip--trend game-logo-chip--down", children=[
+                                            html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                            html.Img(src="/assets/logos/blackmyth.png", className="game-logo-img"),
+                                            html.Span("Black Myth", className="game-logo-label"),
+                                        ]),
+                                    ]),
+                                ],
+                            ),
                         ),
                         make_section(
                             "line", "Section 3",
@@ -336,7 +577,7 @@ app.layout = html.Div(
                                             html.Span("2 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                            children=[
                                                     html.I(className="fa-solid fa-calendar-days info-slide-icon"),
                                                     html.Span(
                                                         " L’année de sortie influence-t-elle le succès commercial moyen d’un jeu ?",
@@ -370,7 +611,7 @@ app.layout = html.Div(
                                             ]),
                                         ],
                                     ),
-                                    html.Div(
+                                html.Div(
                                         id="viz3-info-slide-2",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -378,12 +619,12 @@ app.layout = html.Div(
                                             html.Span("3 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                                    children=[
                                                     html.I(className="fa-solid fa-chart-line info-slide-icon"),
                                                     html.Span(" Certains genres ont-ils gagné ou perdu en importance au fil du temps ?"),
                                                 ],
                                             ),
-                                            html.P(
+                                        html.P(
                                                 "Massively Multiplayer est le cas le plus flagrant : PUBG l'a propulsé à 332 M en 2017, mais dès 2019 il s'effondre à 27 M (-92 %). Free To Play a aussi décliné : ancré par Dota 2 dès 2013 (298 M), il culmine à 463 M en 2017, puis retombe à 270 M en 2020 malgré le sursaut d'Apex Legends (150 M). À l'inverse, RPG progresse constamment : 249 M en 2021, 383 M en 2024 (+54 % en 3 ans), grâce à Palworld et Black Myth: Wukong. Pour 2025, une baisse par rapport aux années précédentes est attendue : l'année vient de s'achever et les jeux sortis n'ont pas encore eu le temps d'accumuler autant de propriétaires estimés."
                                             ),
                                             html.Div(className="game-logo-strip", children=[
@@ -417,10 +658,10 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                                        children=[
-                                            html.Div(
+                            children=[
+                                html.Div(
                                                 className="info-progress",
-                                                children=[
+                                    children=[
                                                     html.Span(id="viz3-info-dot-0", className="info-dot active"),
                                                     html.Span(id="viz3-info-dot-1", className="info-dot"),
                                                     html.Span(id="viz3-info-dot-2", className="info-dot"),
@@ -440,7 +681,7 @@ app.layout = html.Div(
                         make_section(
                             "bubble", "Section 4",
                             "Titre à finaliser",
-                            "Description à finaliser.",
+                                            "Description à finaliser.",
                             viz4_bubble_layout, "#line", "#dot",
                         ),
                         make_section(
@@ -462,7 +703,7 @@ app.layout = html.Div(
                                             html.Span("1 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                            children=[
                                                     html.I(
                                                         className="fa-solid fa-clock info-slide-icon",
                                                     ),
@@ -484,7 +725,7 @@ app.layout = html.Div(
                                             ),
                                         ],
                                     ),
-                                    html.Div(
+                                html.Div(
                                         id="viz5-info-slide-1",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -492,7 +733,7 @@ app.layout = html.Div(
                                             html.Span("2 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                                                children=[
+                                    children=[
                                                     html.I(
                                                         className="fa-solid fa-palette info-slide-icon",
                                                     ),
@@ -501,7 +742,7 @@ app.layout = html.Div(
                                                     ),
                                                 ],
                                             ),
-                                            html.P(
+                                        html.P(
                                                 "La couleur représente le volume total d’avis (positifs + négatifs) : "
                                                 "plus la teinte est foncée, plus le jeu a été évalué souvent. Les points "
                                                 "très clairs ont peu d’avis : le ratio de satisfaction y est plus sensible "
@@ -514,10 +755,10 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                                        children=[
-                                            html.Div(
+                            children=[
+                                html.Div(
                                                 className="info-progress",
-                                                children=[
+                                    children=[
                                                     html.Span(
                                                         id="viz5-info-dot-0",
                                                         className="info-dot active",
@@ -542,7 +783,7 @@ app.layout = html.Div(
                         make_section(
                             "violin", "Section 6",
                             "Titre à finaliser",
-                            "Description à finaliser.",
+                                            "Description à finaliser.",
                             viz6_violin_layout, "#dot", "#hero",
                         ),
                     ],
@@ -556,9 +797,25 @@ app.layout = html.Div(
 @app.callback(
     Output(SCATTER_GRAPH_ID, "figure"),
     Input(SCATTER_SLIDER_ID, "value"),
+    Input("viz1-info-slide-idx", "data"),
 )
-def update_scatter_price_range(max_price):
-    return viz1_scatter.create_figure(data, max_price=max_price)
+def update_scatter_price_range(max_price, question_idx):
+    return viz1_scatter.create_figure(
+        data,
+        max_price=max_price,
+        question_idx=question_idx or 0,
+    )
+    
+
+@app.callback(
+    Output(DOT_GRAPH_ID, "figure"),
+    Input(DOT_SLIDER_ID, "value"),
+)
+def update_dot(max_playtime):
+    return viz5_dot.create_figure(
+        data,
+        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
+    )
 
 
 @app.callback(
@@ -575,11 +832,12 @@ def update_line_genres(selected_genres):
     Input(LINE_CHECKLIST_ID, "value"),
     Input(LINE_ALL_ID, "value"),
     Input(LINE_GRAPH_ID, "restyleData"),
+    Input("viz3-info-slide-idx", "data"),
     State(LINE_GRAPH_ID, "figure"),
     State(LINE_CHECKLIST_ID, "value"),
     prevent_initial_call=True,
 )
-def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, current_checklist):
+def sync_line_genre_filters(checklist_value, all_value, restyle_data, info_idx, figure, current_checklist):
     """
     Checklist + « Tous les genres » in one callback to avoid a Dash circular dependency
     (two callbacks that each output the other's input create a cycle at layout validation).
@@ -605,6 +863,17 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, cu
         all_out = ["All"] if set(new_vals or []) >= all_genres_set else []
         return new_vals, all_out
 
+    if triggered == "viz3-info-slide-idx":
+        # Keep line chart state coherent with the active narrative question.
+        presets = {
+            0: [g for g in viz3_line.CHECKLIST_GENRES if g != "Others"],  # Q1: core genres only
+            1: list(viz3_line.CHECKLIST_GENRES),  # Q2: full context
+            2: ["Massively Multiplayer", "Free To Play", "RPG"],  # Q3: focus genres
+        }
+        new_vals = presets.get(info_idx or 0, [g for g in viz3_line.CHECKLIST_GENRES if g != "Others"])
+        all_out = ["All"] if set(new_vals) >= all_genres_set else []
+        return new_vals, all_out
+
     if triggered == LINE_CHECKLIST_ID:
         cl = list(checklist_value or [])
         if set(cl) >= all_genres_set:
@@ -613,6 +882,54 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, figure, cu
 
     raise PreventUpdate
 
+# ---------------------------------------------------------------------------
+# Viz 1 info carousel — navigate between the 3 insight slides
+# ---------------------------------------------------------------------------
+@app.callback(
+    Output("viz1-info-slide-idx", "data"),
+    Output("viz1-info-slide-0", "style"),
+    Output("viz1-info-slide-1", "style"),
+    Output("viz1-info-slide-2", "style"),
+    Output("viz1-info-dot-0", "className"),
+    Output("viz1-info-dot-1", "className"),
+    Output("viz1-info-dot-2", "className"),
+    Input("viz1-info-prev-btn", "n_clicks"),
+    Input("viz1-info-next-btn", "n_clicks"),
+    State("viz1-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def update_viz1_carousel(prev_clicks, next_clicks, current_idx):
+    idx = current_idx or 0
+
+    ctx = callback_context
+    if not ctx.triggered:
+        return dash.no_update
+
+    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    if button_id == "viz1-info-next-btn":
+        idx = (idx + 1) % 3
+    elif button_id == "viz1-info-prev-btn":
+        idx = (idx - 1) % 3
+
+    styles = [{"display": "flex" if i == idx else "none"} for i in range(3)]
+    dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]
+
+    return idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
+@app.callback(
+    Output(SCATTER_GRAPH_ID, "figure"),
+    Input(SCATTER_SLIDER_ID, "value"),
+    Input("viz1-info-slide-idx", "data"),
+)
+def update_scatter_price_range(price_range, question_idx):
+    if not price_range or len(price_range) != 2:
+        price_range = [0, 100]
+
+    return viz1_scatter.create_figure(
+        data,
+        price_range=tuple(price_range),
+        question_idx=question_idx or 0,
+    )
 
 # ---------------------------------------------------------------------------
 # Viz 3 info carousel — navigate between the 3 insight slides
@@ -654,17 +971,6 @@ def advance_viz5_info_carousel(n_clicks, current_idx):
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
     return next_idx, styles[0], styles[1], dots[0], dots[1]
-
-
-@app.callback(
-    Output(DOT_GRAPH_ID, "figure"),
-    Input(DOT_SLIDER_ID, "value"),
-)
-def update_dot(max_playtime):
-    return viz5_dot.create_figure(
-        data,
-        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
-    )
 
 
 if __name__ == "__main__":

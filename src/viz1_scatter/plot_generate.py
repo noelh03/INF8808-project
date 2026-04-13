@@ -1,15 +1,3 @@
-"""
-Visualization generation module for the price vs commercial success scatter plot.
-
-This module:
-- filters the dataset according to the selected price range
-- creates the Plotly scatter figure
-- applies visual styling and layout customization
-- integrates logarithmic scaling to better represent skewed ownership data
-
-It focuses exclusively on figure construction logic.
-"""
-
 import plotly.express as px
 from .hover_template import get_hover_template
 
@@ -20,65 +8,163 @@ COL_TYPE = "Type de jeu"
 COL_NAME = "Name"
 
 
-def generate_plot(df, max_price=100):
+def generate_plot(df, price_range=(0, 100), question_idx=0):
     required_columns = [COL_PRICE, COL_OWNERS, COL_TYPE, COL_NAME]
     missing = [col for col in required_columns if col not in df.columns]
     if missing:
         raise ValueError(f"Colonnes manquantes dans le DataFrame : {missing}")
 
-    filtered_df = df[df[COL_PRICE] <= max_price].copy()
+    min_price, max_price = price_range
+    filtered_df = df[
+        (df[COL_PRICE] >= min_price) & (df[COL_PRICE] <= max_price)
+    ].copy()
 
-    if max_price <= 120:
+    visible_max = max_price if max_price > 0 else 1
+
+    if visible_max <= 120:
         x_dtick = 20
-    elif max_price <= 300:
+    elif visible_max <= 300:
         x_dtick = 50
     else:
         x_dtick = 100
 
-    padding = max_price * 0.03 if max_price > 0 else 1
+    padding = visible_max * 0.03 if visible_max > 0 else 1
 
-    fig = px.scatter(
-        filtered_df,
-        x=COL_PRICE,
-        y=COL_OWNERS,
-        color=COL_TYPE,
-        hover_name=COL_NAME,
-        log_y=True,
-        opacity=0.62,
-        custom_data=[COL_TYPE],
-        color_discrete_map={
-            "Payant": "#6678E8",
-            "Gratuit": "#D98A6C",
-        },
-    )
+    # ==========================================================
+    # QUESTION 1 : Vue générale prix / succès
+    # Une seule couleur, sans légende
+    # ==========================================================
+    if question_idx == 0:
+        fig = px.scatter(
+            filtered_df,
+            x=COL_PRICE,
+            y=COL_OWNERS,
+            hover_name=COL_NAME,
+            log_y=True,
+            opacity=0.72,
+            custom_data=[COL_TYPE],
+            color_discrete_sequence=["#6678E8"],
+        )
 
-    fig.update_traces(
-        marker=dict(
-            size=5,
-            line=dict(width=0),
-        ),
-        hovertemplate=get_hover_template(),
-    )
+        fig.update_traces(
+            marker=dict(size=5, line=dict(width=0)),
+            hovertemplate=get_hover_template(),
+        )
 
+        fig.update_layout(showlegend=False)
+
+    # ==========================================================
+    # QUESTION 2 : Gratuit vs Payant
+    # ==========================================================
+    elif question_idx == 1:
+        fig = px.scatter(
+            filtered_df,
+            x=COL_PRICE,
+            y=COL_OWNERS,
+            color=COL_TYPE,
+            hover_name=COL_NAME,
+            log_y=True,
+            opacity=0.72,
+            custom_data=[COL_TYPE],
+            color_discrete_map={
+                "Payant": "#6678E8",
+                "Gratuit": "#D98A6C",
+            },
+        )
+
+        fig.update_traces(
+            marker=dict(size=5, line=dict(width=0)),
+            hovertemplate=get_hover_template(),
+        )
+
+    # ==========================================================
+    # QUESTION 3 : Concentration du succès
+    # ==========================================================
+    elif question_idx == 2:
+        plot_df = filtered_df.copy()
+
+        plot_df["Catégorie succès"] = plot_df[COL_OWNERS].apply(
+            lambda x: "Top succès" if x >= 1_000_000 else "Autres jeux"
+        )
+
+        fig = px.scatter(
+            plot_df,
+            x=COL_PRICE,
+            y=COL_OWNERS,
+            color="Catégorie succès",
+            hover_name=COL_NAME,
+            log_y=True,
+            opacity=0.72,
+            custom_data=[COL_TYPE],
+            color_discrete_map={
+                "Autres jeux": "#C7D2E3",
+                "Top succès": "#6678E8",
+            },
+        )
+
+        fig.update_traces(
+            marker=dict(size=5, line=dict(width=0)),
+            hovertemplate=get_hover_template(),
+        )
+
+        fig.add_hline(
+            y=1_000_000,
+            line_width=2,
+            line_dash="dot",
+            line_color="#D64545",
+            annotation_text="Zone des plus gros succès",
+            annotation_position="top left",
+        )
+
+    # ==========================================================
+    # FALLBACK
+    # ==========================================================
+    else:
+        fig = px.scatter(
+            filtered_df,
+            x=COL_PRICE,
+            y=COL_OWNERS,
+            color=COL_TYPE,
+            hover_name=COL_NAME,
+            log_y=True,
+            opacity=0.72,
+            custom_data=[COL_TYPE],
+            color_discrete_map={
+                "Payant": "#6678E8",
+                "Gratuit": "#D98A6C",
+            },
+        )
+
+        fig.update_traces(
+            marker=dict(size=5, line=dict(width=0)),
+            hovertemplate=get_hover_template(),
+        )
+
+    # ==========================================================
+    # STYLE COMMUN
+    # ==========================================================
     fig.update_layout(
         autosize=True,
+        uirevision="viz1-scatter",
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#F5F7FB",
-        margin=dict(l=72, r=130, t=28, b=62),
+        margin=dict(l=58, r=12, t=20, b=52),
         font=dict(
             family="Inter, Arial, sans-serif",
             size=13,
             color="#2E4057",
         ),
         legend=dict(
-            title_text="Type de jeu",
+            title_text="Type de jeu" if question_idx != 2 else "Concentration du succès",
             orientation="v",
-            y=1,
-            x=1.02,
-            xanchor="left",
+            y=0.98,
+            x=0.98,
+            xanchor="right",
             yanchor="top",
-            bgcolor="rgba(0,0,0,0)",
+            bgcolor="rgba(255,255,255,0.78)",
+            bordercolor="#D9E2F2",
+            borderwidth=1,
             font=dict(size=12, color="#2E4057"),
             title_font=dict(size=13, color="#2E4057"),
         ),
@@ -95,7 +181,7 @@ def generate_plot(df, max_price=100):
 
     fig.update_xaxes(
         title_text="Prix ($)",
-        range=[-padding, max_price + padding],
+        range=[min_price - padding, max_price + padding],
         tickmode="linear",
         dtick=x_dtick,
         showgrid=True,
