@@ -89,6 +89,138 @@ def _add_beeswarm_x(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def update_axes(fig, max_playtime=6000, data_max_playtime=None):
+    '''
+        Updates the axes labels with their corresponding titles and styling.
+
+        Args:
+            fig: The figure to be updated
+            max_playtime: The maximum playtime to display (used for filtering the data)
+            data_max_playtime: Max playtime among filtered points (tighter Y when data sit low).
+        Returns:
+            The updated figure
+    '''
+    fig.update_xaxes(
+        title_text="Satisfaction (arrondie)",
+        range=[-0.07, 1.07],
+        tickmode="linear",
+        dtick=0.1,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
+    n_ticks = 6
+    if max_playtime == 0:
+        y_dtick = 1
+        padding = 1
+        y_top = 1
+    else:
+        padding = max_playtime * 0.03
+        full_top = max_playtime + padding
+        # Évite un axe 0–6000 vide quand les points restent bas (slider max élevé).
+        if (
+            data_max_playtime is not None
+            and data_max_playtime > 0
+            and data_max_playtime < max_playtime * 0.42
+        ):
+            y_top = min(
+                full_top,
+                max(data_max_playtime * 1.18, max_playtime * 0.07, 220.0) + padding * 0.6,
+            )
+        else:
+            y_top = full_top
+
+        y_span = max(y_top + padding, 1.0)
+        raw_dtick = y_span / n_ticks
+        magnitude = 10 ** math.floor(math.log10(max(raw_dtick, 1e-9)))
+        y_dtick = max(1, round(raw_dtick / magnitude) * magnitude)
+
+    fig.update_yaxes(
+        title_text="Temps de jeu moyen (heures)",
+        range=[-padding, y_top],
+        tickmode="linear",
+        dtick=y_dtick,
+        showgrid=True,
+        gridcolor="#DCE6F2",
+        gridwidth=1,
+        zeroline=False,
+        showline=False,
+        title_font=dict(size=16, color="#2E4057"),
+        tickfont=dict(size=12, color="#506784"),
+    )
+
+    return fig
+
+
+def update_layout(fig):
+    '''
+        Updates the layout of the figure.
+
+        Args:
+            fig: The figure to update
+        Returns:
+            The updated figure
+    '''
+    fig.update_layout(
+        autosize=True,
+        template="plotly_white",
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#F5F7FB",
+        margin=dict(l=56, r=8, t=12, b=78),
+        font=dict(
+            family="Inter, Arial, sans-serif",
+            size=13,
+            color="#2E4057",
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="#D9E2F2",
+            font=dict(
+                family="Inter, Arial, sans-serif",
+                size=12,
+                color="#2E4057",
+            ),
+        ),
+        coloraxis_colorbar=dict(
+            orientation="h",
+            title=dict(text="Nombre d'avis", side="top", font=dict(size=11)),
+            x=0.5,
+            xanchor="center",
+            y=-0.24,
+            yanchor="top",
+            len=0.72,
+            thickness=14,
+            nticks=6,
+            tickformat="~s",
+            tickangle=0,
+            outlinewidth=0,
+        ),
+    )
+
+    return fig
+
+
+def update_hover_template(fig):
+    '''
+        Sets the hover template of the figure
+
+        Args:
+            fig: The figure to update
+        Returns:
+            The updated figure
+    '''
+
+    template = get_hover_template()
+    fig.update_traces(hovertemplate=template)
+
+    return fig
+
+
 def generate_plot(df, max_playtime=6000):
     '''
         Generates the plot.
@@ -123,123 +255,9 @@ def generate_plot(df, max_playtime=6000):
         ),
     )
 
-    fig = update_axes(fig, max_playtime=max_playtime)
+    y_hi = float(filtered_df[COL_PLAYTIME].max()) if len(filtered_df) else None
+    fig = update_axes(fig, max_playtime, y_hi)
     fig = update_layout(fig)
     fig = update_hover_template(fig)
-
-    return fig
-
-
-def update_axes(fig, max_playtime=6000):
-    '''
-        Updates the axes labels with their corresponding titles and styling.
-
-        Args:
-            fig: The figure to be updated
-            max_playtime: The maximum playtime to display (used for filtering the data)
-        Returns:
-            The updated figure
-    '''
-    fig.update_xaxes(
-        title_text="Satisfaction (arrondie)",
-        range=[-0.07, 1.07],
-        tickmode="linear",
-        dtick=0.1,
-        showgrid=True,
-        gridcolor="#DCE6F2",
-        gridwidth=1,
-        zeroline=False,
-        showline=False,
-        title_font=dict(size=16, color="#2E4057"),
-        tickfont=dict(size=12, color="#506784"),
-    )
-
-    n_ticks = 6
-    if max_playtime == 0:
-        y_dtick = 1
-        padding = 1
-    else:
-        raw_dtick = max_playtime / n_ticks
-        padding = max_playtime * 0.03
-
-        magnitude = 10 ** math.floor(math.log10(raw_dtick))
-        y_dtick = round(raw_dtick / magnitude) * magnitude
-
-    fig.update_yaxes(
-        title_text="Temps de jeu moyen (heures)",
-        range=[-padding, max_playtime + padding],
-        tickmode="linear",
-        dtick=y_dtick,
-        showgrid=True,
-        gridcolor="#DCE6F2",
-        gridwidth=1,
-        zeroline=False,
-        showline=False,
-        title_font=dict(size=16, color="#2E4057"),
-        tickfont=dict(size=12, color="#506784"),
-    )
-
-    return fig
-
-
-def update_layout(fig):
-    '''
-        Updates the layout of the figure.
-
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
-    fig.update_layout(
-        autosize=True,
-        template="plotly_white",
-        paper_bgcolor="#FFFFFF",
-        plot_bgcolor="#F5F7FB",
-        margin=dict(l=72, r=24, t=52, b=62),
-        font=dict(
-            family="Inter, Arial, sans-serif",
-            size=13,
-            color="#2E4057",
-        ),
-        hoverlabel=dict(
-            bgcolor="white",
-            bordercolor="#D9E2F2",
-            font=dict(
-                family="Inter, Arial, sans-serif",
-                size=12,
-                color="#2E4057",
-            ),
-        ),
-        coloraxis_colorbar=dict(
-            orientation="h",
-            title=dict(text="Nombre d'avis", side="right", font=dict(size=12)),
-            x=0,
-            y=1.06,
-            xanchor="left",
-            yanchor="bottom",
-            len=0.42,
-            thickness=12,
-            nticks=6,
-            tickformat="~s",
-            outlinewidth=0,
-        ),
-    )
-
-    return fig
-
-
-def update_hover_template(fig):
-    '''
-        Sets the hover template of the figure
-
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
-
-    template = get_hover_template()
-    fig.update_traces(hovertemplate=template)
 
     return fig
