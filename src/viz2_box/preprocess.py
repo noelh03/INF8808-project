@@ -62,7 +62,7 @@ def _sample_owners_range_log(low, high, rng):
     low = int(low)
     high = int(high)
     if low == 0:
-        low = high // 3
+        low = high // 10
     low = max(1, low)
     if low >= high:
         return float(low)

@@ -351,7 +351,7 @@ html.story-fade .story-section .section-inline-info {
 
 .story-section {
     width: min(1220px, 88vw);
-    height: 100dvh;
+    min-height: 100dvh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -408,7 +408,7 @@ html.story-fade .story-section .section-inline-info {
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
     flex: 1;
     min-height: 0;
-    overflow: hidden;
+    overflow: clip;
 }
 
 .viz-inner {
