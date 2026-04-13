@@ -20,6 +20,7 @@ def create_figure(my_df):
     '''
     my_df = viz6_violin.preprocess.step1(my_df)
     my_df = viz6_violin.preprocess.step2(my_df)
+    my_df = viz6_violin.plot_generate.filter_by_max_games(my_df, VIOLIN_SLIDER_MAX)
     
     fig = viz6_violin.plot_generate.generate_plot(my_df)
     fig = viz6_violin.plot_generate.update_template(fig)
@@ -29,10 +30,14 @@ def create_figure(my_df):
     
     return fig
 
-def create_layout(my_df, max_games=VIOLIN_SLIDER_MAX, slider_id="violin-slider", graph_id="violin-graph"):    
+def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
+    preprocessed = viz6_violin.preprocess.step1(my_df.copy())
+    real_max = int(preprocessed['nb_games_dev'].max())
+    
+    global VIOLIN_SLIDER_MAX
+    VIOLIN_SLIDER_MAX = real_max   
     fig = create_figure(my_df)
     
-    fig.update_layout(height=600, width=1000)
     fig.update_layout(dragmode=False)
 
     slider_marks = {i: str(i) for i in range(VIOLIN_SLIDER_MIN, VIOLIN_SLIDER_MAX + 1, 5)}
@@ -63,9 +68,9 @@ def create_layout(my_df, max_games=VIOLIN_SLIDER_MAX, slider_id="violin-slider",
                 dcc.Slider(
                     id=slider_id,
                     min=VIOLIN_SLIDER_MIN,
-                    max=VIOLIN_SLIDER_MAX,
+                    max=real_max,
                     step=VIOLIN_SLIDER_STEP,
-                    value=VIOLIN_SLIDER_MAX,
+                    value=real_max,
                     vertical=True,
                     verticalHeight=VIOLIN_SLIDER_HEIGHT,
                     marks=slider_marks,
