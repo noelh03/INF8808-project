@@ -7,6 +7,9 @@
 html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
+    /* Titres / ancres lisibles sous la barre d’URL ou en fin de snap */
+    scroll-padding-top: 1.25rem;
+    scroll-padding-bottom: 1.5rem;
 }
 
 body {
@@ -168,6 +171,29 @@ body {
 .hero-button:focus-visible {
     outline: 3px solid rgba(99, 102, 241, 0.45);
     outline-offset: 3px;
+}
+
+/* Grand écran : navigation scrollytelling toujours visible (pas de clic hamburger). */
+@media (min-width: 1024px) {
+    .toggle-btn {
+        display: none;
+    }
+
+    .overlay {
+        display: none !important;
+        pointer-events: none;
+    }
+
+    .sidebar {
+        transform: translateX(0);
+        box-shadow: 6px 0 28px rgba(2, 6, 23, 0.14);
+    }
+
+    #content.content {
+        margin-left: 320px;
+        width: auto;
+        max-width: none;
+    }
 }
 
 /* ===== HERO ===== */
@@ -335,11 +361,13 @@ body {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* Intro (question + description) en haut de l’écran après snap, pas au milieu. */
+    justify-content: flex-start;
     gap: 14px;
-    padding: 44px 0;
+    padding: max(48px, 5dvh) 0 36px;
     box-sizing: border-box;
     scroll-snap-align: start;
+    scroll-margin-top: 0.75rem;
 }
 
 .section-intro {

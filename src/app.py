@@ -472,13 +472,15 @@ app.layout = html.Div(
                                                 ],
                                             ),
                                             html.P(
-                                                "Chaque point est un jeu : en abscisse, le ratio de satisfaction "
-                                                "(avis positifs / total, arrondi à une décimale) ; en ordonnée, le "
-                                                "temps de jeu moyen à vie issu des données Steam, converti en heures. "
-                                                "Une grappe vers le bas montre beaucoup de titres peu joués en moyenne "
-                                                "malgré une note correcte : la satisfaction ne suffit pas à garantir "
-                                                "un engagement long. Les points plus hauts correspondent souvent à des "
-                                                "jeux très suivis ; le survol affiche le nom du jeu."
+                                                "Chaque point est un jeu : la satisfaction (avis positifs / total, "
+                                                "arrondie à une décimale) est lue au survol ; le graphique utilise un "
+                                                "placement type beeswarm : bandes fines selon le temps de jeu, avec "
+                                                "répartition horizontale des points (et colonnes supplémentaires si la "
+                                                "bande est très dense), pour mieux voir où s’accumulent les jeux. "
+                                                "En ordonnée : temps de jeu moyen à vie (données Steam), en heures. "
+                                                "Une grappe vers le bas indique beaucoup de titres peu joués en moyenne "
+                                                "malgré une note correcte ; les points plus hauts correspondent souvent "
+                                                "à des jeux très suivis."
                                             ),
                                         ],
                                     ),
