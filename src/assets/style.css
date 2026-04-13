@@ -423,8 +423,6 @@ html.story-fade .story-section .section-inline-info {
 
 /* ===== VIZ 1 ===== */
 
-/* ===== VIZ 1 ===== */
-
 .scatter-main-layout {
     display: flex;
     flex-direction: column;
@@ -903,7 +901,6 @@ a.game-logo-chip {
     margin: 4px 0;
 }
 
-/* Optional rich section text (make_section) */
 .section-description--rich {
     display: flex;
     flex-direction: column;
@@ -1115,6 +1112,76 @@ a.game-logo-chip {
     }
 }
 
+/* ===== VIZ 4 ===== */
+
+.bubble-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.bubble-main-layout {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+}
+
+.bubble-y-slider {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+    margin-left: 2px;
+}
+
+.bubble-y-slider .rc-slider {
+    height: 100% !important;
+}
+
+.bubble-y-slider .rc-slider-rail,
+.bubble-y-slider .rc-slider-track {
+    width: 6px;
+}
+
+#bubble .viz-inner,
+#bubble .graph,
+#bubble .js-plotly-plot,
+#bubble .plot-container,
+#bubble .svg-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.bubble-x-slider {
+    width: 100%;
+    padding-left: 56px;
+    box-sizing: border-box;
+}
+
+#bubble .rc-slider {
+    padding: 0;
+}
+
+#bubble .rc-slider-rail {
+    background: #e8ecf5;
+    border-radius: 999px;
+}
+
+#bubble .rc-slider-track {
+    background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
+}
+
+#bubble .rc-slider-handle {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #ffffff;
+    background: #2563eb;
+}
+
 @media (max-width: 600px) {
     html {
         scroll-snap-type: none;
@@ -1156,6 +1223,14 @@ a.game-logo-chip {
         font-size: 13px;
     }
 
+    .bubble-main-layout {
+        min-height: min(340px, 58vh);
+    }
+
+    #bubble .graph {
+        min-height: min(260px, 48vh);
+    }
+
     .dot-main-layout {
         min-height: min(340px, 58vh);
     }
@@ -1172,12 +1247,4 @@ a.game-logo-chip {
         width: 40px;
         height: 40px;
     }
-}
-/* ===== INFO PANEL NAVIGATION ===== */
-.info-nav-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    align-items: center;
-    justify-content: flex-end;
 }

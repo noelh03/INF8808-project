@@ -26,6 +26,7 @@ import copy
 from pathlib import Path
 
 from dash import Dash, html, dcc, Input, Output, State, ctx
+import dash
 from dash.exceptions import PreventUpdate
 import pandas as pd
 
@@ -45,8 +46,14 @@ SCATTER_GRAPH_ID = "scatter-price-graph"
 LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
 LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
 LINE_ALL_ID = viz3_line.LINE_ALL_ID
+
+BUBBLE_GRAPH_ID = "bubble-graph"
+BUBBLE_Y_SLIDER_ID = "bubble-slider-y"
+BUBBLE_X_SLIDER_ID = "bubble-slider-x"
+
 DOT_GRAPH_ID = "dot-graph"
 DOT_SLIDER_ID = "dot-slider"
+
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
     Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
@@ -680,9 +687,216 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "bubble", "Section 4",
-                            "Titre à finaliser",
-                                            "Description à finaliser.",
+                            "Visibilité et succès commercial",
+                            "Comparer la performance commerciale estimée des jeux selon leur nombre d’avis, et observer comment la distribution évolue selon l’intervalle de visibilité sélectionné.",
                             viz4_bubble_layout, "#line", "#dot",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz4-info-slide-idx", data=0),
+
+                                    html.Div(
+                                        id="viz4-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-comments info-slide-icon"),
+                                                    html.Span(" Le volume d’avis est-il corrélé au succès commercial ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "Oui, très fortement. Les jeux ayant un très grand nombre d’avis "
+                                                "se situent presque systématiquement parmi les plus grands succès commerciaux. "
+                                                "Sur le graphique, les plus grosses bulles sont clairement concentrées "
+                                                "dans la partie haute, ce qui indique que la visibilité joue un rôle central."
+                                            ),
+                                            html.P(
+                                                "Des jeux comme Counter-Strike 2, Dota 2 ou PUBG illustrent parfaitement "
+                                                "cette tendance : ils cumulent des millions d’avis et dominent largement "
+                                                "en termes de succès commercial. La visibilité apparaît donc comme un "
+                                                "facteur clé pour atteindre un large public."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                            html.Span("PUBG", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz4-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-thumbs-up info-slide-icon"),
+                                                    html.Span(" Le ratio d’évaluations positives est-il associé au succès commercial ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "La satisfaction des joueurs semble jouer un rôle, mais son impact est moins direct "
+                                                "que celui de la visibilité. Sur le graphique, des jeux avec une très forte satisfaction "
+                                                "(proches de 1) n’atteignent pas nécessairement un succès commercial élevé."
+                                            ),
+                                            html.P(
+                                                "Par exemple, des jeux très appréciés comme Stardew Valley, Terraria ou Hades "
+                                                "présentent un excellent ratio d’évaluations positives, mais leur succès reste "
+                                                "moins extrême que celui des jeux les plus visibles. La satisfaction semble donc "
+                                                "nécessaire pour fidéliser les joueurs, mais insuffisante à elle seule pour garantir "
+                                                "un succès massif."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew Valley", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/105600/Terraria/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/terraria.jpg", className="game-logo-img"),
+                                                            html.Span("Terraria", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/1145360/Hades/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/hades.jpg", className="game-logo-img"),
+                                                            html.Span("Hades", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        id="viz4-info-slide-2",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("3 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-scale-balanced info-slide-icon"),
+                                                    html.Span(" Entre visibilité et satisfaction, quel facteur est le plus déterminant ?"),
+                                                ],
+                                            ),
+                                            html.P(
+                                                "La visibilité apparaît comme le facteur le plus déterminant du succès commercial. "
+                                                "Les jeux les plus performants sont avant tout ceux qui accumulent un grand nombre d’avis, "
+                                                "même si leur niveau de satisfaction n’est pas parfait."
+                                            ),
+                                            html.P(
+                                                "À l’inverse, certains jeux très bien notés mais peu visibles restent limités en succès. "
+                                                "Un exemple typique est celui de petits jeux de niche comme Supipara, qui présentent "
+                                                "une bonne satisfaction mais très peu d’avis. Cela montre que sans visibilité, "
+                                                "même un jeu apprécié peut rester confidentiel."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew Valley", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/496350/Supipara_Chapter_1/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--down",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/supipara.png", className="game-logo-img"),
+                                                            html.Span("Supipara", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+
+                                    html.Div(
+                                        className="info-carousel-footer",
+                                        children=[
+                                            html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(id="viz4-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz4-info-dot-1", className="info-dot"),
+                                                    html.Span(id="viz4-info-dot-2", className="info-dot"),
+                                                ],
+                                            ),
+                                            html.Div(
+                                                className="info-nav-buttons",
+                                                children=[
+                                                    html.Button("←", id="viz4-info-prev-btn", className="info-nav-btn"),
+                                                    html.Button("→", id="viz4-info-next-btn", className="info-nav-btn"),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            )
                         ),
                         make_section(
                             "dot",
@@ -792,7 +1006,6 @@ app.layout = html.Div(
         ),
     ],
 )
-
 
 @app.callback(
     Output(DOT_GRAPH_ID, "figure"),
@@ -941,6 +1154,79 @@ def advance_info_carousel(n_clicks, current_idx):
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
+# ---------------------------------------------------------------------------
+# Viz 4 info carousel — navigate between the 3 insight slides
+# ---------------------------------------------------------------------------
+@app.callback(
+    Output("viz4-info-slide-idx", "data"),
+    Output("viz4-info-slide-0", "style"),
+    Output("viz4-info-slide-1", "style"),
+    Output("viz4-info-slide-2", "style"),
+    Output("viz4-info-dot-0", "className"),
+    Output("viz4-info-dot-1", "className"),
+    Output("viz4-info-dot-2", "className"),
+    Input("viz4-info-prev-btn", "n_clicks"),
+    Input("viz4-info-next-btn", "n_clicks"),
+    State("viz4-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def update_viz4_carousel(prev_clicks, next_clicks, current_idx):
+    idx = current_idx or 0
+
+    ctx = callback_context
+    if not ctx.triggered:
+        return dash.no_update
+
+    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    if button_id == "viz4-info-next-btn":
+        idx = (idx + 1) % 3
+    elif button_id == "viz4-info-prev-btn":
+        idx = (idx - 1) % 3
+
+    styles = [{"display": "flex" if i == idx else "none"} for i in range(3)]
+    dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]
+
+    return idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
+
+@app.callback(
+    Output(BUBBLE_GRAPH_ID, "figure"),
+    Input(BUBBLE_Y_SLIDER_ID, "value"),
+    Input(BUBBLE_X_SLIDER_ID, "value"),
+    Input("viz4-info-slide-idx", "data"),
+)
+def update_bubble(max_visibility, sat_range, question_idx):
+    return viz4_bubble.create_figure(
+        data,
+        max_visibility=max_visibility,
+        sat_range=sat_range,
+        question_idx=question_idx or 0
+    )
+@app.callback(
+    Output(BUBBLE_GRAPH_ID, "figure"),
+    Output(BUBBLE_Y_SLIDER_ID, "value"),
+    Output(BUBBLE_X_SLIDER_ID, "value"),
+    Input("viz4-info-slide-idx", "data"),
+)
+def update_bubble_auto(question_idx):
+    if question_idx == 0:
+        return (
+            viz4_bubble.create_figure(data, 8_000_000, [0, 1], question_idx),
+            10_000_000,
+            [0, 1]
+        )
+    elif question_idx == 1:
+        return (
+            viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], question_idx),
+            3_000_000,
+            [0.7, 1]
+        )
+    elif question_idx == 2:
+        return (
+            viz4_bubble.create_figure(data, 2_000_000, [0, 1], question_idx),
+            2_000_000,
+            [0, 1]
+        )
 
 # ---------------------------------------------------------------------------
 # Viz 5 info carousel — 2 slides
