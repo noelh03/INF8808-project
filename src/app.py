@@ -787,8 +787,8 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "violin", "Section 6",
-                            "Expérience et succès : indépendants vs majeurs",
-                            "Ce diagramme en violon montre la distribution du succès commercial des jeux selon l’expérience des développeurs, et compare les éditeurs indépendants aux éditeurs majeurs.",
+                            "Le succès commercial selon l'expérience et le type d'éditeur",
+                            "Comparer la distribution du succès commercial selon l'expérience des éditeurs, et observer si les indépendants et les majeurs se distinguent dans leur capacité à générer du succès.",
                             viz6_violin_layout,
                             "#dot",
                             "#hero",
@@ -1109,6 +1109,7 @@ def update_violin(max_games, slide_idx):
  
     fig = v6_plot.generate_plot(my_df)
     fig = v6_plot.update_axes_labels(fig)
+    fig = v6_plot.update_legend(fig)
     fig = v6_plot.update_hover_template(fig)
     fig.update_layout(dragmode=False)
     return fig

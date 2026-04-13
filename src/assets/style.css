@@ -387,7 +387,8 @@ html.story-fade .story-section .section-inline-info {
 }
 
 #line .section-title,
-#dot .section-title {
+#dot .section-title,
+#violin .section-title {
     font-size: clamp(18px, 2vw, 28px);
 }
 

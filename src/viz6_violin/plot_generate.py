@@ -85,7 +85,31 @@ def update_axes_labels(fig):
             "2000000 - 5000000",
             "5000000 - 10000000",
             "10000000 - 20000000"
-        ]
+        ],
+        tickvals=[
+            "0 - 20000",
+            "20000 - 50000",
+            "50000 - 100000",
+            "100000 - 200000",
+            "200000 - 500000",
+            "500000 - 1000000",
+            "1000000 - 2000000",
+            "2000000 - 5000000",
+            "5000000 - 10000000",
+            "10000000 - 20000000"
+        ],
+        ticktext=[
+            "0 - 20k",
+            "20k - 50k",
+            "50k - 100k",
+            "100k - 200k",
+            "200k - 500k",
+            "500k - 1M",
+            "1M - 2M",
+            "2M - 5M",
+            "5M - 10M",
+            "10M - 20M"
+        ],
     )
  
     return fig
@@ -133,15 +157,17 @@ def update_legend(fig):
                 color="#2E4057",
             ),
         ),
-        margin=dict(l=72, r=24, t=80, b=62),
+        margin=dict(l=72, r=24, t=52, b=62),
         legend=dict(
             orientation="h",
             x=0,
             y=1.05,
             xanchor="left",
             yanchor="bottom",
+            title_text="Type d'éditeur",
         ),
-        legend_title_text="Type d'éditeur"
+        violingap=0.05,
+        violinmode="overlay",
     )
     return fig
  
