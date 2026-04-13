@@ -54,6 +54,10 @@ BUBBLE_X_SLIDER_ID = "bubble-slider-x"
 DOT_GRAPH_ID = "dot-graph"
 DOT_SLIDER_ID = "dot-slider"
 
+VIOLIN_GRAPH_ID = "violin-graph"
+VIOLIN_SLIDER_ID = "violin-slider"
+VIOLIN_SLIDE_SLIDER_VALUES = [50, 5, 50]
+
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
     Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
@@ -219,7 +223,11 @@ viz5_dot_layout = viz5_dot.create_layout(
     slider_id=DOT_SLIDER_ID,
     graph_id=DOT_GRAPH_ID,
 )
-viz6_violin_layout = viz6_violin.create_layout(data)
+viz6_violin_layout = viz6_violin.create_layout(
+    data,
+    slider_id=VIOLIN_SLIDER_ID,
+    graph_id=VIOLIN_GRAPH_ID,
+)
 
 app.layout = html.Div(
     id="page-wrapper",
@@ -996,9 +1004,123 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "violin", "Section 6",
-                            "Titre à finaliser",
-                                            "Description à finaliser.",
-                            viz6_violin_layout, "#dot", "#hero",
+                            "Le succès commercial selon l'expérience et le type d'éditeur",
+                            "Comparer la distribution du succès commercial selon l'expérience des éditeurs, et observer si les indépendants et les majeurs se distinguent dans leur capacité à générer du succès.",
+                            viz6_violin_layout,
+                            "#dot",
+                            "#hero",
+                            info_content=html.Div(
+                                className="info-carousel",
+                                children=[
+                                    dcc.Store(id="viz6-info-slide-idx", data=0),
+
+                                    html.Div(
+                                        id="viz6-info-slide-0",
+                                        className="info-slide",
+                                        children=[
+                                            html.Span("1 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-compress info-slide-icon"),
+                                                    html.Span(" Le succès commercial est-il concentré autour d'un nombre limité de développeurs ?"),
+                                                ],
+                                            ),
+                                            html.P("Oui, de façon très marquée."),
+                                            html.P(
+                                                "Dans chaque tranche de succès , des plus modestes (0 à 20 000) "
+                                                "aux plus élevées (10M à 20M) , les violons sont systématiquement "
+                                                "larges et denses près de 0, puis s'effacent rapidement. "
+                                                "Cela signifie que la grande majorité des jeux, peu importe leur "
+                                                "niveau de succès commercial, proviennent d'éditeurs ayant publié "
+                                                "très peu de jeux (1 à 5 en général)."
+                                            ),
+                                            html.P(
+                                                "Les éditeurs très prolifiques (>20 jeux publiés) sont présents "
+                                                "dans toutes les tranches sans exception, y compris les plus basses. "
+                                                "Le succès n'est donc pas réservé à une élite d'éditeurs expérimentés : "
+                                                "il est distribué largement parmi les petits studios."
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        id="viz6-info-slide-1",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("2 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-users info-slide-icon"),
+                                                    html.Span(" Le succès est-il davantage dominé par les éditeurs majeurs ?"),
+                                                ],
+                                            ),
+                                            html.P("Non , c'est l'inverse."),
+                                            html.P(
+                                                "En se concentrant sur les éditeurs peu expérimentés (≤ 5 jeux publiés), "
+                                                "les violons bleu clair (indépendants) sont nettement plus larges que "
+                                                "les violons orange (majeurs) dans pratiquement toutes les tranches "
+                                                "de succès. Les indépendants sont donc bien plus nombreux à atteindre "
+                                                "chaque niveau, y compris les tranches supérieures (1M+ propriétaires)."
+                                            ),
+                                            html.P(
+                                                "Les éditeurs majeurs existent bien dans les tranches hautes, "
+                                                "mais en bien moins grand nombre. À expérience équivalente, "
+                                                "ce sont les indépendants qui produisent la majorité des succès commerciaux."
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        id="viz6-info-slide-2",
+                                        className="info-slide",
+                                        style={"display": "none"},
+                                        children=[
+                                            html.Span("3 / 3", className="info-slide-counter"),
+                                            html.H4(
+                                                className="info-block-title",
+                                                children=[
+                                                    html.I(className="fa-solid fa-chart-line info-slide-icon"),
+                                                    html.Span(" L'expérience d'un développeur constitue-t-elle un avantage structurel ?"),
+                                                ],
+                                            ),
+                                            html.P("Non, pas de façon claire."),
+                                            html.P(
+                                                "Si l'expérience était un avantage structurel, on s'attendrait à voir "
+                                                "les violons s'étirer davantage vers la droite (plus de jeux publiés) "
+                                                "dans les tranches de succès élevées. Ce n'est pas ce qu'on observe : "
+                                                "la forme des violons reste similaire d'une tranche à l'autre, "
+                                                "toujours très concentrée vers 0 à 5 jeux publiés."
+                                            ),
+                                            html.P(
+                                                "Les majeurs montrent une distribution légèrement plus étalée, "
+                                                "mais sans que cela corresponde à un meilleur succès commercial. "
+                                                "Publier davantage de jeux n'est pas un gage de succès : "
+                                                "l'expérience accumulée ne se traduit pas en avantage structurel mesurable."
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(
+                                        className="info-carousel-footer",
+                                        children=[
+                                            html.Div(
+                                                className="info-progress",
+                                                children=[
+                                                    html.Span(id="viz6-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz6-info-dot-1", className="info-dot"),
+                                                    html.Span(id="viz6-info-dot-2", className="info-dot"),
+                                                ],
+                                            ),
+                                            html.Button(
+                                                "→",
+                                                id="viz6-info-next-btn",
+                                                className="info-nav-btn",
+                                                n_clicks=0,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                     ],
                 ),
@@ -1247,6 +1369,68 @@ def advance_viz5_info_carousel(n_clicks, current_idx):
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
     return next_idx, styles[0], styles[1], dots[0], dots[1]
 
+@app.callback(
+    Output("viz6-info-slide-idx", "data"),
+    Output("viz6-info-slide-0", "style"),
+    Output("viz6-info-slide-1", "style"),
+    Output("viz6-info-slide-2", "style"),
+    Output("viz6-info-dot-0", "className"),
+    Output("viz6-info-dot-1", "className"),
+    Output("viz6-info-dot-2", "className"),
+    Input("viz6-info-next-btn", "n_clicks"),
+    State("viz6-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def advance_viz6_info_carousel(n_clicks, current_idx):
+    next_idx = ((current_idx or 0) + 1) % 3
+    styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
+    dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
+    return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
+
+
+@app.callback(
+    Output(DOT_GRAPH_ID, "figure"),
+    Input(DOT_SLIDER_ID, "value"),
+)
+def update_dot(max_playtime):
+    return viz5_dot.create_figure(
+        data,
+        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
+    )
+
+@app.callback(
+    Output(VIOLIN_SLIDER_ID, "value"),
+    Input("viz6-info-slide-idx", "data"),
+    prevent_initial_call=True,
+)
+def sync_violin_slider_to_slide(slide_idx):
+    return VIOLIN_SLIDE_SLIDER_VALUES[(slide_idx or 0) % 3]
+ 
+ 
+@app.callback(
+    Output(VIOLIN_GRAPH_ID, "figure"),
+    Input(VIOLIN_SLIDER_ID, "value"),
+    Input("viz6-info-slide-idx", "data"),
+)
+def update_violin(max_games, slide_idx):
+    import viz6_violin.preprocess as v6_pre
+    import viz6_violin.plot_generate as v6_plot
+ 
+    if ctx.triggered_id == "viz6-info-slide-idx":
+        max_games = VIOLIN_SLIDE_SLIDER_VALUES[(slide_idx or 0) % 3]
+    elif max_games is None:
+        max_games = viz6_violin.VIOLIN_SLIDER_MAX
+ 
+    my_df = v6_pre.step1(data.copy())
+    my_df = v6_pre.step2(my_df)
+    my_df = v6_plot.filter_by_max_games(my_df, max_games)
+ 
+    fig = v6_plot.generate_plot(my_df)
+    fig = v6_plot.update_axes_labels(fig)
+    fig = v6_plot.update_legend(fig)
+    fig = v6_plot.update_hover_template(fig)
+    fig.update_layout(dragmode=False)
+    return fig
 
 if __name__ == "__main__":
     app.run(debug=True)
