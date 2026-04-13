@@ -130,7 +130,7 @@ def update_layout(fig):
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
         plot_bgcolor="#F5F7FB",
-        margin=dict(l=72, r=130, t=28, b=62),
+        margin=dict(l=72, r=20, t=28, b=62),
         font=dict(
             family="Inter, Arial, sans-serif",
             size=13,

@@ -11,7 +11,7 @@ from viz4_bubble.plot_generate import generate_plot
 BUBBLE_SLIDER_MIN = 0
 BUBBLE_SLIDER_MAX = 10000000
 BUBBLE_SLIDER_STEP = 100000
-BUBBLE_SLIDER_HEIGHT = 300
+BUBBLE_SLIDER_HEIGHT = 350
 
 SAT_SLIDER_MIN = 0
 SAT_SLIDER_MAX = 1
@@ -67,7 +67,7 @@ def create_layout(df, max_visibility=BUBBLE_SLIDER_MAX, sat_range=None):
                             verticalHeight=BUBBLE_SLIDER_HEIGHT,
                             marks=slider_y_marks,
                             tooltip={
-                                "placement": "left",
+                                "placement": "bottom",
                                 "always_visible": False,
                             },
                         ),
@@ -92,7 +92,7 @@ def create_layout(df, max_visibility=BUBBLE_SLIDER_MAX, sat_range=None):
                     value=[SAT_SLIDER_MIN, SAT_SLIDER_MAX],
                     marks=slider_x_marks,
                     tooltip={
-                        "placement": "left",
+                        "placement": "bottom",
                         "always_visible": False,
                     },
                 ),

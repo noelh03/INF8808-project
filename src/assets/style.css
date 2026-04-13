@@ -424,8 +424,6 @@ html.story-fade .story-section .section-inline-info {
 
 /* ===== VIZ 1 ===== */
 
-/* ===== VIZ 1 ===== */
-
 .scatter-main-layout {
     display: flex;
     flex-direction: column;
@@ -1106,58 +1104,33 @@ a.game-logo-chip {
 }
 
 /* ===== VIZ 4 ===== */
+
 .bubble-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     height: 100%;
+    width: 100%;
 }
 
 .bubble-main-layout {
     display: grid;
-    grid-template-columns: 90px 1fr;
-    gap: 20px;
-    align-items: center;
+    grid-template-columns: 50px 1fr;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
 }
 
 .bubble-y-slider {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: stretch;
+    height: 100%;
+    margin-left: 2px;
 }
 
-.bubble-x-slider {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.slider-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #2E4057;
-}
-
-.rc-slider-rail {
-    background: #e8ecf5;
-    border-radius: 999px;
-}
-
-.rc-slider-track {
-    background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
-    border-radius: 999px;
-}
-
-.rc-slider-handle {
-    width: 18px;
-    height: 18px;
-    border: 3px solid #ffffff;
-    background: #2563eb;
-    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.25);
+.bubble-y-slider .rc-slider {
+    height: 100% !important;
 }
 
 .bubble-y-slider .rc-slider-rail,
@@ -1165,8 +1138,39 @@ a.game-logo-chip {
     width: 6px;
 }
 
-#bubble .graph {
-    min-height: 500px;
+#bubble .viz-inner,
+#bubble .graph,
+#bubble .js-plotly-plot,
+#bubble .plot-container,
+#bubble .svg-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.bubble-x-slider {
+    width: 100%;
+    padding-left: 56px;
+    box-sizing: border-box;
+}
+
+#bubble .rc-slider {
+    padding: 0;
+}
+
+#bubble .rc-slider-rail {
+    background: #e8ecf5;
+    border-radius: 999px;
+}
+
+#bubble .rc-slider-track {
+    background: linear-gradient(180deg, #2563eb 0%, #7c3aed 100%);
+}
+
+#bubble .rc-slider-handle {
+    width: 18px;
+    height: 18px;
+    border: 3px solid #ffffff;
+    background: #2563eb;
 }
 
 @media (max-width: 600px) {
@@ -1234,12 +1238,4 @@ a.game-logo-chip {
         width: 40px;
         height: 40px;
     }
-}
-/* ===== INFO PANEL NAVIGATION ===== */
-.info-nav-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 6px;
-    align-items: center;
-    justify-content: flex-end;
 }
