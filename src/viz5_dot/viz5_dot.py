@@ -10,7 +10,7 @@ import viz5_dot.plot_generate as plot_generate
 DOT_SLIDER_MIN = 0
 DOT_SLIDER_MAX = 6000
 DOT_SLIDER_STEP = 100
-DOT_SLIDER_HEIGHT = 320
+DOT_SLIDER_HEIGHT = 260
 
 def create_figure(df, max_playtime=6000):
     '''

@@ -18,9 +18,9 @@ def get_hover_template():
     '''
     tooltip = (
         "<b>%{hovertext}</b><br>"
-        "Satisfaction : %{x:.1f}<br>"
+        "Satisfaction : %{customdata[0]:.1f}<br>"
         "Temps moyen : %{y:.1f} h<br>"
-        "Avis : %{marker.color:,.0f}"
+        "Avis : %{customdata[1]:,.0f}"
         "<extra></extra>"
     )
     return tooltip

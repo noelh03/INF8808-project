@@ -351,8 +351,7 @@ html.story-fade .story-section .section-inline-info {
 
 .story-section {
     width: min(1220px, 88vw);
-    min-height: 100dvh;
-    height: auto;
+    height: 100dvh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -406,7 +405,7 @@ html.story-fade .story-section .section-inline-info {
     border-radius: 28px;
     padding: 16px;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
-    flex: 1.35;
+    flex: 1;
     min-height: 0;
     overflow: hidden;
 }
@@ -956,8 +955,8 @@ a.game-logo-chip {
 
 .dot-main-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 170px;
-    gap: 26px;
+    grid-template-columns: minmax(0, 1fr) minmax(72px, 92px);
+    gap: 12px;
     align-items: stretch;
     height: 100%;
     min-height: clamp(480px, 58vh, 720px);
@@ -974,10 +973,20 @@ a.game-logo-chip {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     height: 100%;
     min-height: 0;
-    padding-top: 0;
+    padding-top: 4px;
+    gap: 6px;
+    max-width: 92px;
+}
+
+.dot-side-panel .slider-title {
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: center;
+    max-width: 88px;
+    margin: 0;
 }
 
 .dot-side-panel .rc-slider-rail {

@@ -713,13 +713,15 @@ app.layout = html.Div(
                                                 ],
                                             ),
                                             html.P(
-                                                "Chaque point est un jeu : en abscisse, le ratio de satisfaction "
-                                                "(avis positifs / total, arrondi à une décimale) ; en ordonnée, le "
-                                                "temps de jeu moyen à vie issu des données Steam, converti en heures. "
-                                                "Une grappe vers le bas montre beaucoup de titres peu joués en moyenne "
-                                                "malgré une note correcte : la satisfaction ne suffit pas à garantir "
-                                                "un engagement long. Les points plus hauts correspondent souvent à des "
-                                                "jeux très suivis ; le survol affiche le nom du jeu."
+                                                "Chaque point est un jeu : la satisfaction (avis positifs / total, "
+                                                "arrondie à une décimale) est lue au survol ; le graphique utilise un "
+                                                "placement type beeswarm : bandes fines selon le temps de jeu, avec "
+                                                "répartition horizontale des points (et colonnes supplémentaires si la "
+                                                "bande est très dense), pour mieux voir où s’accumulent les jeux. "
+                                                "En ordonnée : temps de jeu moyen à vie (données Steam), en heures. "
+                                                "Une grappe vers le bas indique beaucoup de titres peu joués en moyenne "
+                                                "malgré une note correcte ; les points plus hauts correspondent souvent "
+                                                "à des jeux très suivis."
                                             ),
                                         ],
                                     ),
@@ -791,19 +793,6 @@ app.layout = html.Div(
     ],
 )
 
-
-@app.callback(
-    Output(SCATTER_GRAPH_ID, "figure"),
-    Input(SCATTER_SLIDER_ID, "value"),
-    Input("viz1-info-slide-idx", "data"),
-)
-def update_scatter_price_range(max_price, question_idx):
-    return viz1_scatter.create_figure(
-        data,
-        max_price=max_price,
-        question_idx=question_idx or 0,
-    )
-    
 
 @app.callback(
     Output(DOT_GRAPH_ID, "figure"),
@@ -899,11 +888,11 @@ def sync_line_genre_filters(checklist_value, all_value, restyle_data, info_idx, 
 def update_viz1_carousel(prev_clicks, next_clicks, current_idx):
     idx = current_idx or 0
 
-    ctx = callback_context
-    if not ctx.triggered:
-        return dash.no_update
+    cb_ctx = callback_context
+    if not cb_ctx.triggered:
+        raise PreventUpdate
 
-    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    button_id = cb_ctx.triggered[0]["prop_id"].split(".")[0]
 
     if button_id == "viz1-info-next-btn":
         idx = (idx + 1) % 3
@@ -914,6 +903,8 @@ def update_viz1_carousel(prev_clicks, next_clicks, current_idx):
     dots = ["info-dot active" if i == idx else "info-dot" for i in range(3)]
 
     return idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
+
+
 @app.callback(
     Output(SCATTER_GRAPH_ID, "figure"),
     Input(SCATTER_SLIDER_ID, "value"),
