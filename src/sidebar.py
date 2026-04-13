@@ -26,11 +26,13 @@ NAV_ITEMS = [
 ]
 
 
-def nav_item(label, href):
+def nav_item(label, href, idx):
     """Create a sidebar navigation link."""
     return html.A(
+        id=f"nav-link-{idx}",
         className="nav-link",
         href=href,
+        n_clicks=0,
         children=[
             html.Span(className="nav-icon"),
             html.Span(label, className="nav-text"),
@@ -57,7 +59,7 @@ def create_sidebar():
                     ),
                     html.Nav(
                         className="sidebar-nav",
-                        children=[nav_item(label, href) for label, href in NAV_ITEMS],
+                        children=[nav_item(label, href, i) for i, (label, href) in enumerate(NAV_ITEMS)],
                     ),
                 ],
             ),
@@ -73,13 +75,14 @@ def register_sidebar_callbacks(app):
         Output(OVERLAY_ID, "className"),
         Input(TOGGLE_BTN_ID, "n_clicks"),
         Input(OVERLAY_ID, "n_clicks"),
+        *[Input(f"nav-link-{i}", "n_clicks") for i in range(len(NAV_ITEMS))],
         State(SIDEBAR_ID, "className"),
     )
-    def toggle_sidebar(btn_clicks, overlay_clicks, sidebar_class):
-        sidebar_class = sidebar_class or "sidebar"
+    def toggle_sidebar(btn_clicks, overlay_clicks, *args):
+        sidebar_class = args[-1] or "sidebar"
         trigger = ctx.triggered_id
 
-        if trigger is None:
+        if trigger and str(trigger).startswith("nav-link"):
             return "sidebar", "overlay"
 
         if trigger == OVERLAY_ID:
