@@ -1,11 +1,53 @@
+import math
+import pandas as pd
 import plotly.express as px
-from .hover_template import get_hover_template
+from .hover_template import get_aggregated_hover_template, format_game_list_hover
 
 
 COL_PRICE = "Price"
 COL_OWNERS = "Estimated owners (average)"
 COL_TYPE = "Type de jeu"
 COL_NAME = "Name"
+
+
+def aggregate_overlapping_points(df, color_mode):
+    """
+    Regroupe les jeux qui ont exactement les mêmes coordonnées
+    (prix, propriétaires estimés).
+
+    color_mode:
+    - "single": une seule couleur
+    - "type": couleur selon type de jeu
+    - "success": couleur selon catégorie de succès
+    """
+    group_cols = [COL_PRICE, COL_OWNERS]
+
+    if color_mode == "type":
+        group_cols.append(COL_TYPE)
+
+    if color_mode == "success":
+        group_cols.append("Catégorie succès")
+
+    aggregated = (
+        df.groupby(group_cols, dropna=False)
+        .agg(
+            game_count=(COL_NAME, "size"),
+            game_names=(COL_NAME, lambda names: list(names)),
+            types_list=(COL_TYPE, lambda types: sorted(set(types))),
+        )
+        .reset_index()
+    )
+
+    aggregated["hover_names"] = aggregated["game_names"].apply(
+        lambda names: format_game_list_hover(names, limit=10)
+    )
+
+    # Taille de bulle douce : augmente avec le nombre, sans exploser
+    aggregated["bubble_size"] = aggregated["game_count"].apply(
+        lambda n: 5 if n <= 1 else min(5 + math.sqrt(n) * 1.6, 18)
+    )
+
+    return aggregated
 
 
 def generate_plot(df, price_range=(0, 100), question_idx=0):
@@ -35,20 +77,23 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
     # Une seule couleur, sans légende
     # ==========================================================
     if question_idx == 0:
+        plot_df = aggregate_overlapping_points(filtered_df, color_mode="single")
+
         fig = px.scatter(
-            filtered_df,
+            plot_df,
             x=COL_PRICE,
             y=COL_OWNERS,
-            hover_name=COL_NAME,
+            size="bubble_size",
+            hover_name=None,
             log_y=True,
             opacity=0.72,
-            custom_data=[COL_TYPE],
+            custom_data=["game_count", "hover_names"],
             color_discrete_sequence=["#6678E8"],
         )
 
         fig.update_traces(
-            marker=dict(size=5, line=dict(width=0)),
-            hovertemplate=get_hover_template(),
+            marker=dict(line=dict(width=0)),
+            hovertemplate=get_aggregated_hover_template(),
         )
 
         fig.update_layout(showlegend=False)
@@ -57,15 +102,18 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
     # QUESTION 2 : Gratuit vs Payant
     # ==========================================================
     elif question_idx == 1:
+        plot_df = aggregate_overlapping_points(filtered_df, color_mode="type")
+
         fig = px.scatter(
-            filtered_df,
+            plot_df,
             x=COL_PRICE,
             y=COL_OWNERS,
             color=COL_TYPE,
-            hover_name=COL_NAME,
+            size="bubble_size",
+            hover_name=None,
             log_y=True,
             opacity=0.72,
-            custom_data=[COL_TYPE],
+            custom_data=["game_count", "hover_names"],
             color_discrete_map={
                 "Payant": "#6678E8",
                 "Gratuit": "#D98A6C",
@@ -73,8 +121,8 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         )
 
         fig.update_traces(
-            marker=dict(size=5, line=dict(width=0)),
-            hovertemplate=get_hover_template(),
+            marker=dict(line=dict(width=0)),
+            hovertemplate=get_aggregated_hover_template(),
         )
 
     # ==========================================================
@@ -87,15 +135,18 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
             lambda x: "Top succès" if x >= 1_000_000 else "Autres jeux"
         )
 
+        plot_df = aggregate_overlapping_points(plot_df, color_mode="success")
+
         fig = px.scatter(
             plot_df,
             x=COL_PRICE,
             y=COL_OWNERS,
             color="Catégorie succès",
-            hover_name=COL_NAME,
+            size="bubble_size",
+            hover_name=None,
             log_y=True,
             opacity=0.72,
-            custom_data=[COL_TYPE],
+            custom_data=["game_count", "hover_names"],
             color_discrete_map={
                 "Autres jeux": "#C7D2E3",
                 "Top succès": "#6678E8",
@@ -103,8 +154,8 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         )
 
         fig.update_traces(
-            marker=dict(size=5, line=dict(width=0)),
-            hovertemplate=get_hover_template(),
+            marker=dict(line=dict(width=0)),
+            hovertemplate=get_aggregated_hover_template(),
         )
 
         fig.add_hline(
@@ -120,15 +171,18 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
     # FALLBACK
     # ==========================================================
     else:
+        plot_df = aggregate_overlapping_points(filtered_df, color_mode="type")
+
         fig = px.scatter(
-            filtered_df,
+            plot_df,
             x=COL_PRICE,
             y=COL_OWNERS,
             color=COL_TYPE,
-            hover_name=COL_NAME,
+            size="bubble_size",
+            hover_name=None,
             log_y=True,
             opacity=0.72,
-            custom_data=[COL_TYPE],
+            custom_data=["game_count", "hover_names"],
             color_discrete_map={
                 "Payant": "#6678E8",
                 "Gratuit": "#D98A6C",
@@ -136,8 +190,8 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         )
 
         fig.update_traces(
-            marker=dict(size=5, line=dict(width=0)),
-            hovertemplate=get_hover_template(),
+            marker=dict(line=dict(width=0)),
+            hovertemplate=get_aggregated_hover_template(),
         )
 
     # ==========================================================
