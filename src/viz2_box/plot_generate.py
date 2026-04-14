@@ -25,7 +25,7 @@ SAMPLE_PER_CATEGORY = 600
 
 LOG_BIN_WIDTH = 0.030
 
-Y_STEP = 0.028
+Y_STEP = 0.048
 
 HALF_WIDTH = 0.42
 
@@ -135,7 +135,7 @@ def generate_plot(df):
             marker=dict(
                 color=color,
                 size=5,
-                opacity=0.60,
+                opacity=0.90,
                 line=dict(width=0),
             ),
             customdata=np.column_stack([
