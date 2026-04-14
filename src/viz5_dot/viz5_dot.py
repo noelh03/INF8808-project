@@ -10,7 +10,8 @@ import viz5_dot.plot_generate as plot_generate
 DOT_SLIDER_MIN = 0
 DOT_SLIDER_MAX = 6000
 DOT_SLIDER_STEP = 100
-DOT_SLIDER_HEIGHT = 260
+# Hauteur de base du slider vertical ; le CSS borne avec vh pour petits écrans / zoom.
+DOT_SLIDER_HEIGHT = 340
 
 def create_figure(df, max_playtime=6000):
     '''
@@ -53,8 +54,13 @@ def create_layout(df, max_playtime=6000, slider_id="dot-slider", graph_id="dot-g
                         id=graph_id,
                         figure=fig,
                         config={"displayModeBar": False, "responsive": True},
-                        className="graph",
-                        style={"height": "100%"},
+                        className="graph dot-graph",
+                        style={
+                            "height": "100%",
+                            "width": "100%",
+                            "minHeight": 0,
+                            "minWidth": 0,
+                        },
                     ),
                 ],
             ),

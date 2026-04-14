@@ -977,10 +977,10 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                            children=[
-                                html.Div(
+                                        children=[
+                                            html.Div(
                                                 className="info-progress",
-                                    children=[
+                                                children=[
                                                     html.Span(
                                                         id="viz5-info-dot-0",
                                                         className="info-dot active",
@@ -991,11 +991,22 @@ app.layout = html.Div(
                                                     ),
                                                 ],
                                             ),
-                                            html.Button(
-                                                "→",
-                                                id="viz5-info-next-btn",
-                                                className="info-nav-btn",
-                                                n_clicks=0,
+                                            html.Div(
+                                                className="info-nav-buttons",
+                                                children=[
+                                                    html.Button(
+                                                        "←",
+                                                        id="viz5-info-prev-btn",
+                                                        className="info-nav-btn",
+                                                        n_clicks=0,
+                                                    ),
+                                                    html.Button(
+                                                        "→",
+                                                        id="viz5-info-next-btn",
+                                                        className="info-nav-btn",
+                                                        n_clicks=0,
+                                                    ),
+                                                ],
                                             ),
                                         ],
                                     ),
@@ -1295,11 +1306,11 @@ def advance_info_carousel(n_clicks, current_idx):
 def update_viz4_carousel(prev_clicks, next_clicks, current_idx):
     idx = current_idx or 0
 
-    ctx = callback_context
-    if not ctx.triggered:
-        return dash.no_update
+    cb_ctx = callback_context
+    if not cb_ctx.triggered:
+        raise PreventUpdate
 
-    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    button_id = cb_ctx.triggered[0]["prop_id"].split(".")[0]
 
     if button_id == "viz4-info-next-btn":
         idx = (idx + 1) % 3
@@ -1313,42 +1324,48 @@ def update_viz4_carousel(prev_clicks, next_clicks, current_idx):
 
 @app.callback(
     Output(BUBBLE_GRAPH_ID, "figure"),
+    Output(BUBBLE_Y_SLIDER_ID, "value"),
+    Output(BUBBLE_X_SLIDER_ID, "value"),
     Input(BUBBLE_Y_SLIDER_ID, "value"),
     Input(BUBBLE_X_SLIDER_ID, "value"),
     Input("viz4-info-slide-idx", "data"),
 )
 def update_bubble(max_visibility, sat_range, question_idx):
-    return viz4_bubble.create_figure(
-        data,
-        max_visibility=max_visibility,
-        sat_range=sat_range,
-        question_idx=question_idx or 0
+    """Un seul callback : sliders manuels ou changement de question (carrousel viz4)."""
+    triggered = ctx.triggered_id
+    q = question_idx or 0
+
+    if triggered == "viz4-info-slide-idx":
+        if q == 0:
+            return (
+                viz4_bubble.create_figure(data, 8_000_000, [0, 1], q),
+                10_000_000,
+                [0, 1],
+            )
+        if q == 1:
+            return (
+                viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], q),
+                3_000_000,
+                [0.7, 1],
+            )
+        if q == 2:
+            return (
+                viz4_bubble.create_figure(data, 2_000_000, [0, 1], q),
+                2_000_000,
+                [0, 1],
+            )
+        raise PreventUpdate
+
+    return (
+        viz4_bubble.create_figure(
+            data,
+            max_visibility=max_visibility,
+            sat_range=sat_range,
+            question_idx=q,
+        ),
+        dash.no_update,
+        dash.no_update,
     )
-@app.callback(
-    Output(BUBBLE_GRAPH_ID, "figure"),
-    Output(BUBBLE_Y_SLIDER_ID, "value"),
-    Output(BUBBLE_X_SLIDER_ID, "value"),
-    Input("viz4-info-slide-idx", "data"),
-)
-def update_bubble_auto(question_idx):
-    if question_idx == 0:
-        return (
-            viz4_bubble.create_figure(data, 8_000_000, [0, 1], question_idx),
-            10_000_000,
-            [0, 1]
-        )
-    elif question_idx == 1:
-        return (
-            viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], question_idx),
-            3_000_000,
-            [0.7, 1]
-        )
-    elif question_idx == 2:
-        return (
-            viz4_bubble.create_figure(data, 2_000_000, [0, 1], question_idx),
-            2_000_000,
-            [0, 1]
-        )
 
 # ---------------------------------------------------------------------------
 # Viz 5 info carousel — 2 slides
@@ -1359,15 +1376,25 @@ def update_bubble_auto(question_idx):
     Output("viz5-info-slide-1", "style"),
     Output("viz5-info-dot-0", "className"),
     Output("viz5-info-dot-1", "className"),
+    Input("viz5-info-prev-btn", "n_clicks"),
     Input("viz5-info-next-btn", "n_clicks"),
     State("viz5-info-slide-idx", "data"),
     prevent_initial_call=True,
 )
-def advance_viz5_info_carousel(n_clicks, current_idx):
-    next_idx = ((current_idx or 0) + 1) % 2
-    styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
-    dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
-    return next_idx, styles[0], styles[1], dots[0], dots[1]
+def advance_viz5_info_carousel(prev_clicks, next_clicks, current_idx):
+    idx = current_idx or 0
+    tid = ctx.triggered_id
+    if tid is None:
+        raise PreventUpdate
+    if tid == "viz5-info-next-btn":
+        idx = (idx + 1) % 2
+    elif tid == "viz5-info-prev-btn":
+        idx = (idx - 1) % 2
+    else:
+        raise PreventUpdate
+    styles = [{"display": "flex" if i == idx else "none"} for i in range(2)]
+    dots = ["info-dot active" if i == idx else "info-dot" for i in range(2)]
+    return idx, styles[0], styles[1], dots[0], dots[1]
 
 @app.callback(
     Output("viz6-info-slide-idx", "data"),
@@ -1387,16 +1414,6 @@ def advance_viz6_info_carousel(n_clicks, current_idx):
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
-
-@app.callback(
-    Output(DOT_GRAPH_ID, "figure"),
-    Input(DOT_SLIDER_ID, "value"),
-)
-def update_dot(max_playtime):
-    return viz5_dot.create_figure(
-        data,
-        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
-    )
 
 @app.callback(
     Output(VIOLIN_SLIDER_ID, "value"),
