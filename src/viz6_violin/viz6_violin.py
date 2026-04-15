@@ -14,30 +14,45 @@ VIOLIN_SLIDER_MAX = 50
 VIOLIN_SLIDER_STEP = 1
 VIOLIN_SLIDER_HEIGHT = 320
 
+
+def ensure_preprocessed(my_df):
+    """
+    Accept either:
+    - raw dataframe with Publishers / Name / Estimated owners / Tags
+    - already preprocessed dataframe with publisher / name / estimated_owners / nb_games_dev
+    """
+    if 'nb_games_dev' in my_df.columns and 'publisher' in my_df.columns:
+        return my_df.copy()
+
+    processed = viz6_violin.preprocess.step1(my_df.copy())
+    processed = viz6_violin.preprocess.step2(processed)
+    return processed
+
+
 def create_figure(my_df):
     '''
         Calls the functions to preprocess the data and generate the plot for the sixth visualisation.
     '''
-    my_df = viz6_violin.preprocess.step1(my_df)
-    my_df = viz6_violin.preprocess.step2(my_df)
+    my_df = ensure_preprocessed(my_df)
     my_df = viz6_violin.plot_generate.filter_by_max_games(my_df, VIOLIN_SLIDER_MAX)
-    
+
     fig = viz6_violin.plot_generate.generate_plot(my_df)
     fig = viz6_violin.plot_generate.update_template(fig)
     fig = viz6_violin.plot_generate.update_legend(fig)
     fig = viz6_violin.plot_generate.update_axes_labels(fig)
     fig = viz6_violin.plot_generate.update_hover_template(fig)
-    
+
     return fig
 
+
 def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
-    preprocessed = viz6_violin.preprocess.step1(my_df.copy())
+    preprocessed = ensure_preprocessed(my_df)
     real_max = int(preprocessed['nb_games_dev'].max())
-    
+
     global VIOLIN_SLIDER_MAX
-    VIOLIN_SLIDER_MAX = real_max   
-    fig = create_figure(my_df)
-    
+    VIOLIN_SLIDER_MAX = real_max
+
+    fig = create_figure(preprocessed)
     fig.update_layout(dragmode=False)
 
     slider_marks = {VIOLIN_SLIDER_MIN: str(VIOLIN_SLIDER_MIN)}
@@ -47,7 +62,7 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
 
     return html.Div(className="viz-inner", children=[
         html.Div(className="dot-main-layout", children=[
- 
+
             html.Div(
                 className="dot-graph-column",
                 children=[
@@ -60,7 +75,7 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
                     ),
                 ],
             ),
- 
+
             html.Div(className="dot-side-panel", children=[
                 html.Div(
                     "Filtrer par nb de jeux publiés",

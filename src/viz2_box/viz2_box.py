@@ -9,17 +9,17 @@ import viz2_box.preprocess
 import viz2_box.plot_generate
 
 
-def create_figure(my_df):
-    '''
-    Preprocesses the data and generates the beeswarm figure.
+def ensure_preprocessed(my_df):
+    if "Estimated owners (average)" in my_df.columns and "game_type" in my_df.columns:
+        return my_df.copy()
 
-    Args:
-        my_df: Raw games DataFrame.
-    Returns:
-        Plotly figure.
-    '''
-    my_df = viz2_box.preprocess.step1(my_df)
-    my_df = viz2_box.preprocess.step2(my_df)
+    processed = viz2_box.preprocess.step1(my_df.copy())
+    processed = viz2_box.preprocess.step2(processed)
+    return processed
+
+
+def create_figure(my_df):
+    my_df = ensure_preprocessed(my_df)
 
     fig = viz2_box.plot_generate.generate_plot(my_df)
     fig = viz2_box.plot_generate.update_template(fig)

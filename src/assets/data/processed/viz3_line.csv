@@ -1,0 +1,958 @@
+Year,Genre,Owners
+1997,360 Video,0.0
+1998,360 Video,0.0
+1999,360 Video,0.0
+2000,360 Video,0.0
+2001,360 Video,0.0
+2002,360 Video,0.0
+2003,360 Video,0.0
+2004,360 Video,0.0
+2005,360 Video,0.0
+2006,360 Video,0.0
+2007,360 Video,0.0
+2008,360 Video,0.0
+2009,360 Video,0.0
+2010,360 Video,0.0
+2011,360 Video,0.0
+2012,360 Video,0.0
+2013,360 Video,0.0
+2014,360 Video,0.0
+2015,360 Video,0.0
+2016,360 Video,0.0
+2017,360 Video,0.0
+2018,360 Video,0.0
+2019,360 Video,0.0
+2020,360 Video,10000.0
+2021,360 Video,0.0
+2022,360 Video,0.0
+2023,360 Video,0.0
+2024,360 Video,0.0
+2025,360 Video,0.0
+1997,Accounting,0.0
+1998,Accounting,0.0
+1999,Accounting,0.0
+2000,Accounting,0.0
+2001,Accounting,0.0
+2002,Accounting,0.0
+2003,Accounting,0.0
+2004,Accounting,0.0
+2005,Accounting,0.0
+2006,Accounting,0.0
+2007,Accounting,0.0
+2008,Accounting,0.0
+2009,Accounting,0.0
+2010,Accounting,0.0
+2011,Accounting,0.0
+2012,Accounting,0.0
+2013,Accounting,0.0
+2014,Accounting,0.0
+2015,Accounting,0.0
+2016,Accounting,40000.0
+2017,Accounting,320000.0
+2018,Accounting,215000.0
+2019,Accounting,20000.0
+2020,Accounting,30000.0
+2021,Accounting,10000.0
+2022,Accounting,0.0
+2023,Accounting,0.0
+2024,Accounting,85000.0
+2025,Accounting,20000.0
+1997,Action,3650000.0
+1998,Action,15000000.0
+1999,Action,5000000.0
+2000,Action,15350000.0
+2001,Action,9750000.0
+2002,Action,1500000.0
+2003,Action,7650000.0
+2004,Action,71000000.0
+2005,Action,35750000.0
+2006,Action,33310000.0
+2007,Action,141720000.0
+2008,Action,47185000.0
+2009,Action,146960000.0
+2010,Action,90560000.0
+2011,Action,148260000.0
+2012,Action,308090000.0
+2013,Action,466550000.0
+2014,Action,300920000.0
+2015,Action,417230000.0
+2016,Action,398070000.0
+2017,Action,665720000.0
+2018,Action,382490000.0
+2019,Action,355960000.0
+2020,Action,572320000.0
+2021,Action,425095000.0
+2022,Action,471825000.0
+2023,Action,335410000.0
+2024,Action,537600000.0
+2025,Action,265445000.0
+1997,Adventure,0.0
+1998,Adventure,0.0
+1999,Adventure,0.0
+2000,Adventure,0.0
+2001,Adventure,0.0
+2002,Adventure,1500000.0
+2003,Adventure,0.0
+2004,Adventure,0.0
+2005,Adventure,0.0
+2006,Adventure,0.0
+2007,Adventure,3350000.0
+2008,Adventure,15400000.0
+2009,Adventure,29495000.0
+2010,Adventure,28055000.0
+2011,Adventure,79690000.0
+2012,Adventure,91155000.0
+2013,Adventure,166590000.0
+2014,Adventure,166535000.0
+2015,Adventure,305525000.0
+2016,Adventure,288650000.0
+2017,Adventure,550570000.0
+2018,Adventure,332085000.0
+2019,Adventure,236635000.0
+2020,Adventure,431705000.0
+2021,Adventure,377335000.0
+2022,Adventure,337655000.0
+2023,Adventure,322040000.0
+2024,Adventure,502475000.0
+2025,Adventure,182620000.0
+1997,Animation & Modeling,0.0
+1998,Animation & Modeling,0.0
+1999,Animation & Modeling,0.0
+2000,Animation & Modeling,0.0
+2001,Animation & Modeling,0.0
+2002,Animation & Modeling,0.0
+2003,Animation & Modeling,0.0
+2004,Animation & Modeling,0.0
+2005,Animation & Modeling,0.0
+2006,Animation & Modeling,0.0
+2007,Animation & Modeling,0.0
+2008,Animation & Modeling,0.0
+2009,Animation & Modeling,0.0
+2010,Animation & Modeling,0.0
+2011,Animation & Modeling,0.0
+2012,Animation & Modeling,1510000.0
+2013,Animation & Modeling,545000.0
+2014,Animation & Modeling,625000.0
+2015,Animation & Modeling,8865000.0
+2016,Animation & Modeling,2135000.0
+2017,Animation & Modeling,970000.0
+2018,Animation & Modeling,36260000.0
+2019,Animation & Modeling,1085000.0
+2020,Animation & Modeling,6040000.0
+2021,Animation & Modeling,3070000.0
+2022,Animation & Modeling,595000.0
+2023,Animation & Modeling,585000.0
+2024,Animation & Modeling,410000.0
+2025,Animation & Modeling,360000.0
+1997,Audio Production,0.0
+1998,Audio Production,0.0
+1999,Audio Production,0.0
+2000,Audio Production,0.0
+2001,Audio Production,0.0
+2002,Audio Production,0.0
+2003,Audio Production,0.0
+2004,Audio Production,0.0
+2005,Audio Production,0.0
+2006,Audio Production,0.0
+2007,Audio Production,0.0
+2008,Audio Production,0.0
+2009,Audio Production,0.0
+2010,Audio Production,0.0
+2011,Audio Production,0.0
+2012,Audio Production,0.0
+2013,Audio Production,225000.0
+2014,Audio Production,540000.0
+2015,Audio Production,1575000.0
+2016,Audio Production,305000.0
+2017,Audio Production,4250000.0
+2018,Audio Production,630000.0
+2019,Audio Production,265000.0
+2020,Audio Production,1055000.0
+2021,Audio Production,290000.0
+2022,Audio Production,130000.0
+2023,Audio Production,150000.0
+2024,Audio Production,250000.0
+2025,Audio Production,110000.0
+1997,Casual,0.0
+1998,Casual,0.0
+1999,Casual,0.0
+2000,Casual,0.0
+2001,Casual,0.0
+2002,Casual,0.0
+2003,Casual,150000.0
+2004,Casual,0.0
+2005,Casual,0.0
+2006,Casual,37775000.0
+2007,Casual,2040000.0
+2008,Casual,6765000.0
+2009,Casual,6470000.0
+2010,Casual,8090000.0
+2011,Casual,15185000.0
+2012,Casual,20025000.0
+2013,Casual,21250000.0
+2014,Casual,98320000.0
+2015,Casual,135700000.0
+2016,Casual,176690000.0
+2017,Casual,256010000.0
+2018,Casual,189505000.0
+2019,Casual,123640000.0
+2020,Casual,210485000.0
+2021,Casual,178320000.0
+2022,Casual,129255000.0
+2023,Casual,141230000.0
+2024,Casual,143210000.0
+2025,Casual,102810000.0
+1997,Design & Illustration,0.0
+1998,Design & Illustration,0.0
+1999,Design & Illustration,0.0
+2000,Design & Illustration,0.0
+2001,Design & Illustration,0.0
+2002,Design & Illustration,0.0
+2003,Design & Illustration,0.0
+2004,Design & Illustration,0.0
+2005,Design & Illustration,0.0
+2006,Design & Illustration,0.0
+2007,Design & Illustration,0.0
+2008,Design & Illustration,0.0
+2009,Design & Illustration,0.0
+2010,Design & Illustration,0.0
+2011,Design & Illustration,0.0
+2012,Design & Illustration,150000.0
+2013,Design & Illustration,510000.0
+2014,Design & Illustration,775000.0
+2015,Design & Illustration,11735000.0
+2016,Design & Illustration,2690000.0
+2017,Design & Illustration,1445000.0
+2018,Design & Illustration,36340000.0
+2019,Design & Illustration,1470000.0
+2020,Design & Illustration,6555000.0
+2021,Design & Illustration,620000.0
+2022,Design & Illustration,540000.0
+2023,Design & Illustration,860000.0
+2024,Design & Illustration,575000.0
+2025,Design & Illustration,445000.0
+1997,Documentary,0.0
+1998,Documentary,0.0
+1999,Documentary,0.0
+2000,Documentary,0.0
+2001,Documentary,0.0
+2002,Documentary,0.0
+2003,Documentary,0.0
+2004,Documentary,0.0
+2005,Documentary,0.0
+2006,Documentary,0.0
+2007,Documentary,0.0
+2008,Documentary,0.0
+2009,Documentary,0.0
+2010,Documentary,0.0
+2011,Documentary,0.0
+2012,Documentary,0.0
+2013,Documentary,0.0
+2014,Documentary,0.0
+2015,Documentary,0.0
+2016,Documentary,0.0
+2017,Documentary,0.0
+2018,Documentary,0.0
+2019,Documentary,0.0
+2020,Documentary,10000.0
+2021,Documentary,0.0
+2022,Documentary,0.0
+2023,Documentary,0.0
+2024,Documentary,0.0
+2025,Documentary,0.0
+1997,Early Access,0.0
+1998,Early Access,0.0
+1999,Early Access,0.0
+2000,Early Access,0.0
+2001,Early Access,0.0
+2002,Early Access,0.0
+2003,Early Access,0.0
+2004,Early Access,0.0
+2005,Early Access,0.0
+2006,Early Access,0.0
+2007,Early Access,0.0
+2008,Early Access,0.0
+2009,Early Access,0.0
+2010,Early Access,0.0
+2011,Early Access,0.0
+2012,Early Access,0.0
+2013,Early Access,15820000.0
+2014,Early Access,9070000.0
+2015,Early Access,21275000.0
+2016,Early Access,19810000.0
+2017,Early Access,53620000.0
+2018,Early Access,30220000.0
+2019,Early Access,35755000.0
+2020,Early Access,52455000.0
+2021,Early Access,51120000.0
+2022,Early Access,39980000.0
+2023,Early Access,63630000.0
+2024,Early Access,179280000.0
+2025,Early Access,61705000.0
+1997,Education,0.0
+1998,Education,0.0
+1999,Education,0.0
+2000,Education,0.0
+2001,Education,0.0
+2002,Education,0.0
+2003,Education,0.0
+2004,Education,0.0
+2005,Education,0.0
+2006,Education,0.0
+2007,Education,0.0
+2008,Education,0.0
+2009,Education,0.0
+2010,Education,0.0
+2011,Education,0.0
+2012,Education,150000.0
+2013,Education,885000.0
+2014,Education,425000.0
+2015,Education,1475000.0
+2016,Education,650000.0
+2017,Education,880000.0
+2018,Education,705000.0
+2019,Education,825000.0
+2020,Education,5200000.0
+2021,Education,1175000.0
+2022,Education,280000.0
+2023,Education,335000.0
+2024,Education,240000.0
+2025,Education,390000.0
+1997,Episodic,0.0
+1998,Episodic,0.0
+1999,Episodic,0.0
+2000,Episodic,0.0
+2001,Episodic,0.0
+2002,Episodic,0.0
+2003,Episodic,0.0
+2004,Episodic,0.0
+2005,Episodic,0.0
+2006,Episodic,0.0
+2007,Episodic,0.0
+2008,Episodic,0.0
+2009,Episodic,0.0
+2010,Episodic,0.0
+2011,Episodic,0.0
+2012,Episodic,0.0
+2013,Episodic,0.0
+2014,Episodic,0.0
+2015,Episodic,0.0
+2016,Episodic,0.0
+2017,Episodic,0.0
+2018,Episodic,0.0
+2019,Episodic,0.0
+2020,Episodic,10000.0
+2021,Episodic,0.0
+2022,Episodic,0.0
+2023,Episodic,0.0
+2024,Episodic,0.0
+2025,Episodic,0.0
+1997,Free To Play,0.0
+1998,Free To Play,0.0
+1999,Free To Play,0.0
+2000,Free To Play,0.0
+2001,Free To Play,0.0
+2002,Free To Play,0.0
+2003,Free To Play,0.0
+2004,Free To Play,0.0
+2005,Free To Play,0.0
+2006,Free To Play,0.0
+2007,Free To Play,75350000.0
+2008,Free To Play,1500000.0
+2009,Free To Play,1250000.0
+2010,Free To Play,8575000.0
+2011,Free To Play,19870000.0
+2012,Free To Play,183810000.0
+2013,Free To Play,298035000.0
+2014,Free To Play,98150000.0
+2015,Free To Play,159275000.0
+2016,Free To Play,94350000.0
+2017,Free To Play,462975000.0
+2018,Free To Play,117385000.0
+2019,Free To Play,137035000.0
+2020,Free To Play,269795000.0
+2021,Free To Play,122810000.0
+2022,Free To Play,118145000.0
+2023,Free To Play,37445000.0
+2024,Free To Play,34845000.0
+2025,Free To Play,47150000.0
+1997,Game Development,0.0
+1998,Game Development,0.0
+1999,Game Development,0.0
+2000,Game Development,0.0
+2001,Game Development,0.0
+2002,Game Development,0.0
+2003,Game Development,0.0
+2004,Game Development,0.0
+2005,Game Development,0.0
+2006,Game Development,0.0
+2007,Game Development,0.0
+2008,Game Development,0.0
+2009,Game Development,0.0
+2010,Game Development,0.0
+2011,Game Development,0.0
+2012,Game Development,150000.0
+2013,Game Development,535000.0
+2014,Game Development,10000.0
+2015,Game Development,1720000.0
+2016,Game Development,3160000.0
+2017,Game Development,170000.0
+2018,Game Development,505000.0
+2019,Game Development,945000.0
+2020,Game Development,4470000.0
+2021,Game Development,2005000.0
+2022,Game Development,295000.0
+2023,Game Development,390000.0
+2024,Game Development,700000.0
+2025,Game Development,350000.0
+1997,Gore,0.0
+1998,Gore,0.0
+1999,Gore,0.0
+2000,Gore,0.0
+2001,Gore,0.0
+2002,Gore,0.0
+2003,Gore,0.0
+2004,Gore,0.0
+2005,Gore,0.0
+2006,Gore,0.0
+2007,Gore,0.0
+2008,Gore,0.0
+2009,Gore,0.0
+2010,Gore,0.0
+2011,Gore,0.0
+2012,Gore,0.0
+2013,Gore,350000.0
+2014,Gore,0.0
+2015,Gore,350000.0
+2016,Gore,1285000.0
+2017,Gore,3155000.0
+2018,Gore,2035000.0
+2019,Gore,10000.0
+2020,Gore,0.0
+2021,Gore,0.0
+2022,Gore,0.0
+2023,Gore,0.0
+2024,Gore,0.0
+2025,Gore,0.0
+1997,Indie,3650000.0
+1998,Indie,0.0
+1999,Indie,0.0
+2000,Indie,0.0
+2001,Indie,150000.0
+2002,Indie,0.0
+2003,Indie,225000.0
+2004,Indie,0.0
+2005,Indie,120000.0
+2006,Indie,38255000.0
+2007,Indie,1035000.0
+2008,Indie,6950000.0
+2009,Indie,18790000.0
+2010,Indie,18050000.0
+2011,Indie,82715000.0
+2012,Indie,108195000.0
+2013,Indie,163420000.0
+2014,Indie,242030000.0
+2015,Indie,322805000.0
+2016,Indie,424100000.0
+2017,Indie,468930000.0
+2018,Indie,415670000.0
+2019,Indie,293600000.0
+2020,Indie,397205000.0
+2021,Indie,363485000.0
+2022,Indie,303325000.0
+2023,Indie,322690000.0
+2024,Indie,456105000.0
+2025,Indie,229110000.0
+1997,Massively Multiplayer,0.0
+1998,Massively Multiplayer,0.0
+1999,Massively Multiplayer,0.0
+2000,Massively Multiplayer,0.0
+2001,Massively Multiplayer,0.0
+2002,Massively Multiplayer,0.0
+2003,Massively Multiplayer,0.0
+2004,Massively Multiplayer,0.0
+2005,Massively Multiplayer,0.0
+2006,Massively Multiplayer,0.0
+2007,Massively Multiplayer,0.0
+2008,Massively Multiplayer,0.0
+2009,Massively Multiplayer,40000.0
+2010,Massively Multiplayer,3510000.0
+2011,Massively Multiplayer,22450000.0
+2012,Massively Multiplayer,26960000.0
+2013,Massively Multiplayer,87945000.0
+2014,Massively Multiplayer,56440000.0
+2015,Massively Multiplayer,56135000.0
+2016,Massively Multiplayer,74235000.0
+2017,Massively Multiplayer,332480000.0
+2018,Massively Multiplayer,128045000.0
+2019,Massively Multiplayer,27120000.0
+2020,Massively Multiplayer,77830000.0
+2021,Massively Multiplayer,135465000.0
+2022,Massively Multiplayer,100720000.0
+2023,Massively Multiplayer,21900000.0
+2024,Massively Multiplayer,63370000.0
+2025,Massively Multiplayer,16030000.0
+1997,Movie,0.0
+1998,Movie,0.0
+1999,Movie,0.0
+2000,Movie,0.0
+2001,Movie,0.0
+2002,Movie,0.0
+2003,Movie,0.0
+2004,Movie,0.0
+2005,Movie,0.0
+2006,Movie,0.0
+2007,Movie,0.0
+2008,Movie,0.0
+2009,Movie,0.0
+2010,Movie,0.0
+2011,Movie,0.0
+2012,Movie,0.0
+2013,Movie,0.0
+2014,Movie,0.0
+2015,Movie,0.0
+2016,Movie,0.0
+2017,Movie,750000.0
+2018,Movie,0.0
+2019,Movie,0.0
+2020,Movie,10000.0
+2021,Movie,0.0
+2022,Movie,0.0
+2023,Movie,0.0
+2024,Movie,0.0
+2025,Movie,0.0
+1997,Nudity,0.0
+1998,Nudity,0.0
+1999,Nudity,0.0
+2000,Nudity,0.0
+2001,Nudity,0.0
+2002,Nudity,0.0
+2003,Nudity,0.0
+2004,Nudity,0.0
+2005,Nudity,0.0
+2006,Nudity,0.0
+2007,Nudity,0.0
+2008,Nudity,0.0
+2009,Nudity,750000.0
+2010,Nudity,0.0
+2011,Nudity,0.0
+2012,Nudity,0.0
+2013,Nudity,0.0
+2014,Nudity,10000.0
+2015,Nudity,0.0
+2016,Nudity,455000.0
+2017,Nudity,1460000.0
+2018,Nudity,585000.0
+2019,Nudity,0.0
+2020,Nudity,0.0
+2021,Nudity,0.0
+2022,Nudity,0.0
+2023,Nudity,0.0
+2024,Nudity,0.0
+2025,Nudity,0.0
+1997,Photo Editing,0.0
+1998,Photo Editing,0.0
+1999,Photo Editing,0.0
+2000,Photo Editing,0.0
+2001,Photo Editing,0.0
+2002,Photo Editing,0.0
+2003,Photo Editing,0.0
+2004,Photo Editing,0.0
+2005,Photo Editing,0.0
+2006,Photo Editing,0.0
+2007,Photo Editing,0.0
+2008,Photo Editing,0.0
+2009,Photo Editing,0.0
+2010,Photo Editing,0.0
+2011,Photo Editing,0.0
+2012,Photo Editing,10000.0
+2013,Photo Editing,0.0
+2014,Photo Editing,395000.0
+2015,Photo Editing,2050000.0
+2016,Photo Editing,240000.0
+2017,Photo Editing,475000.0
+2018,Photo Editing,35280000.0
+2019,Photo Editing,465000.0
+2020,Photo Editing,3685000.0
+2021,Photo Editing,320000.0
+2022,Photo Editing,130000.0
+2023,Photo Editing,210000.0
+2024,Photo Editing,220000.0
+2025,Photo Editing,110000.0
+1997,RPG,0.0
+1998,RPG,0.0
+1999,RPG,0.0
+2000,RPG,0.0
+2001,RPG,900000.0
+2002,RPG,0.0
+2003,RPG,75000.0
+2004,RPG,0.0
+2005,RPG,1925000.0
+2006,RPG,4925000.0
+2007,RPG,7260000.0
+2008,RPG,13945000.0
+2009,RPG,28500000.0
+2010,RPG,26730000.0
+2011,RPG,76750000.0
+2012,RPG,71815000.0
+2013,RPG,174970000.0
+2014,RPG,93420000.0
+2015,RPG,208270000.0
+2016,RPG,194600000.0
+2017,RPG,157790000.0
+2018,RPG,166890000.0
+2019,RPG,92390000.0
+2020,RPG,190240000.0
+2021,RPG,248925000.0
+2022,RPG,271670000.0
+2023,RPG,226060000.0
+2024,RPG,383415000.0
+2025,RPG,142760000.0
+1997,Racing,150000.0
+1998,Racing,0.0
+1999,Racing,0.0
+2000,Racing,0.0
+2001,Racing,0.0
+2002,Racing,0.0
+2003,Racing,0.0
+2004,Racing,0.0
+2005,Racing,0.0
+2006,Racing,1145000.0
+2007,Racing,945000.0
+2008,Racing,4915000.0
+2009,Racing,550000.0
+2010,Racing,995000.0
+2011,Racing,1555000.0
+2012,Racing,1340000.0
+2013,Racing,8240000.0
+2014,Racing,17625000.0
+2015,Racing,33245000.0
+2016,Racing,13560000.0
+2017,Racing,27045000.0
+2018,Racing,18090000.0
+2019,Racing,19365000.0
+2020,Racing,22720000.0
+2021,Racing,39120000.0
+2022,Racing,11895000.0
+2023,Racing,11155000.0
+2024,Racing,10805000.0
+2025,Racing,18340000.0
+1997,Sexual Content,0.0
+1998,Sexual Content,0.0
+1999,Sexual Content,0.0
+2000,Sexual Content,0.0
+2001,Sexual Content,0.0
+2002,Sexual Content,0.0
+2003,Sexual Content,0.0
+2004,Sexual Content,0.0
+2005,Sexual Content,0.0
+2006,Sexual Content,0.0
+2007,Sexual Content,0.0
+2008,Sexual Content,0.0
+2009,Sexual Content,0.0
+2010,Sexual Content,0.0
+2011,Sexual Content,0.0
+2012,Sexual Content,0.0
+2013,Sexual Content,0.0
+2014,Sexual Content,0.0
+2015,Sexual Content,0.0
+2016,Sexual Content,345000.0
+2017,Sexual Content,615000.0
+2018,Sexual Content,555000.0
+2019,Sexual Content,0.0
+2020,Sexual Content,0.0
+2021,Sexual Content,0.0
+2022,Sexual Content,0.0
+2023,Sexual Content,0.0
+2024,Sexual Content,0.0
+2025,Sexual Content,0.0
+1997,Short,0.0
+1998,Short,0.0
+1999,Short,0.0
+2000,Short,0.0
+2001,Short,0.0
+2002,Short,0.0
+2003,Short,0.0
+2004,Short,0.0
+2005,Short,0.0
+2006,Short,0.0
+2007,Short,0.0
+2008,Short,0.0
+2009,Short,0.0
+2010,Short,0.0
+2011,Short,0.0
+2012,Short,0.0
+2013,Short,0.0
+2014,Short,0.0
+2015,Short,0.0
+2016,Short,0.0
+2017,Short,0.0
+2018,Short,0.0
+2019,Short,0.0
+2020,Short,10000.0
+2021,Short,0.0
+2022,Short,0.0
+2023,Short,0.0
+2024,Short,0.0
+2025,Short,0.0
+1997,Simulation,0.0
+1998,Simulation,0.0
+1999,Simulation,0.0
+2000,Simulation,0.0
+2001,Simulation,0.0
+2002,Simulation,0.0
+2003,Simulation,0.0
+2004,Simulation,0.0
+2005,Simulation,0.0
+2006,Simulation,35000000.0
+2007,Simulation,300000.0
+2008,Simulation,6955000.0
+2009,Simulation,6580000.0
+2010,Simulation,9630000.0
+2011,Simulation,15605000.0
+2012,Simulation,38420000.0
+2013,Simulation,116595000.0
+2014,Simulation,81130000.0
+2015,Simulation,145590000.0
+2016,Simulation,195705000.0
+2017,Simulation,204655000.0
+2018,Simulation,172130000.0
+2019,Simulation,121960000.0
+2020,Simulation,146245000.0
+2021,Simulation,165655000.0
+2022,Simulation,143620000.0
+2023,Simulation,130080000.0
+2024,Simulation,185510000.0
+2025,Simulation,136345000.0
+1997,Software Training,0.0
+1998,Software Training,0.0
+1999,Software Training,0.0
+2000,Software Training,0.0
+2001,Software Training,0.0
+2002,Software Training,0.0
+2003,Software Training,0.0
+2004,Software Training,0.0
+2005,Software Training,0.0
+2006,Software Training,0.0
+2007,Software Training,0.0
+2008,Software Training,0.0
+2009,Software Training,0.0
+2010,Software Training,0.0
+2011,Software Training,0.0
+2012,Software Training,0.0
+2013,Software Training,260000.0
+2014,Software Training,415000.0
+2015,Software Training,1090000.0
+2016,Software Training,325000.0
+2017,Software Training,1800000.0
+2018,Software Training,480000.0
+2019,Software Training,345000.0
+2020,Software Training,1100000.0
+2021,Software Training,2360000.0
+2022,Software Training,150000.0
+2023,Software Training,130000.0
+2024,Software Training,510000.0
+2025,Software Training,140000.0
+1997,Sports,0.0
+1998,Sports,0.0
+1999,Sports,0.0
+2000,Sports,0.0
+2001,Sports,0.0
+2002,Sports,0.0
+2003,Sports,0.0
+2004,Sports,0.0
+2005,Sports,0.0
+2006,Sports,0.0
+2007,Sports,0.0
+2008,Sports,95000.0
+2009,Sports,375000.0
+2010,Sports,1725000.0
+2011,Sports,1070000.0
+2012,Sports,630000.0
+2013,Sports,8735000.0
+2014,Sports,20180000.0
+2015,Sports,30890000.0
+2016,Sports,35890000.0
+2017,Sports,70445000.0
+2018,Sports,21365000.0
+2019,Sports,24950000.0
+2020,Sports,67585000.0
+2021,Sports,49430000.0
+2022,Sports,24260000.0
+2023,Sports,23270000.0
+2024,Sports,21770000.0
+2025,Sports,8860000.0
+1997,Strategy,0.0
+1998,Strategy,0.0
+1999,Strategy,0.0
+2000,Strategy,0.0
+2001,Strategy,150000.0
+2002,Strategy,0.0
+2003,Strategy,75000.0
+2004,Strategy,0.0
+2005,Strategy,85000.0
+2006,Strategy,11965000.0
+2007,Strategy,19520000.0
+2008,Strategy,14035000.0
+2009,Strategy,27985000.0
+2010,Strategy,40970000.0
+2011,Strategy,40125000.0
+2012,Strategy,43670000.0
+2013,Strategy,236335000.0
+2014,Strategy,101945000.0
+2015,Strategy,152035000.0
+2016,Strategy,163360000.0
+2017,Strategy,175290000.0
+2018,Strategy,148435000.0
+2019,Strategy,120500000.0
+2020,Strategy,129285000.0
+2021,Strategy,124780000.0
+2022,Strategy,124040000.0
+2023,Strategy,162460000.0
+2024,Strategy,147485000.0
+2025,Strategy,86220000.0
+1997,Tutorial,0.0
+1998,Tutorial,0.0
+1999,Tutorial,0.0
+2000,Tutorial,0.0
+2001,Tutorial,0.0
+2002,Tutorial,0.0
+2003,Tutorial,0.0
+2004,Tutorial,0.0
+2005,Tutorial,0.0
+2006,Tutorial,0.0
+2007,Tutorial,0.0
+2008,Tutorial,0.0
+2009,Tutorial,0.0
+2010,Tutorial,0.0
+2011,Tutorial,0.0
+2012,Tutorial,0.0
+2013,Tutorial,0.0
+2014,Tutorial,0.0
+2015,Tutorial,0.0
+2016,Tutorial,0.0
+2017,Tutorial,0.0
+2018,Tutorial,0.0
+2019,Tutorial,0.0
+2020,Tutorial,10000.0
+2021,Tutorial,0.0
+2022,Tutorial,0.0
+2023,Tutorial,0.0
+2024,Tutorial,0.0
+2025,Tutorial,0.0
+1997,Utilities,0.0
+1998,Utilities,0.0
+1999,Utilities,0.0
+2000,Utilities,0.0
+2001,Utilities,0.0
+2002,Utilities,0.0
+2003,Utilities,0.0
+2004,Utilities,0.0
+2005,Utilities,0.0
+2006,Utilities,0.0
+2007,Utilities,0.0
+2008,Utilities,0.0
+2009,Utilities,0.0
+2010,Utilities,0.0
+2011,Utilities,0.0
+2012,Utilities,10000.0
+2013,Utilities,705000.0
+2014,Utilities,1540000.0
+2015,Utilities,4975000.0
+2016,Utilities,2785000.0
+2017,Utilities,6890000.0
+2018,Utilities,42160000.0
+2019,Utilities,3745000.0
+2020,Utilities,7860000.0
+2021,Utilities,4320000.0
+2022,Utilities,1760000.0
+2023,Utilities,1190000.0
+2024,Utilities,4985000.0
+2025,Utilities,1185000.0
+1997,Video Production,0.0
+1998,Video Production,0.0
+1999,Video Production,0.0
+2000,Video Production,0.0
+2001,Video Production,0.0
+2002,Video Production,0.0
+2003,Video Production,0.0
+2004,Video Production,0.0
+2005,Video Production,0.0
+2006,Video Production,0.0
+2007,Video Production,0.0
+2008,Video Production,0.0
+2009,Video Production,0.0
+2010,Video Production,0.0
+2011,Video Production,0.0
+2012,Video Production,1500000.0
+2013,Video Production,10000.0
+2014,Video Production,510000.0
+2015,Video Production,9200000.0
+2016,Video Production,475000.0
+2017,Video Production,1115000.0
+2018,Video Production,1310000.0
+2019,Video Production,545000.0
+2020,Video Production,965000.0
+2021,Video Production,3410000.0
+2022,Video Production,475000.0
+2023,Video Production,315000.0
+2024,Video Production,495000.0
+2025,Video Production,215000.0
+1997,Violent,0.0
+1998,Violent,0.0
+1999,Violent,0.0
+2000,Violent,0.0
+2001,Violent,0.0
+2002,Violent,0.0
+2003,Violent,0.0
+2004,Violent,0.0
+2005,Violent,0.0
+2006,Violent,0.0
+2007,Violent,0.0
+2008,Violent,0.0
+2009,Violent,750000.0
+2010,Violent,0.0
+2011,Violent,0.0
+2012,Violent,0.0
+2013,Violent,0.0
+2014,Violent,0.0
+2015,Violent,700000.0
+2016,Violent,2970000.0
+2017,Violent,4135000.0
+2018,Violent,2650000.0
+2019,Violent,10000.0
+2020,Violent,0.0
+2021,Violent,10000.0
+2022,Violent,0.0
+2023,Violent,0.0
+2024,Violent,0.0
+2025,Violent,0.0
+1997,Web Publishing,0.0
+1998,Web Publishing,0.0
+1999,Web Publishing,0.0
+2000,Web Publishing,0.0
+2001,Web Publishing,0.0
+2002,Web Publishing,0.0
+2003,Web Publishing,0.0
+2004,Web Publishing,0.0
+2005,Web Publishing,0.0
+2006,Web Publishing,0.0
+2007,Web Publishing,0.0
+2008,Web Publishing,0.0
+2009,Web Publishing,0.0
+2010,Web Publishing,0.0
+2011,Web Publishing,0.0
+2012,Web Publishing,150000.0
+2013,Web Publishing,735000.0
+2014,Web Publishing,425000.0
+2015,Web Publishing,2545000.0
+2016,Web Publishing,225000.0
+2017,Web Publishing,570000.0
+2018,Web Publishing,525000.0
+2019,Web Publishing,725000.0
+2020,Web Publishing,700000.0
+2021,Web Publishing,1625000.0
+2022,Web Publishing,50000.0
+2023,Web Publishing,60000.0
+2024,Web Publishing,70000.0
+2025,Web Publishing,40000.0

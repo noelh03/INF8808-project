@@ -193,7 +193,18 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / "../src/assets/data/games.csv"
+RAW_DATA_PATH = BASE_DIR / "assets" / "data" / "games.csv"
+PROCESSED_DIR = BASE_DIR / "assets" / "data" / "processed"
+VIZ1_DATA_PATH = PROCESSED_DIR / "viz1_scatter.csv"
+VIZ4_DATA_PATH = PROCESSED_DIR / "viz4_bubble.csv"
+VIZ6_DATA_PATH = PROCESSED_DIR / "viz6_violin.csv"
+
+
+def load_csv_with_fallback(preferred_path, fallback_path):
+    if preferred_path.exists():
+        return pd.read_csv(preferred_path)
+    return pd.read_csv(fallback_path)
+
 
 app = Dash(
     __name__,
@@ -205,29 +216,39 @@ app = Dash(
 server = app.server
 app.title = "Project | INF8808"
 
-data = pd.read_csv(DATA_PATH)
-_tmp = data.copy()
-_tmp['nb_games_dev'] = _tmp.groupby('Publishers')['Name'].transform('count')
-VIOLIN_REAL_MAX = int(_tmp['nb_games_dev'].max())
+data = pd.read_csv(RAW_DATA_PATH)
+SCATTER_DATA = load_csv_with_fallback(VIZ1_DATA_PATH, RAW_DATA_PATH)
+BUBBLE_DATA = load_csv_with_fallback(VIZ4_DATA_PATH, RAW_DATA_PATH)
+VIOLIN_DATA = load_csv_with_fallback(VIZ6_DATA_PATH, RAW_DATA_PATH)
+
+if "nb_games_dev" in VIOLIN_DATA.columns:
+    VIOLIN_REAL_MAX = int(VIOLIN_DATA["nb_games_dev"].max())
+elif {"Publishers", "Name"}.issubset(data.columns):
+    _tmp = data.copy()
+    _tmp["nb_games_dev"] = _tmp.groupby("Publishers")["Name"].transform("count")
+    VIOLIN_REAL_MAX = int(_tmp["nb_games_dev"].max())
+else:
+    VIOLIN_REAL_MAX = 50
+
 VIOLIN_SLIDE_SLIDER_VALUES = [VIOLIN_REAL_MAX, 5, VIOLIN_REAL_MAX]
 sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(
-    data,
+    SCATTER_DATA,
     price_range=(0, 100),
     slider_id=SCATTER_SLIDER_ID,
     graph_id=SCATTER_GRAPH_ID,
 )
 viz2_box_layout = viz2_box.create_layout(data)
 viz3_line_layout = viz3_line.create_layout(data)
-viz4_bubble_layout = viz4_bubble.create_layout(data)
+viz4_bubble_layout = viz4_bubble.create_layout(BUBBLE_DATA)
 viz5_dot_layout = viz5_dot.create_layout(
     data,
     slider_id=DOT_SLIDER_ID,
     graph_id=DOT_GRAPH_ID,
 )
 viz6_violin_layout = viz6_violin.create_layout(
-    data,
+    VIOLIN_DATA,
     slider_id=VIOLIN_SLIDER_ID,
     graph_id=VIOLIN_GRAPH_ID,
 )
@@ -1362,7 +1383,7 @@ def update_scatter_price_range(price_range, question_idx):
         price_range = [0, 100]
 
     return viz1_scatter.create_figure(
-        data,
+        SCATTER_DATA,
         price_range=tuple(price_range),
         question_idx=question_idx or 0,
     )
@@ -1446,19 +1467,19 @@ def update_bubble(max_visibility, sat_range, question_idx):
     if triggered == "viz4-info-slide-idx":
         if q == 0:
             return (
-                viz4_bubble.create_figure(data, 8_000_000, [0, 1]),
+                viz4_bubble.create_figure(BUBBLE_DATA, 8_000_000, [0, 1], q),
                 10_000_000,
                 [0, 1],
             )
         if q == 1:
             return (
-                viz4_bubble.create_figure(data, 3_000_000, [0.7, 1]),
+                viz4_bubble.create_figure(BUBBLE_DATA, 3_000_000, [0.7, 1], q),
                 3_000_000,
                 [0.7, 1],
             )
         if q == 2:
             return (
-                viz4_bubble.create_figure(data, 2_000_000, [0, 1]),
+                viz4_bubble.create_figure(BUBBLE_DATA, 2_000_000, [0, 1], q),
                 2_000_000,
                 [0, 1],
             )
@@ -1466,9 +1487,10 @@ def update_bubble(max_visibility, sat_range, question_idx):
 
     return (
         viz4_bubble.create_figure(
-            data,
+            BUBBLE_DATA,
             max_visibility=max_visibility,
             sat_range=sat_range,
+            question_idx=q,
         ),
         dash.no_update,
         dash.no_update,
@@ -1543,7 +1565,6 @@ def sync_violin_slider_to_slide(slide_idx):
     Input("viz6-info-slide-idx", "data"),
 )
 def update_violin(max_games, slide_idx):
-    import viz6_violin.preprocess as v6_pre
     import viz6_violin.plot_generate as v6_plot
  
     if ctx.triggered_id == "viz6-info-slide-idx":
@@ -1551,9 +1572,7 @@ def update_violin(max_games, slide_idx):
     elif max_games is None:
         max_games = VIOLIN_REAL_MAX
  
-    my_df = v6_pre.step1(data.copy())
-    my_df = v6_pre.step2(my_df)
-    my_df = v6_plot.filter_by_max_games(my_df, max_games)
+    my_df = v6_plot.filter_by_max_games(VIOLIN_DATA, max_games)
  
     fig = v6_plot.generate_plot(my_df)
     fig = v6_plot.update_axes_labels(fig)
@@ -1563,4 +1582,4 @@ def update_violin(max_games, slide_idx):
     return fig
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
