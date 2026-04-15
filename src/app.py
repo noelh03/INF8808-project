@@ -23,6 +23,7 @@ the overall storytelling structure.
 """
 
 import copy
+import os
 from pathlib import Path
 
 from dash import Dash, html, dcc, Input, Output, State, ctx
@@ -192,23 +193,22 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
     )
 
 
-BASE_DIR = Path(__file__).resolve().parent
-RAW_DATA_PATH = BASE_DIR / "assets" / "data" / "games.csv"
-PROCESSED_DIR = BASE_DIR / "assets" / "data" / "processed"
-VIZ1_DATA_PATH = PROCESSED_DIR / "viz1_scatter.csv"
-VIZ4_DATA_PATH = PROCESSED_DIR / "viz4_bubble.csv"
-VIZ6_DATA_PATH = PROCESSED_DIR / "viz6_violin.csv"
+BASE_DIR = os.path.dirname(__file__)
+RAW_DATA_PATH = os.path.join(BASE_DIR, "assets", "data", "games.csv")
+PROCESSED_DIR = os.path.join(BASE_DIR, "assets", "data", "processed")
+VIZ1_DATA_PATH = os.path.join(PROCESSED_DIR, "viz1_scatter.csv")
+VIZ4_DATA_PATH = os.path.join(PROCESSED_DIR, "viz4_bubble.csv")
+VIZ6_DATA_PATH = os.path.join(PROCESSED_DIR, "viz6_violin.csv")
 
 
 def load_csv_with_fallback(preferred_path, fallback_path):
-    if preferred_path.exists():
+    if os.path.exists(preferred_path):
         return pd.read_csv(preferred_path)
     return pd.read_csv(fallback_path)
 
-
 app = Dash(
     __name__,
-    assets_folder=str(BASE_DIR / "assets"),
+    assets_folder=os.path.join(BASE_DIR, "assets"),
     external_stylesheets=[
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
     ],
@@ -1467,7 +1467,7 @@ def update_bubble(max_visibility, sat_range, question_idx):
     if triggered == "viz4-info-slide-idx":
         if q == 0:
             return (
-                viz4_bubble.create_figure(BUBBLE_DATA, 8_000_000, [0, 1], q),
+                viz4_bubble.create_figure(BUBBLE_DATA, 10_000_000, [0, 1], q),
                 10_000_000,
                 [0, 1],
             )
