@@ -40,8 +40,9 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
     
     fig.update_layout(dragmode=False)
 
-    slider_marks = {i: str(i) for i in range(VIOLIN_SLIDER_MIN, VIOLIN_SLIDER_MAX + 1, 5)}
-    slider_marks[VIOLIN_SLIDER_MIN] = str(VIOLIN_SLIDER_MIN)
+    slider_marks = {VIOLIN_SLIDER_MIN: str(VIOLIN_SLIDER_MIN)}
+    for i in range(50, VIOLIN_SLIDER_MAX, 50):
+        slider_marks[i] = str(i)
     slider_marks[VIOLIN_SLIDER_MAX] = str(VIOLIN_SLIDER_MAX)
 
     return html.Div(className="viz-inner", children=[
@@ -55,7 +56,7 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
                         figure=fig,
                         config={"displayModeBar": False, "responsive": True},
                         className="graph",
-                        style={"height": "100%", "max-height": "1000px"},
+                        style={"height": "100%"},
                     ),
                 ],
             ),
