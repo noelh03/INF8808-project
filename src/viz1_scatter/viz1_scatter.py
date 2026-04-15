@@ -11,7 +11,7 @@ and user interaction within the scrollytelling flow.
 """
 
 from dash import dcc, html
-from viz1_scatter.preprocess import preprocess_data
+from viz1_scatter import preprocess
 from viz1_scatter.plot_generate import generate_plot
 
 
@@ -19,9 +19,18 @@ SLIDER_MIN = 0
 SLIDER_MAX = 1000
 SLIDER_STEP = 10
 
+_cached_processed_df = None
+
+
+def get_processed_df(df):
+    global _cached_processed_df
+    if _cached_processed_df is None:
+        _cached_processed_df = preprocess.preprocess_data(df)
+    return _cached_processed_df
+
 
 def create_figure(df, price_range=(0, 100), question_idx=0):
-    processed_df = preprocess_data(df)
+    processed_df = get_processed_df(df)
     return generate_plot(
         processed_df,
         price_range=price_range,
