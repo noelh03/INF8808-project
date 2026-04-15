@@ -206,7 +206,10 @@ server = app.server
 app.title = "Project | INF8808"
 
 data = pd.read_csv(DATA_PATH)
-
+_tmp = data.copy()
+_tmp['nb_games_dev'] = _tmp.groupby('Publishers')['Name'].transform('count')
+VIOLIN_REAL_MAX = int(_tmp['nb_games_dev'].max())
+VIOLIN_SLIDE_SLIDER_VALUES = [VIOLIN_REAL_MAX, 5, VIOLIN_REAL_MAX]
 sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(
@@ -457,6 +460,7 @@ app.layout = html.Div(
                                     html.Div(
                                         className="info-carousel-footer",
                             children=[
+                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn", n_clicks=0),
                                 html.Div(
                                                 className="info-progress",
                                                 children=[
@@ -465,13 +469,7 @@ app.layout = html.Div(
                                                     html.Span(id="viz1-info-dot-2", className="info-dot"),
                                                 ],
                                             ),
-                                            html.Div(
-                                                className="info-nav-buttons",
-                                    children=[
-                                                    html.Button("←", id="viz1-info-prev-btn", className="info-nav-btn"),
-                                                    html.Button("→", id="viz1-info-next-btn", className="info-nav-btn"),
-                                                ],
-                                            ),
+                                                    html.Button("→", id="viz1-info-next-btn", className="info-nav-btn", n_clicks=0),
                                         ],
                                     ),
                                 ],
@@ -592,7 +590,7 @@ app.layout = html.Div(
                                             html.Span("2 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                            children=[
+                                                children=[
                                                     html.I(className="fa-solid fa-calendar-days info-slide-icon"),
                                                     html.Span(
                                                         " L’année de sortie influence-t-elle le succès commercial moyen d’un jeu ?",
@@ -674,6 +672,12 @@ app.layout = html.Div(
                                     html.Div(
                                         className="info-carousel-footer",
                             children=[
+                                            html.Button(
+                                                "←",
+                                                id="viz3-info-prev-btn",
+                                                className="info-nav-btn",
+                                                n_clicks=0,
+                                            ),
                                 html.Div(
                                                 className="info-progress",
                                     children=[
@@ -886,6 +890,7 @@ app.layout = html.Div(
                                     html.Div(
                                         className="info-carousel-footer",
                                         children=[
+                                                    html.Button("←", id="viz4-info-prev-btn", className="info-nav-btn", n_clicks=0),
                                             html.Div(
                                                 className="info-progress",
                                                 children=[
@@ -894,13 +899,7 @@ app.layout = html.Div(
                                                     html.Span(id="viz4-info-dot-2", className="info-dot"),
                                                 ],
                                             ),
-                                            html.Div(
-                                                className="info-nav-buttons",
-                                                children=[
-                                                    html.Button("←", id="viz4-info-prev-btn", className="info-nav-btn"),
-                                                    html.Button("→", id="viz4-info-next-btn", className="info-nav-btn"),
-                                                ],
-                                            ),
+                                                    html.Button("→", id="viz4-info-next-btn", className="info-nav-btn", n_clicks=0),
                                         ],
                                     ),
                                 ],
@@ -925,7 +924,7 @@ app.layout = html.Div(
                                             html.Span("1 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                            children=[
+                                                children=[
                                                     html.I(
                                                         className="fa-solid fa-clock info-slide-icon",
                                                     ),
@@ -947,7 +946,7 @@ app.layout = html.Div(
                                             ),
                                         ],
                                     ),
-                                html.Div(
+                                    html.Div(
                                         id="viz5-info-slide-1",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -964,7 +963,7 @@ app.layout = html.Div(
                                                     ),
                                                 ],
                                             ),
-                                        html.P(
+                                            html.P(
                                                 "La couleur représente le volume total d’avis (positifs + négatifs) : "
                                                 "plus la teinte est foncée, plus le jeu a été évalué souvent. Les points "
                                                 "très clairs ont peu d’avis : le ratio de satisfaction y est plus sensible "
@@ -978,36 +977,15 @@ app.layout = html.Div(
                                     html.Div(
                                         className="info-carousel-footer",
                                         children=[
+                                            html.Button("←", id="viz5-info-prev-btn", className="info-nav-btn", n_clicks=0),
                                             html.Div(
                                                 className="info-progress",
                                                 children=[
-                                                    html.Span(
-                                                        id="viz5-info-dot-0",
-                                                        className="info-dot active",
-                                                    ),
-                                                    html.Span(
-                                                        id="viz5-info-dot-1",
-                                                        className="info-dot",
-                                                    ),
+                                                    html.Span(id="viz5-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz5-info-dot-1", className="info-dot"),
                                                 ],
                                             ),
-                                            html.Div(
-                                                className="info-nav-buttons",
-                                                children=[
-                                                    html.Button(
-                                                        "←",
-                                                        id="viz5-info-prev-btn",
-                                                        className="info-nav-btn",
-                                                        n_clicks=0,
-                                                    ),
-                                                    html.Button(
-                                                        "→",
-                                                        id="viz5-info-next-btn",
-                                                        className="info-nav-btn",
-                                                        n_clicks=0,
-                                                    ),
-                                                ],
-                                            ),
+                                            html.Button("→", id="viz5-info-next-btn", className="info-nav-btn", n_clicks=0),
                                         ],
                                     ),
                                 ],
@@ -1051,6 +1029,43 @@ app.layout = html.Div(
                                                 "dans toutes les tranches sans exception, y compris les plus basses. "
                                                 "Le succès n'est donc pas réservé à une élite d'éditeurs expérimentés : "
                                                 "il est distribué largement parmi les petits studios."
+                                            ),                                            
+                                            html.P(
+                                                "Des jeux extrêmement populaires comme Counter-Strike 2, Dota 2 ou PUBG "
+                                                "illustrent bien ce phénomène : ils atteignent un succès massif sans que "
+                                                "cela soit nécessairement lié à une forte expérience en nombre de jeux publiés."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/570/Dota_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                                            html.Span("Dota 2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                                            html.Span("PUBG", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
                                             ),
                                         ],
                                     ),
@@ -1079,6 +1094,46 @@ app.layout = html.Div(
                                                 "Les éditeurs majeurs existent bien dans les tranches hautes, "
                                                 "mais en bien moins grand nombre. À expérience équivalente, "
                                                 "ce sont les indépendants qui produisent la majorité des succès commerciaux."
+                                            ),
+                                            html.P(
+                                                "Par exemple, des jeux indépendants comme Stardew Valley ou Terraria "
+                                                "atteignent un succès massif avec très peu de titres publiés, alors que "
+                                                "des productions majeures comme GTA V ou Call of Duty reposent sur des "
+                                                "studios très expérimentés mais ne dominent pas en nombre."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/105600/Terraria/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/terraria.jpg", className="game-logo-img"),
+                                                            html.Span("Terraria", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/271590/Grand_Theft_Auto_V/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/gtaV.png", className="game-logo-img"),
+                                                            html.Span("GTA V", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
                                             ),
                                         ],
                                     ),
@@ -1109,11 +1164,57 @@ app.layout = html.Div(
                                                 "Publier davantage de jeux n'est pas un gage de succès : "
                                                 "l'expérience accumulée ne se traduit pas en avantage structurel mesurable."
                                             ),
+                                            html.P(
+                                                "Des jeux comme Among Us ou Stardew Valley montrent qu’un succès massif "
+                                                "peut être atteint avec très peu d’expérience initiale, tandis que des "
+                                                "studios très prolifiques ne produisent pas systématiquement des succès "
+                                                "comparables."
+                                            ),
+                                            html.Div(
+                                                className="game-logo-strip",
+                                                children=[
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/945360/Among_Us/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/amongus.png", className="game-logo-img"),
+                                                            html.Span("Among Us", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                                        target="_blank",
+                                                        className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                                        children=[
+                                                            html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                                            html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                                            html.Span("Stardew", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                    html.A(
+                                                        href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                                        target="_blank",
+                                                        className="game-logo-chip",
+                                                        children=[
+                                                            html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                                            html.Span("CS2", className="game-logo-label"),
+                                                        ],
+                                                    ),
+                                                ],
+                                            ),
                                         ],
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
                                         children=[
+                                            html.Button(
+                                                "←",
+                                                id="viz6-info-prev-btn",
+                                                className="info-nav-btn",
+                                                n_clicks=0,
+                                            ),
                                             html.Div(
                                                 className="info-progress",
                                                 children=[
@@ -1277,12 +1378,19 @@ def update_scatter_price_range(price_range, question_idx):
     Output("viz3-info-dot-0", "className"),
     Output("viz3-info-dot-1", "className"),
     Output("viz3-info-dot-2", "className"),
+    Input("viz3-info-prev-btn", "n_clicks"),
     Input("viz3-info-next-btn", "n_clicks"),
     State("viz3-info-slide-idx", "data"),
     prevent_initial_call=True,
 )
-def advance_info_carousel(n_clicks, current_idx):
-    next_idx = ((current_idx or 0) + 1) % 3
+def advance_info_carousel(prev_clicks, next_clicks, current_idx):
+    triggered = ctx.triggered_id
+    current = current_idx or 0
+    
+    if triggered == "viz3-info-prev-btn":
+        next_idx = (current - 1) % 3
+    else:  # viz3-info-next-btn
+        next_idx = (current + 1) % 3
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
@@ -1382,19 +1490,17 @@ def update_bubble(max_visibility, sat_range, question_idx):
     prevent_initial_call=True,
 )
 def advance_viz5_info_carousel(prev_clicks, next_clicks, current_idx):
-    idx = current_idx or 0
-    tid = ctx.triggered_id
-    if tid is None:
-        raise PreventUpdate
-    if tid == "viz5-info-next-btn":
-        idx = (idx + 1) % 2
-    elif tid == "viz5-info-prev-btn":
-        idx = (idx - 1) % 2
+    triggered = ctx.triggered_id
+    current = current_idx or 0
+    
+    if triggered == "viz5-info-prev-btn":
+        next_idx = (current - 1) % 2
     else:
-        raise PreventUpdate
-    styles = [{"display": "flex" if i == idx else "none"} for i in range(2)]
-    dots = ["info-dot active" if i == idx else "info-dot" for i in range(2)]
-    return idx, styles[0], styles[1], dots[0], dots[1]
+        next_idx = (current + 1) % 2
+    
+    styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
+    dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(2)]
+    return next_idx, styles[0], styles[1], dots[0], dots[1]
 
 @app.callback(
     Output("viz6-info-slide-idx", "data"),
@@ -1404,12 +1510,20 @@ def advance_viz5_info_carousel(prev_clicks, next_clicks, current_idx):
     Output("viz6-info-dot-0", "className"),
     Output("viz6-info-dot-1", "className"),
     Output("viz6-info-dot-2", "className"),
+    Input("viz6-info-prev-btn", "n_clicks"),
     Input("viz6-info-next-btn", "n_clicks"),
     State("viz6-info-slide-idx", "data"),
     prevent_initial_call=True,
 )
-def advance_viz6_info_carousel(n_clicks, current_idx):
-    next_idx = ((current_idx or 0) + 1) % 3
+def advance_viz6_info_carousel(prev_clicks, next_clicks, current_idx):
+    triggered = ctx.triggered_id
+    current = current_idx or 0
+    
+    if triggered == "viz6-info-prev-btn":
+        next_idx = (current - 1) % 3
+    else:
+        next_idx = (current + 1) % 3
+    
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
@@ -1436,7 +1550,7 @@ def update_violin(max_games, slide_idx):
     if ctx.triggered_id == "viz6-info-slide-idx":
         max_games = VIOLIN_SLIDE_SLIDER_VALUES[(slide_idx or 0) % 3]
     elif max_games is None:
-        max_games = viz6_violin.VIOLIN_SLIDER_MAX
+        max_games = VIOLIN_REAL_MAX
  
     my_df = v6_pre.step1(data.copy())
     my_df = v6_pre.step2(my_df)
