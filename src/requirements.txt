@@ -34,3 +34,6 @@ brotli>=1.0.9
 
 # Backport only on older Python
 importlib-metadata; python_version < "3.10"
+
+# gunicorn
+gunicorn>=20.1.0

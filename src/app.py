@@ -590,7 +590,7 @@ app.layout = html.Div(
                                             html.Span("2 / 3", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                            children=[
+                                                children=[
                                                     html.I(className="fa-solid fa-calendar-days info-slide-icon"),
                                                     html.Span(
                                                         " L’année de sortie influence-t-elle le succès commercial moyen d’un jeu ?",
@@ -924,7 +924,7 @@ app.layout = html.Div(
                                             html.Span("1 / 2", className="info-slide-counter"),
                                             html.H4(
                                                 className="info-block-title",
-                            children=[
+                                                children=[
                                                     html.I(
                                                         className="fa-solid fa-clock info-slide-icon",
                                                     ),
@@ -946,7 +946,7 @@ app.layout = html.Div(
                                             ),
                                         ],
                                     ),
-                                html.Div(
+                                    html.Div(
                                         id="viz5-info-slide-1",
                                         className="info-slide",
                                         style={"display": "none"},
@@ -963,7 +963,7 @@ app.layout = html.Div(
                                                     ),
                                                 ],
                                             ),
-                                        html.P(
+                                            html.P(
                                                 "La couleur représente le volume total d’avis (positifs + négatifs) : "
                                                 "plus la teinte est foncée, plus le jeu a été évalué souvent. Les points "
                                                 "très clairs ont peu d’avis : le ratio de satisfaction y est plus sensible "
@@ -976,32 +976,16 @@ app.layout = html.Div(
                                     ),
                                     html.Div(
                                         className="info-carousel-footer",
-                            children=[
-                                            html.Button(
-                                                "←",
-                                                id="viz5-info-prev-btn",
-                                                className="info-nav-btn",
-                                                n_clicks=0,
-                                            ),
-                                html.Div(
+                                        children=[
+                                            html.Button("←", id="viz5-info-prev-btn", className="info-nav-btn", n_clicks=0),
+                                            html.Div(
                                                 className="info-progress",
-                                    children=[
-                                                    html.Span(
-                                                        id="viz5-info-dot-0",
-                                                        className="info-dot active",
-                                                    ),
-                                                    html.Span(
-                                                        id="viz5-info-dot-1",
-                                                        className="info-dot",
-                                                    ),
+                                                children=[
+                                                    html.Span(id="viz5-info-dot-0", className="info-dot active"),
+                                                    html.Span(id="viz5-info-dot-1", className="info-dot"),
                                                 ],
                                             ),
-                                            html.Button(
-                                                "→",
-                                                id="viz5-info-next-btn",
-                                                className="info-nav-btn",
-                                                n_clicks=0,
-                                            ),
+                                            html.Button("→", id="viz5-info-next-btn", className="info-nav-btn", n_clicks=0),
                                         ],
                                     ),
                                 ],
@@ -1430,11 +1414,11 @@ def advance_info_carousel(prev_clicks, next_clicks, current_idx):
 def update_viz4_carousel(prev_clicks, next_clicks, current_idx):
     idx = current_idx or 0
 
-    ctx = callback_context
-    if not ctx.triggered:
-        return dash.no_update
+    cb_ctx = callback_context
+    if not cb_ctx.triggered:
+        raise PreventUpdate
 
-    button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    button_id = cb_ctx.triggered[0]["prop_id"].split(".")[0]
 
     if button_id == "viz4-info-next-btn":
         idx = (idx + 1) % 3
@@ -1448,42 +1432,48 @@ def update_viz4_carousel(prev_clicks, next_clicks, current_idx):
 
 @app.callback(
     Output(BUBBLE_GRAPH_ID, "figure"),
+    Output(BUBBLE_Y_SLIDER_ID, "value"),
+    Output(BUBBLE_X_SLIDER_ID, "value"),
     Input(BUBBLE_Y_SLIDER_ID, "value"),
     Input(BUBBLE_X_SLIDER_ID, "value"),
     Input("viz4-info-slide-idx", "data"),
 )
 def update_bubble(max_visibility, sat_range, question_idx):
-    return viz4_bubble.create_figure(
-        data,
-        max_visibility=max_visibility,
-        sat_range=sat_range,
-        question_idx=question_idx or 0
+    """Un seul callback : sliders manuels ou changement de question (carrousel viz4)."""
+    triggered = ctx.triggered_id
+    q = question_idx or 0
+
+    if triggered == "viz4-info-slide-idx":
+        if q == 0:
+            return (
+                viz4_bubble.create_figure(data, 8_000_000, [0, 1], q),
+                10_000_000,
+                [0, 1],
+            )
+        if q == 1:
+            return (
+                viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], q),
+                3_000_000,
+                [0.7, 1],
+            )
+        if q == 2:
+            return (
+                viz4_bubble.create_figure(data, 2_000_000, [0, 1], q),
+                2_000_000,
+                [0, 1],
+            )
+        raise PreventUpdate
+
+    return (
+        viz4_bubble.create_figure(
+            data,
+            max_visibility=max_visibility,
+            sat_range=sat_range,
+            question_idx=q,
+        ),
+        dash.no_update,
+        dash.no_update,
     )
-@app.callback(
-    Output(BUBBLE_GRAPH_ID, "figure"),
-    Output(BUBBLE_Y_SLIDER_ID, "value"),
-    Output(BUBBLE_X_SLIDER_ID, "value"),
-    Input("viz4-info-slide-idx", "data"),
-)
-def update_bubble_auto(question_idx):
-    if question_idx == 0:
-        return (
-            viz4_bubble.create_figure(data, 8_000_000, [0, 1], question_idx),
-            10_000_000,
-            [0, 1]
-        )
-    elif question_idx == 1:
-        return (
-            viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], question_idx),
-            3_000_000,
-            [0.7, 1]
-        )
-    elif question_idx == 2:
-        return (
-            viz4_bubble.create_figure(data, 2_000_000, [0, 1], question_idx),
-            2_000_000,
-            [0, 1]
-        )
 
 # ---------------------------------------------------------------------------
 # Viz 5 info carousel — 2 slides
@@ -1505,7 +1495,7 @@ def advance_viz5_info_carousel(prev_clicks, next_clicks, current_idx):
     
     if triggered == "viz5-info-prev-btn":
         next_idx = (current - 1) % 2
-    else:  # viz5-info-next-btn
+    else:
         next_idx = (current + 1) % 2
     
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(2)]
@@ -1531,23 +1521,13 @@ def advance_viz6_info_carousel(prev_clicks, next_clicks, current_idx):
     
     if triggered == "viz6-info-prev-btn":
         next_idx = (current - 1) % 3
-    else:  # viz6-info-next-btn
+    else:
         next_idx = (current + 1) % 3
     
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
 
-
-@app.callback(
-    Output(DOT_GRAPH_ID, "figure"),
-    Input(DOT_SLIDER_ID, "value"),
-)
-def update_dot(max_playtime):
-    return viz5_dot.create_figure(
-        data,
-        max_playtime if max_playtime is not None else viz5_dot.DOT_SLIDER_MAX,
-    )
 
 @app.callback(
     Output(VIOLIN_SLIDER_ID, "value"),
