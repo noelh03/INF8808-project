@@ -605,13 +605,13 @@ html.story-fade .story-section .section-inline-info {
     box-shadow: 0 6px 18px rgba(99, 102, 241, 0.18);
 }
 
-.arrow-btn.arrow-down {
+/* .arrow-btn.arrow-down {
     animation: arrowBounce 2.2s ease-in-out infinite;
 }
 
 .arrow-btn.arrow-down:hover {
     animation-play-state: paused;
-}
+} */
 
 .arrow-chevron {
     display: block;

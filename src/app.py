@@ -1446,19 +1446,19 @@ def update_bubble(max_visibility, sat_range, question_idx):
     if triggered == "viz4-info-slide-idx":
         if q == 0:
             return (
-                viz4_bubble.create_figure(data, 8_000_000, [0, 1], q),
+                viz4_bubble.create_figure(data, 8_000_000, [0, 1]),
                 10_000_000,
                 [0, 1],
             )
         if q == 1:
             return (
-                viz4_bubble.create_figure(data, 3_000_000, [0.7, 1], q),
+                viz4_bubble.create_figure(data, 3_000_000, [0.7, 1]),
                 3_000_000,
                 [0.7, 1],
             )
         if q == 2:
             return (
-                viz4_bubble.create_figure(data, 2_000_000, [0, 1], q),
+                viz4_bubble.create_figure(data, 2_000_000, [0, 1]),
                 2_000_000,
                 [0, 1],
             )
@@ -1469,7 +1469,6 @@ def update_bubble(max_visibility, sat_range, question_idx):
             data,
             max_visibility=max_visibility,
             sat_range=sat_range,
-            question_idx=q,
         ),
         dash.no_update,
         dash.no_update,
