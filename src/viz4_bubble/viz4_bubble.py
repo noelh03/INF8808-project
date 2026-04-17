@@ -127,3 +127,207 @@ def create_layout(df, max_visibility=BUBBLE_SLIDER_MAX, sat_range=None):
             ),
         ],
     )
+    
+def create_info_content():
+    return html.Div(
+        className="info-carousel",
+        children=[
+            dcc.Store(id="viz4-info-slide-idx", data=0),
+
+            html.Div(
+                id="viz4-info-slide-0",
+                className="info-slide",
+                children=[
+                    html.Span("1 / 3", className="info-slide-counter"),
+                    html.H4(
+                        className="info-block-title",
+                        children=[
+                            html.I(className="fa-solid fa-comments info-slide-icon"),
+                            html.Span(" Le volume d’avis est-il corrélé au succès commercial ?"),
+                        ],
+                    ),
+                    html.P(
+                        "Oui, très fortement. Les jeux ayant un très grand nombre d’avis "
+                        "se situent presque systématiquement parmi les plus grands succès commerciaux. "
+                        "Sur le graphique, les plus grosses bulles sont clairement concentrées "
+                        "dans la partie haute, ce qui indique que la visibilité joue un rôle central."
+                    ),
+                    html.P(
+                        "Des jeux comme Counter-Strike 2, Dota 2 ou PUBG illustrent parfaitement "
+                        "cette tendance : ils cumulent des millions d’avis et dominent largement "
+                        "en termes de succès commercial. La visibilité apparaît donc comme un "
+                        "facteur clé pour atteindre un large public."
+                    ),
+                    html.Div(
+                        className="game-logo-strip",
+                        children=[
+                            html.A(
+                                href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                    html.Span("CS2", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/570/Dota_2/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/dota-2.png", className="game-logo-img"),
+                                    html.Span("Dota 2", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/578080/PUBG_BATTLEGROUNDS/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/pubg.png", className="game-logo-img"),
+                                    html.Span("PUBG", className="game-logo-label"),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+
+            html.Div(
+                id="viz4-info-slide-1",
+                className="info-slide",
+                style={"display": "none"},
+                children=[
+                    html.Span("2 / 3", className="info-slide-counter"),
+                    html.H4(
+                        className="info-block-title",
+                        children=[
+                            html.I(className="fa-solid fa-thumbs-up info-slide-icon"),
+                            html.Span(" Le ratio d’évaluations positives est-il associé au succès commercial ?"),
+                        ],
+                    ),
+                    html.P(
+                        "La satisfaction des joueurs semble jouer un rôle, mais son impact est moins direct "
+                        "que celui de la visibilité. Sur le graphique, des jeux avec une très forte satisfaction "
+                        "(proches de 1) n’atteignent pas nécessairement un succès commercial élevé."
+                    ),
+                    html.P(
+                        "Par exemple, des jeux très appréciés comme Stardew Valley, Terraria ou Hades "
+                        "présentent un excellent ratio d’évaluations positives, mais leur succès reste "
+                        "moins extrême que celui des jeux les plus visibles. La satisfaction semble donc "
+                        "nécessaire pour fidéliser les joueurs, mais insuffisante à elle seule pour garantir "
+                        "un succès massif."
+                    ),
+                    html.Div(
+                        className="game-logo-strip",
+                        children=[
+                            html.A(
+                                href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                    html.Span("Stardew Valley", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/105600/Terraria/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/terraria.jpg", className="game-logo-img"),
+                                    html.Span("Terraria", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/1145360/Hades/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/hades.jpg", className="game-logo-img"),
+                                    html.Span("Hades", className="game-logo-label"),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+
+            html.Div(
+                id="viz4-info-slide-2",
+                className="info-slide",
+                style={"display": "none"},
+                children=[
+                    html.Span("3 / 3", className="info-slide-counter"),
+                    html.H4(
+                        className="info-block-title",
+                        children=[
+                            html.I(className="fa-solid fa-scale-balanced info-slide-icon"),
+                            html.Span(" Entre visibilité et satisfaction, quel facteur est le plus déterminant ?"),
+                        ],
+                    ),
+                    html.P(
+                        "La visibilité apparaît comme le facteur le plus déterminant du succès commercial. "
+                        "Les jeux les plus performants sont avant tout ceux qui accumulent un grand nombre d’avis, "
+                        "même si leur niveau de satisfaction n’est pas parfait."
+                    ),
+                    html.P(
+                        "À l’inverse, certains jeux très bien notés mais peu visibles restent limités en succès. "
+                        "Un exemple typique est celui de petits jeux de niche comme Supipara, qui présentent "
+                        "une bonne satisfaction mais très peu d’avis. Cela montre que sans visibilité, "
+                        "même un jeu apprécié peut rester confidentiel."
+                    ),
+                    html.Div(
+                        className="game-logo-strip",
+                        children=[
+                            html.A(
+                                href="https://store.steampowered.com/app/730/CounterStrike_2/",
+                                target="_blank",
+                                className="game-logo-chip game-logo-chip--trend game-logo-chip--up",
+                                children=[
+                                    html.I(className="fa-solid fa-arrow-trend-up game-logo-trend-icon"),
+                                    html.Img(src="/assets/logos/csgo.png", className="game-logo-img"),
+                                    html.Span("CS2", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/413150/Stardew_Valley/",
+                                target="_blank",
+                                className="game-logo-chip",
+                                children=[
+                                    html.Img(src="/assets/logos/stardew.png", className="game-logo-img"),
+                                    html.Span("Stardew Valley", className="game-logo-label"),
+                                ],
+                            ),
+                            html.A(
+                                href="https://store.steampowered.com/app/496350/Supipara_Chapter_1/",
+                                target="_blank",
+                                className="game-logo-chip game-logo-chip--trend game-logo-chip--down",
+                                children=[
+                                    html.I(className="fa-solid fa-arrow-trend-down game-logo-trend-icon"),
+                                    html.Img(src="/assets/logos/supipara.png", className="game-logo-img"),
+                                    html.Span("Supipara", className="game-logo-label"),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+
+            html.Div(
+                className="info-carousel-footer",
+                children=[
+                            html.Button("←", id="viz4-info-prev-btn", className="info-nav-btn", n_clicks=0),
+                    html.Div(
+                        className="info-progress",
+                        children=[
+                            html.Span(id="viz4-info-dot-0", className="info-dot active"),
+                            html.Span(id="viz4-info-dot-1", className="info-dot"),
+                            html.Span(id="viz4-info-dot-2", className="info-dot"),
+                        ],
+                    ),
+                            html.Button("→", id="viz4-info-next-btn", className="info-nav-btn", n_clicks=0),
+                ],
+            ),
+        ],
+    )
