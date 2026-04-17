@@ -11,13 +11,7 @@ These transformations are required to enable quantitative visual analysis.
 
 import numpy as np
 import pandas as pd
-
-
-COL_ESTIMATED_OWNERS = "Estimated owners"
-COL_ESTIMATED_OWNERS_AVG = "Estimated owners (average)"
-COL_PRICE = "Price"
-COL_NAME = "Name"
-COL_GAME_TYPE = "Type de jeu"
+from utils.constants import (COL_ESTIMATED_OWNERS, COL_ESTIMATED_OWNERS_AVG, COL_PRICE, COL_NAME, COL_TYPE)
 
 
 def convert_owners_range_to_avg(value):
@@ -67,7 +61,7 @@ def clean_price_and_game_type(df):
     df = df.dropna(subset=[COL_PRICE, COL_ESTIMATED_OWNERS_AVG, COL_NAME])
     df = df[df[COL_ESTIMATED_OWNERS_AVG] > 0]
 
-    df[COL_GAME_TYPE] = np.where(df[COL_PRICE] == 0, "Gratuit", "Payant")
+    df[COL_TYPE] = np.where(df[COL_PRICE] == 0, "Gratuit", "Payant")
 
     return df
 

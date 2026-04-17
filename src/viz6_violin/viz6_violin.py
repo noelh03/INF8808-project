@@ -8,12 +8,7 @@ from dash import html, dcc
 
 import viz6_violin.preprocess
 import viz6_violin.plot_generate
-
-VIOLIN_SLIDER_MIN = 1
-VIOLIN_SLIDER_MAX = 50
-VIOLIN_SLIDER_STEP = 1
-VIOLIN_SLIDER_HEIGHT = 320
-
+from utils.constants import (VIOLIN_SLIDER_MIN, VIOLIN_SLIDER_MAX, VIOLIN_SLIDER_STEP, VIOLIN_SLIDER_HEIGHT)
 
 def ensure_preprocessed(my_df):
     """

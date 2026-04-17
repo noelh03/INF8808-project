@@ -37,34 +37,18 @@ from viz6_violin import viz6_violin
 import main_components.sidebar as sidebar
 import main_components.hero as hero
 import utils.utils_app as utils_app
+from utils.constants import *
 
 
-SCATTER_SLIDER_ID = "scatter-price-slider"
-SCATTER_GRAPH_ID = "scatter-price-graph"
-
-LINE_CHECKLIST_ID = viz3_line.LINE_CHECKLIST_ID
-LINE_GRAPH_ID = viz3_line.LINE_GRAPH_ID
-LINE_ALL_ID = viz3_line.LINE_ALL_ID
-
-BUBBLE_GRAPH_ID = "bubble-graph"
-BUBBLE_Y_SLIDER_ID = "bubble-slider-y"
-BUBBLE_X_SLIDER_ID = "bubble-slider-x"
-
-DOT_GRAPH_ID = "dot-graph"
-DOT_SLIDER_ID = "dot-slider"
-
-VIOLIN_GRAPH_ID = "violin-graph"
-VIOLIN_SLIDER_ID = "violin-slider"
-VIOLIN_SLIDE_SLIDER_VALUES = [50, 5, 50]
-
-
+# ---------------------------------------------------------------------------
+# App initialization 
+# ---------------------------------------------------------------------------
 BASE_DIR = os.path.dirname(__file__)
 RAW_DATA_PATH = os.path.join(BASE_DIR, "assets", "data", "games.csv")
 PROCESSED_DIR = os.path.join(BASE_DIR, "assets", "data", "processed")
 VIZ1_DATA_PATH = os.path.join(PROCESSED_DIR, "viz1_scatter.csv")
 VIZ4_DATA_PATH = os.path.join(PROCESSED_DIR, "viz4_bubble.csv")
 VIZ6_DATA_PATH = os.path.join(PROCESSED_DIR, "viz6_violin.csv")
-
 
 app = Dash(
     __name__,
@@ -76,6 +60,9 @@ app = Dash(
 server = app.server
 app.title = "Project | INF8808"
 
+# ---------------------------------------------------------------------------
+# Data loading 
+# ---------------------------------------------------------------------------
 data = pd.read_csv(RAW_DATA_PATH)
 SCATTER_DATA = utils_app.load_csv_with_fallback(VIZ1_DATA_PATH, RAW_DATA_PATH)
 BUBBLE_DATA = utils_app.load_csv_with_fallback(VIZ4_DATA_PATH, RAW_DATA_PATH)
@@ -89,8 +76,11 @@ elif {"Publishers", "Name"}.issubset(data.columns):
     VIOLIN_REAL_MAX = int(_tmp["nb_games_dev"].max())
 else:
     VIOLIN_REAL_MAX = 50
-
 VIOLIN_SLIDE_SLIDER_VALUES = [VIOLIN_REAL_MAX, 5, VIOLIN_REAL_MAX]
+
+# ---------------------------------------------------------------------------
+# Sections prep
+# ---------------------------------------------------------------------------
 sidebar.register_sidebar_callbacks(app)
 
 viz1_scatter_layout = viz1_scatter.create_layout(
@@ -113,6 +103,9 @@ viz6_violin_layout = viz6_violin.create_layout(
     graph_id=VIOLIN_GRAPH_ID,
 )
 
+# ---------------------------------------------------------------------------
+# App layout assembly 
+# ---------------------------------------------------------------------------
 app.layout = html.Div(
     id="page-wrapper",
     children=[

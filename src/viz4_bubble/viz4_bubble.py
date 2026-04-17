@@ -7,19 +7,9 @@ from dash import html, dcc
 
 from viz4_bubble import preprocess
 from viz4_bubble.plot_generate import generate_plot
-
-BUBBLE_SLIDER_MIN = 0
-BUBBLE_SLIDER_MAX = 10000000
-BUBBLE_SLIDER_STEP = 100000
-BUBBLE_SLIDER_HEIGHT = 350
-
-SAT_SLIDER_MIN = 0
-SAT_SLIDER_MAX = 1
-SAT_SLIDER_STEP = 0.1
-
-BUBBLE_GRAPH_ID = "bubble-graph"
-BUBBLE_Y_SLIDER_ID = "bubble-slider-y"
-BUBBLE_X_SLIDER_ID = "bubble-slider-x"
+from utils.constants import (BUBBLE_GRAPH_ID, BUBBLE_Y_SLIDER_ID, BUBBLE_X_SLIDER_ID, 
+                            BUBBLE_SLIDER_MIN, BUBBLE_SLIDER_MAX, BUBBLE_SLIDER_STEP, 
+                            SAT_SLIDER_MIN, SAT_SLIDER_MAX, SAT_SLIDER_STEP, BUBBLE_SLIDER_HEIGHT)
 
 _cached_processed_df = None
 

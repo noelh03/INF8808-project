@@ -13,11 +13,7 @@ and user interaction within the scrollytelling flow.
 from dash import dcc, html
 from viz1_scatter import preprocess
 from viz1_scatter.plot_generate import generate_plot
-
-
-SLIDER_MIN = 0
-SLIDER_MAX = 1000
-SLIDER_STEP = 10
+from utils.constants import SCATTER_SLIDER_MIN, SCATTER_SLIDER_MAX, SCATTER_SLIDER_STEP
 
 _cached_processed_df = None
 
@@ -75,9 +71,9 @@ def create_layout(
                             ),
                             dcc.RangeSlider(
                                 id=slider_id,
-                                min=SLIDER_MIN,
-                                max=SLIDER_MAX,
-                                step=SLIDER_STEP,
+                                min=SCATTER_SLIDER_MIN,
+                                max=SCATTER_SLIDER_MAX,
+                                step=SCATTER_SLIDER_STEP,
                                 value=list(price_range),
                                 allowCross=False,
                                 marks={},

@@ -12,28 +12,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 from .hover_template import get_hover_template
-
-COL_OWNERS_AVG = "Estimated owners (average)"
-COL_OWNERS = "Estimated owners"
-COL_GAME_TYPE = "game_type"
-COL_NAME = "Name"
-
-GAME_TYPE_ORDER = ["Multijoueur", "Hybride", "Solo"]
-CATEGORY_CENTER = {"Multijoueur": 0, "Hybride": 1, "Solo": 2}
-
-SAMPLE_PER_CATEGORY = 600
-
-LOG_BIN_WIDTH = 0.030
-
-Y_STEP = 0.048
-
-HALF_WIDTH = 0.42
-
-COLORS = {
-    "Solo": "#6678E8",
-    "Hybride": "#D98A6C",
-    "Multijoueur": "#52B788",
-}
+from utils.constants import (COL_GAME_TYPE, COL_NAME, COL_OWNERS, COL_OWNERS_AVG, GAME_TYPE_ORDER, CATEGORY_CENTER, SAMPLE_PER_CATEGORY, LOG_BIN_WIDTH, Y_STEP, HALF_WIDTH, COLORS)
 
 
 def _beeswarm_y(x_vals, center):

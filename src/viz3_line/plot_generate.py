@@ -12,21 +12,9 @@ This module:
 
 import plotly.graph_objects as go
 from .hover_template import get_hover_template
-from .preprocess import MAIN_GENRES, get_other_genres, YEAR_MIN, YEAR_MAX
+from .preprocess import MAIN_GENRES, get_other_genres
+from utils.constants import (YEAR_MIN, YEAR_MAX, MAIN_GENRES, MILLIONS, OTHERS_COLOR, CHECKLIST_GENRES, GENRE_COLORS)
 
-GENRE_COLORS = {
-    "Action": "#F4A535",
-    "Adventure": "#E91E8C",
-    "Indie": "#9C27B0",
-    "Massively Multiplayer": "#B71C1C",
-    "Free To Play": "#43A047",
-    "RPG": "#1565C0",
-}
-
-OTHERS_COLOR = "#B0BAC9"
-CHECKLIST_GENRES = MAIN_GENRES + ["Others"]
-
-MILLIONS = 1_000_000.0
 
 
 def generate_plot(df_long, selected_genres=None):

@@ -6,11 +6,7 @@
 from dash import html, dcc
 import viz5_dot.preprocess as preprocess
 import viz5_dot.plot_generate as plot_generate
-
-DOT_SLIDER_MIN = 0
-DOT_SLIDER_MAX = 6000
-DOT_SLIDER_STEP = 100
-DOT_SLIDER_HEIGHT = 340
+from utils.constants import (DOT_SLIDER_MIN, DOT_SLIDER_MAX, DOT_SLIDER_STEP, DOT_SLIDER_HEIGHT)
 
 
 def ensure_preprocessed(df):

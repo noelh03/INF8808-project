@@ -10,12 +10,9 @@ This module:
 
 from dash import dcc, html
 
-from viz3_line.preprocess import preprocess_data, MAIN_GENRES
+from viz3_line.preprocess import preprocess_data
 from viz3_line.plot_generate import generate_plot, GENRE_COLORS, CHECKLIST_GENRES, OTHERS_COLOR
-
-LINE_CHECKLIST_ID = "line-genre-checklist"
-LINE_GRAPH_ID = "line-genre-graph"
-LINE_ALL_ID = "line-all-toggle"
+from utils.constants import LINE_CHECKLIST_ID, LINE_GRAPH_ID, LINE_ALL_ID
 
 _df_long_cache = None
 
