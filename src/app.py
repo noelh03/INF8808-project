@@ -130,10 +130,10 @@ def _figure_to_viz3_checklist_values(fig_dict):
 
 
 
-def make_section(section_id, kicker, title, description, viz_layout, prev_href, next_href, info_content=None):
+def make_section(section_id, title, description, viz_layout, prev_href, next_href, info_content=None):
     """
     Build a full story section with:
-    - intro block (kicker, title, "?" info toggle, description)
+    - intro block (title, "?" info toggle, description)
     - section body: viz card on the left, side-nav arrows on the right
 
     info_content: optional Dash children for the "?" info panel.
@@ -150,7 +150,6 @@ def make_section(section_id, kicker, title, description, viz_layout, prev_href, 
                         className="section-title-row",
                         children=[
                             html.Div(children=[
-                                html.P(kicker, className="section-kicker"),
                                 html.H2(title, className="section-title"),
                             ]),
                         ],
@@ -298,7 +297,7 @@ app.layout = html.Div(
                     className="story-container",
                     children=[
                         make_section(
-                            "scatter", "",
+                            "scatter",
                             "Prix et succès commercial",
                             "Comparer la performance commerciale estimée des jeux gratuits et payants, "
                             "et observer comment la distribution évolue selon l'intervalle de prix sélectionné.",
@@ -497,7 +496,7 @@ app.layout = html.Div(
                             ),
                         ),
                         make_section(
-                            "box", "",
+                            "box",
                             "Mode de jeu et succès commercial",
                             "Explorer si les jeux solo, hybrides ou exclusivement multijoueur "
                             "se distinguent par leur performance commerciale estimée, "
@@ -549,7 +548,7 @@ app.layout = html.Div(
                             ),
                         ),
                         make_section(
-                            "line", "",
+                            "line",
                             "Le succès commercial des différents genres selon leur année de sortie",
                             "Comparer l'évolution du nombre estimé de propriétaires par genre de 1997 à 2025, "
                             "et observer quels genres ont gagné ou perdu en importance au fil des années.",
@@ -719,7 +718,7 @@ app.layout = html.Div(
                             ),
                         ),
                         make_section(
-                            "bubble", "",
+                            "bubble",
                             "Visibilité et succès commercial",
                             "Comparer la performance commerciale estimée des jeux selon leur nombre d’avis, et observer comment la distribution évolue selon l’intervalle de visibilité sélectionné.",
                             viz4_bubble_layout, "#line", "#dot",
@@ -928,7 +927,6 @@ app.layout = html.Div(
                         ),
                         make_section(
                             "dot",
-                            "",
                             "Satisfaction, temps de jeu et succès commercial",
                             "Comparer la satisfaction et le temps de jeu moyen des jeux selon leur nombre d’avis, et observer comment la distribution évolue selon l’intervalle de temps de jeu sélectionné.",
                             viz5_dot_layout,
@@ -1013,7 +1011,7 @@ app.layout = html.Div(
                             ),
                         ),
                         make_section(
-                            "violin", "",
+                            "violin",
                             "Le succès commercial selon l'expérience et le type d'éditeur",
                             "Comparer la distribution du succès commercial selon l'expérience des éditeurs, et observer si les indépendants et les majeurs se distinguent dans leur capacité à générer du succès.",
                             viz6_violin_layout,
