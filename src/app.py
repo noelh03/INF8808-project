@@ -37,7 +37,10 @@ from viz6_violin import viz6_violin
 import main_components.sidebar as sidebar
 import main_components.hero as hero
 import utils.utils_app as utils_app
-from utils.constants import *
+from utils.constants import (
+    SCATTER_SLIDER_ID, SCATTER_GRAPH_ID, LINE_CHECKLIST_ID, LINE_GRAPH_ID, 
+    LINE_ALL_ID, BUBBLE_GRAPH_ID, BUBBLE_Y_SLIDER_ID, BUBBLE_X_SLIDER_ID, 
+    DOT_GRAPH_ID, DOT_SLIDER_ID, VIOLIN_GRAPH_ID, VIOLIN_SLIDER_ID)
 
 
 # ---------------------------------------------------------------------------
