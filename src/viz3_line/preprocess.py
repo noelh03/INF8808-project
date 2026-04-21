@@ -13,15 +13,7 @@ This module:
 
 import numpy as np
 import pandas as pd
-
-MAIN_GENRES = ["Action", "Adventure", "Indie", "Massively Multiplayer", "Free To Play", "RPG"]
-
-COL_YEAR = "Release date"
-COL_OWNERS = "Estimated owners"
-COL_GENRES = "Genres"
-
-YEAR_MIN = 1997
-YEAR_MAX = 2025
+from utils.constants import (COL_GENRES, COL_OWNERS, COL_YEAR, MAIN_GENRES, YEAR_MIN, YEAR_MAX)
 
 
 def _parse_owners_range(value):

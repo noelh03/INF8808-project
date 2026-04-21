@@ -4,14 +4,7 @@
 import numpy as np
 import pandas as pd
 
-COL_POS = "Positive"
-COL_NEG = "Negative"
-COL_OWNERS = "Estimated owners"
-COL_OWNERS_AVG = "Estimated owners (average)"
-COL_NAME = "Name"
-
-COL_SAT = "Satisfaction"
-COL_VIS = "Visibility"
+from utils.constants import (COL_NAME, COL_OWNERS, COL_POS, COL_NEG, COL_SAT, COL_VIS, COL_OWNERS_AVG)
 
 
 def convert_owners_range_to_avg(value):

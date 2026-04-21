@@ -8,11 +8,19 @@ This script:
 - writes smaller CSV files into assets/data/processed
 
 Run from src/:
-    python prepare_data.py
+    python utils/prepare_data.py
 """
 
+import sys
 from pathlib import Path
+
 import pandas as pd
+
+BASE_DIR = Path(__file__).resolve().parent
+SRC_DIR = BASE_DIR.parent
+
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 from viz1_scatter.preprocess import preprocess_data as preprocess_viz1
 from viz2_box.preprocess import step1 as viz2_step1, step2 as viz2_step2
@@ -22,9 +30,8 @@ from viz5_dot.preprocess import compute_metrics as viz5_compute_metrics, filter_
 from viz6_violin.preprocess import step1 as viz6_step1, step2 as viz6_step2
 
 
-BASE_DIR = Path(__file__).resolve().parent
-RAW_DATA_PATH = BASE_DIR / "assets" / "data" / "games.csv"
-OUTPUT_DIR = BASE_DIR / "assets" / "data" / "processed"
+RAW_DATA_PATH = SRC_DIR / "assets" / "data" / "games.csv"
+OUTPUT_DIR = SRC_DIR / "assets" / "data" / "processed"
 
 
 def ensure_output_dir() -> None:

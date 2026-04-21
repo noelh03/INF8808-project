@@ -10,20 +10,7 @@ It enhances usability by providing a structured overview of the story flow.
 """
 
 from dash import html, Output, Input, State, ctx
-
-TOGGLE_BTN_ID = "toggle-btn"
-OVERLAY_ID = "overlay"
-SIDEBAR_ID = "sidebar"
-
-NAV_ITEMS = [
-    ("Accueil", "#hero"),
-    ("L’effet du prix sur le succès", "#scatter"),
-    ("Le rôle du mode de jeu", "#box"),
-    ("Quels genres dominent dans le temps ?", "#line"),
-    ("Visibilité ou satisfaction ?", "#bubble"),
-    ("Le temps de jeu compte-t-il ?", "#dot"),
-    ("Qui sont les leaders du marché ?", "#violin"),
-]
+from utils.constants import (TOGGLE_BTN_ID, OVERLAY_ID, SIDEBAR_ID, NAV_ITEMS)
 
 
 def nav_item(label, href, idx):

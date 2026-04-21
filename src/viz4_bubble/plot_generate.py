@@ -5,11 +5,7 @@
 import plotly.express as px
 import math
 from .hover_template import get_hover_template
-
-COL_SAT = "Satisfaction"
-COL_VIS = "Visibility"
-COL_OWNERS = "Estimated owners (average)"
-COL_NAME = "Name"
+from utils.constants import (COL_NAME, COL_OWNERS_AVG, COL_SAT, COL_VIS)
 
 def generate_plot(df, max_visibility=None, sat_range=None):
     '''
@@ -23,7 +19,7 @@ def generate_plot(df, max_visibility=None, sat_range=None):
             The generated figure
     '''
     
-    required_columns = [COL_SAT, COL_VIS, COL_OWNERS, COL_NAME]
+    required_columns = [COL_SAT, COL_VIS, COL_OWNERS_AVG, COL_NAME]
     missing = [col for col in required_columns if col not in df.columns]
     if missing:
         raise ValueError(f"Colonnes manquantes : {missing}")
@@ -42,7 +38,7 @@ def generate_plot(df, max_visibility=None, sat_range=None):
         filtered_df,
         x=COL_SAT,
         y=COL_VIS,
-        size=COL_OWNERS,
+        size=COL_OWNERS_AVG,
         hover_name=COL_NAME,
         log_y=False,
         opacity=0.6,

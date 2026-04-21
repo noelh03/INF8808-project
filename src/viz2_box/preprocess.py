@@ -5,19 +5,7 @@
 '''
 import numpy as np
 import pandas as pd
-
-COL_OWNERS = "Estimated owners"
-COL_OWNERS_AVG = "Estimated owners (average)"
-COL_GENRES = "Categories"
-COL_GAME_TYPE = "game_type"
-COL_NAME = "Name"
-
-SOLO_KEYWORDS = ["Single-player"]
-MULTI_KEYWORDS = [
-    "Multi-player", "Online PvP", "Online Co-op",
-    "Co-op", "PvP", "Cross-Platform Multiplayer",
-]
-
+from utils.constants import (COL_CATEGORIES, COL_OWNERS, COL_OWNERS_AVG, COL_GAME_TYPE, SOLO_KEYWORDS, MULTI_KEYWORDS, COL_NAME)
 
 def _parse_owners_bounds(value):
     '''
@@ -111,7 +99,7 @@ def step1(df):
         _sample_owners_range_log(l, h, rng)
         for l, h in zip(lows, highs)
     ]
-    df[COL_GAME_TYPE] = df[COL_GENRES].apply(_classify_game_type)
+    df[COL_GAME_TYPE] = df[COL_CATEGORIES].apply(_classify_game_type)
     return df
 
 

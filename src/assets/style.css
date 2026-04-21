@@ -367,15 +367,6 @@ html.story-fade .story-section .section-inline-info {
     flex-shrink: 0;
 }
 
-.section-kicker {
-    margin: 0 0 6px 0;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #6366f1;
-}
-
 .section-title {
     margin: 0 0 8px 0;
     font-size: clamp(26px, 3vw, 40px);
@@ -385,7 +376,10 @@ html.story-fade .story-section .section-inline-info {
     color: #111827;
 }
 
+#scatter .section-title,
+#box .section-title,
 #line .section-title,
+#bubble .section-title,
 #dot .section-title,
 #violin .section-title {
     font-size: clamp(18px, 2vw, 28px);
@@ -1316,10 +1310,6 @@ html.story-fade #dot .section-inline-info {
 
     .section-title {
         font-size: clamp(20px, 5.5vw, 32px);
-    }
-
-    .section-kicker {
-        font-size: 11px;
     }
 
     .viz-card {

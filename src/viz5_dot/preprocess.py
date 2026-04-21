@@ -2,15 +2,7 @@
     Contains some functions to preprocess the data used in the visualisation.
 '''
 
-COL_POS = "Positive"
-COL_NEG = "Negative"
-COL_PLAYTIME = "Average playtime forever"
-COL_NAME = "Name"
-
-COL_VIS = "Visibility"
-COL_SAT = "Satisfaction"
-COL_SAT_ROUNDED = "Satisfaction rounded"
-COL_PLAYTIME_HOURS = "Playtime hours"
+from utils.constants import COL_POS, COL_NEG, COL_SAT, COL_VIS, COL_SAT_ROUNDED, COL_PLAYTIME, COL_PLAYTIME, COL_PLAYTIME_FOREVER
 
 
 def compute_metrics(df):
@@ -29,7 +21,7 @@ def compute_metrics(df):
     df[COL_SAT] = df[COL_POS] / df[COL_VIS]
     df[COL_SAT] = df[COL_SAT].fillna(0)
     df[COL_SAT_ROUNDED] = df[COL_SAT].round(1)
-    df[COL_PLAYTIME_HOURS] = df[COL_PLAYTIME] / 60
+    df[COL_PLAYTIME] = df[COL_PLAYTIME_FOREVER] / 60
 
     return df
 
@@ -45,9 +37,9 @@ def filter_data(df):
             DataFrame
     '''
     df = df[
-        (df["Visibility"] > 0) &
-        (df["Playtime hours"] >= 0)
+        (df[COL_VIS] > 0) &
+        (df[COL_PLAYTIME] >= 0)
     ]
-    df = df.sort_values(by="Visibility", ascending=True)
+    df = df.sort_values(by=COL_VIS, ascending=True)
 
     return df

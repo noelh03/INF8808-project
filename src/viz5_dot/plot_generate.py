@@ -7,17 +7,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 from .hover_template import get_hover_template
-
-COL_SAT = "Satisfaction rounded"
-COL_PLAYTIME = "Playtime hours"
-COL_VIS = "Visibility"
-COL_NAME = "Name"
-# Position X affichée : satisfaction arrondie + offset beeswarm
-COL_X_PLOT = "_viz5_x_beeswarm"
-# Demi-largeur max autour de chaque palier de satisfaction (ticks tous les 0,1)
-_BEESWARM_HALF_SPAN = 0.044
-# Au-delà de ce nombre de points sur une même bande de temps de jeu : sous-colonnes en x
-_BEESWARM_MAX_PER_STRIP = 110
+from utils.constants import (COL_NAME, COL_SAT_ROUNDED, COL_VIS, BEESWARM_HALF_SPAN, BEESWARM_MAX_PER_STRIP, COL_X_PLOT, COL_PLAYTIME)
 
 
 def _spread_indices_along_x(idx_order: np.ndarray, offsets: np.ndarray, x_lo: float, x_hi: float) -> None:
@@ -44,15 +34,15 @@ def _beeswarm_offsets_one_satisfaction(y: np.ndarray) -> np.ndarray:
 
     ymin, ymax = float(y.min()), float(y.max())
     if ymax <= ymin + 1e-12:
-        _spread_indices_along_x(np.argsort(y), offsets, -_BEESWARM_HALF_SPAN, _BEESWARM_HALF_SPAN)
+        _spread_indices_along_x(np.argsort(y), offsets, -BEESWARM_HALF_SPAN, BEESWARM_HALF_SPAN)
         return offsets
 
     n_bins = int(np.clip(np.sqrt(n) * 3.2, 50, min(520, max(30, n // 2))))
     edges = np.linspace(ymin, ymax, n_bins + 1)
     b = np.clip(np.searchsorted(edges, y, side="right") - 1, 0, n_bins - 1)
 
-    half = _BEESWARM_HALF_SPAN
-    max_row = _BEESWARM_MAX_PER_STRIP
+    half = BEESWARM_HALF_SPAN
+    max_row = BEESWARM_MAX_PER_STRIP
 
     for bin_id in range(n_bins):
         idx = np.where(b == bin_id)[0]
@@ -82,10 +72,10 @@ def _add_beeswarm_x(df: pd.DataFrame) -> pd.DataFrame:
     """
     out = df.copy()
     offsets_series = pd.Series(0.0, index=out.index, dtype=float)
-    for _, sub in out.groupby(COL_SAT, sort=False):
+    for _, sub in out.groupby(COL_SAT_ROUNDED, sort=False):
         off = _beeswarm_offsets_one_satisfaction(sub[COL_PLAYTIME].to_numpy(dtype=float))
         offsets_series.loc[sub.index] = off
-    out[COL_X_PLOT] = out[COL_SAT].astype(float) + offsets_series
+    out[COL_X_PLOT] = out[COL_SAT_ROUNDED].astype(float) + offsets_series
     return out
 
 
@@ -239,7 +229,7 @@ def generate_plot(df, max_playtime=6000):
         y=COL_PLAYTIME,
         color=COL_VIS,
         hover_name=COL_NAME,
-        custom_data=[COL_SAT, COL_VIS],
+        custom_data=[COL_SAT_ROUNDED, COL_VIS],
         color_continuous_scale=[
             [0.0, "#6fb6ff"],
             [0.5, "#0062ff"],

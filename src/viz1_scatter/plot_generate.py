@@ -2,12 +2,7 @@ import math
 import pandas as pd
 import plotly.express as px
 from .hover_template import get_aggregated_hover_template, format_game_list_hover
-
-
-COL_PRICE = "Price"
-COL_OWNERS = "Estimated owners (average)"
-COL_TYPE = "Type de jeu"
-COL_NAME = "Name"
+from utils.constants import COL_PRICE, COL_ESTIMATED_OWNERS_AVG, COL_TYPE, COL_NAME
 
 
 def aggregate_overlapping_points(df, color_mode):
@@ -20,7 +15,7 @@ def aggregate_overlapping_points(df, color_mode):
     - "type": couleur selon type de jeu
     - "success": couleur selon catégorie de succès
     """
-    group_cols = [COL_PRICE, COL_OWNERS]
+    group_cols = [COL_PRICE, COL_ESTIMATED_OWNERS_AVG]
 
     if color_mode == "type":
         group_cols.append(COL_TYPE)
@@ -51,7 +46,7 @@ def aggregate_overlapping_points(df, color_mode):
 
 
 def generate_plot(df, price_range=(0, 100), question_idx=0):
-    required_columns = [COL_PRICE, COL_OWNERS, COL_TYPE, COL_NAME]
+    required_columns = [COL_PRICE, COL_ESTIMATED_OWNERS_AVG, COL_TYPE, COL_NAME]
     missing = [col for col in required_columns if col not in df.columns]
     if missing:
         raise ValueError(f"Colonnes manquantes dans le DataFrame : {missing}")
@@ -82,7 +77,7 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         fig = px.scatter(
             plot_df,
             x=COL_PRICE,
-            y=COL_OWNERS,
+            y=COL_ESTIMATED_OWNERS_AVG,
             size="bubble_size",
             hover_name=None,
             log_y=True,
@@ -107,7 +102,7 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         fig = px.scatter(
             plot_df,
             x=COL_PRICE,
-            y=COL_OWNERS,
+            y=COL_ESTIMATED_OWNERS_AVG,
             color=COL_TYPE,
             size="bubble_size",
             hover_name=None,
@@ -131,7 +126,7 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
     elif question_idx == 2:
         plot_df = filtered_df.copy()
 
-        plot_df["Catégorie succès"] = plot_df[COL_OWNERS].apply(
+        plot_df["Catégorie succès"] = plot_df[COL_ESTIMATED_OWNERS_AVG].apply(
             lambda x: "Top succès" if x >= 1_000_000 else "Autres jeux"
         )
 
@@ -140,7 +135,7 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         fig = px.scatter(
             plot_df,
             x=COL_PRICE,
-            y=COL_OWNERS,
+            y=COL_ESTIMATED_OWNERS_AVG,
             color="Catégorie succès",
             size="bubble_size",
             hover_name=None,
@@ -176,7 +171,7 @@ def generate_plot(df, price_range=(0, 100), question_idx=0):
         fig = px.scatter(
             plot_df,
             x=COL_PRICE,
-            y=COL_OWNERS,
+            y=COL_ESTIMATED_OWNERS_AVG,
             color=COL_TYPE,
             size="bubble_size",
             hover_name=None,
