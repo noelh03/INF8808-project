@@ -1,5 +1,12 @@
 '''
-    Contains some functions to preprocess the data used in the visualisation.
+Preprocessing module for the bubble plot visualization, using the steam dataset.
+
+This module:
+- converts Steam ownership intervals into numeric averages
+- computes satisfaction and visibility metrics
+- cleans missing values
+
+These transformations are required to enable quantitative visual analysis for the bubble plot.
 '''
 import numpy as np
 import pandas as pd
@@ -9,7 +16,11 @@ from utils.constants import (COL_NAME, COL_OWNERS, COL_POS, COL_NEG, COL_SAT, CO
 
 def convert_owners_range_to_avg(value):
     """
-    Convert an owners range like '20,000-50,000' into its numeric average.
+        Convert an owners range like '20,000-50,000' into its numeric average.
+        Args: 
+            value (str): The input string representing the owners range.
+        Returns:
+            float: The average number of owners, or NaN if the input is invalid.
     """
     if pd.isna(value):
         return np.nan
@@ -24,7 +35,11 @@ def convert_owners_range_to_avg(value):
 
 def compute_metrics(df):
     """
-    Compute satisfaction and visibility metrics.
+        Compute satisfaction and visibility metrics.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The dataframe with the computed metrics for satisfaction and visibility.
     """
     df = df.copy()
 
@@ -37,7 +52,11 @@ def compute_metrics(df):
 
 def add_average_owners(df):
     """
-    Add numeric owners column.
+        Add numeric owners column.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The dataframe with the added column for average owners.
     """
     df = df.copy()
     df[COL_OWNERS_AVG] = df[COL_OWNERS].apply(convert_owners_range_to_avg)
@@ -46,7 +65,11 @@ def add_average_owners(df):
 
 def clean_data(df):
     """
-    Remove invalid rows.
+        Remove invalid rows.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The dataframe with invalid rows removed.
     """
     df = df.copy()
 
@@ -59,7 +82,11 @@ def clean_data(df):
 
 def preprocess_data(df):
     """
-    Full preprocessing pipeline.
+        Full preprocessing pipeline.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The preprocessed dataframe, ready for visualization.
     """
     df = compute_metrics(df)
     df = add_average_owners(df)

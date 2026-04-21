@@ -1,9 +1,22 @@
+"""
+This module defines the hero section of the application, which serves as an introduction to the scrollytelling experience. 
 
+It includes :
+- a background with animated orbs, 
+- a grid overlay, 
+- and an overlay containing the title, subtitle, description, and a call-to-action button. 
+"""
 
 from dash import html
 
 
 def create_hero():
+    """
+        Creates the hero section of the application.
+
+        Returns:
+            A Dash HTML component representing the hero section.
+    """
     return html.Section(
         id="hero",
         className="hero-section",

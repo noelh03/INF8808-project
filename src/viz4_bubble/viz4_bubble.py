@@ -1,7 +1,15 @@
 '''
-    Contains source code for the fourth visualisation of the project. 
-    It is a bubble plot, showing the relationship between satisfaction and visibility, 
-    with the size of the bubbles representing the estimated number of owners.
+Contains source code for the fourth visualisation of the project. 
+It is a bubble plot, showing the relationship between satisfaction and visibility, 
+with the size of the bubbles representing the estimated number of owners.
+
+This module:
+- prepares the dataset specifically for the bubble visualization
+- generates the interactive figure based on user input (satisfaction or visibility filters)
+- defines the Dash layout structure including graph and filtering controls
+
+It acts as the interface between data preprocessing, visualization logic,
+and user interaction within the scrollytelling flow.
 '''
 from dash import html, dcc
 
@@ -15,6 +23,13 @@ _cached_processed_df = None
 
 
 def get_processed_df(df):
+    """
+        Get the processed dataframe, using caching to avoid redundant processing.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The processed dataframe, ready for visualization.
+    """
     global _cached_processed_df
     if _cached_processed_df is None:
         if "Visibility" in df.columns and "Satisfaction" in df.columns and "Estimated owners (average)" in df.columns:
@@ -25,6 +40,14 @@ def get_processed_df(df):
 
 
 def get_default_filters(question_idx):
+    """
+        Returns the default filter values for the bubble plot based on the question index.
+        Args: 
+            question_idx (int): The index of the question for which to get the default filters.
+        Returns:
+            max_visibility (int): The default maximum visibility filter value.
+            sat_range (list): The default satisfaction range filter values.
+    """
     if question_idx == 1:
         return 3_000_000, [0.7, 1]
     if question_idx == 2:
@@ -35,6 +58,13 @@ def get_default_filters(question_idx):
 def create_figure(df, max_visibility=None, sat_range=None, question_idx=None):
     '''
         Calls the functions to preprocess the data and generate the plot for the bubble plot.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+            max_visibility (int, optional): The maximum visibility filter value. If None, it will be set to a default value based on the question index.
+            sat_range (list, optional): The satisfaction range filter values. If None, it will be set to a default value based on the question index.
+            question_idx (int, optional): The index of the question for which to get the default filters. Only used if max_visibility or sat_range is None.
+        Returns:
+            fig: The generated figure for the bubble plot.
     '''
     processed_df = get_processed_df(df)
 
@@ -56,6 +86,12 @@ def create_figure(df, max_visibility=None, sat_range=None, question_idx=None):
 def create_layout(df, max_visibility=BUBBLE_SLIDER_MAX, sat_range=None):
     '''
         Creates the layout for the bubble plot.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+            max_visibility (int, optional): The maximum visibility filter value. Defaults to BUBBLE_SLIDER_MAX.
+            sat_range (list, optional): The satisfaction range filter values. If None, it will be set to a default value based on the question index.
+        Returns:
+            html.Div: The layout for the bubble plot, including the graph and the sliders for filtering
     '''
     if sat_range is None:
         sat_range = [SAT_SLIDER_MIN, SAT_SLIDER_MAX]
@@ -119,6 +155,11 @@ def create_layout(df, max_visibility=BUBBLE_SLIDER_MAX, sat_range=None):
     )
     
 def create_info_content():
+    """
+        Creates the content for the information carousel associated with the bubble plot. 
+        Returns: 
+            html.Div: The layout for the information carousel, including the slides with insights and the navigation buttons.
+    """
     return html.Div(
         className="info-carousel",
         children=[
