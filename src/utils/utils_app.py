@@ -7,6 +7,17 @@ from viz3_line.preprocess import MAIN_GENRES as VIZ3_MAIN_GENRES
 
 
 def load_csv_with_fallback(preferred_path, fallback_path):
+    '''
+    Load a CSV file from a preferred path, or fall back to a secondary path if the preferred one doesn't exist.
+    
+    Args:
+        preferred_path (str): The primary file path to attempt to load the CSV from.
+        fallback_path (str): The secondary file path to load the CSV from if the preferred path is not found.
+        
+    Returns:
+        pd.DataFrame: The loaded CSV data as a pandas DataFrame.
+    '''
+    
     if os.path.exists(preferred_path):
         return pd.read_csv(preferred_path)
     return pd.read_csv(fallback_path)
@@ -14,8 +25,14 @@ def load_csv_with_fallback(preferred_path, fallback_path):
 
 def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
     """
-    Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
-    restyle_data: [patch_dict, trace_indices] as emitted by dcc.Graph restyleData.
+        Merge a Plotly restyle event into a figure dict (legend clicks / double-clicks).
+        
+        Args:
+            fig_dict: The original figure dict before the restyle event.
+            restyle_data: [patch_dict, trace_indices] as emitted by dcc.Graph restyleData.
+            
+        Returns:
+            A new figure dict with the restyle patch applied, or the original fig_dict if restyle_data is invalid.
     """
     if not fig_dict or not restyle_data or len(restyle_data) < 2:
         return fig_dict
@@ -55,7 +72,14 @@ def _apply_restyle_patch_to_figure(fig_dict, restyle_data):
 
 
 def _figure_to_viz3_checklist_values(fig_dict):
-    """Derive checklist values from trace visibility (matches legend state)."""
+    """
+        Derive checklist values from trace visibility (matches legend state).
+        
+        Args:
+            fig_dict: The figure dict after applying the restyle patch.
+        Returns:
+            A list of genres to be checked in the checklist, ordered as in VIZ3_MAIN_GENRES, with "Others" at the end if it's visible.
+    """
 
     def trace_on_plot(tr):
         v = tr.get("visible")
@@ -84,12 +108,22 @@ def _figure_to_viz3_checklist_values(fig_dict):
 
 def make_section(section_id, title, description, viz_layout, prev_href, next_href, info_content=None):
     """
-    Build a full story section with:
-    - intro block (title, "?" info toggle, description)
-    - section body: viz card on the left, side-nav arrows on the right
-
-    info_content: optional Dash children for the "?" info panel.
-                  Defaults to a placeholder message.
+        Build a full story section with:
+        - intro block (title, info toggle, description)
+        - section body: viz card on the left, side-nav arrows on the right
+        
+        Args:
+            section_id: The ID for the section.
+            title: The title of the section.
+            description: A description of the section.
+            viz_layout: The layout for the visualization card.
+            prev_href: The URL for the previous section.
+            next_href: The URL for the next section.
+            info_content: optional Dash children for the info panel.
+                        Defaults to a placeholder message.
+                        
+        Returns:
+            A Dash HTML component representing the complete section.
     """
     return html.Section(
         id=section_id,

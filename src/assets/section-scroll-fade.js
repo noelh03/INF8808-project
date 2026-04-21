@@ -1,3 +1,8 @@
+/**
+ * This file implements the scroll-based fade-in effect for the story sections of the application.
+ * It uses the Intersection Observer API to detect when a section enters the viewport and applies a fade-in animation to the narrative text within that section.
+ */
+
 /* Story sections: narrative text stays hidden until the entrance animation runs. */
 (function () {
     var MAX_SETUP_ATTEMPTS = 200;

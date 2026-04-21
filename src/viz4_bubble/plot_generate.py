@@ -1,5 +1,6 @@
 '''
-    This file contains the code for the plot.
+This file contains the code for the bubble plot.
+It includes the function to generate the plot, as well as some helper functions to update the axes, layout and hover template.
 '''
 
 import plotly.express as px
