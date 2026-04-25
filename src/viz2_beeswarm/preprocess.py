@@ -1,21 +1,27 @@
 '''
-    Contains preprocessing functions for the second visualisation.
-    Classifies games by play mode (Solo, Hybride, Multijoueur) and
-    converts estimated owners intervals to numeric averages.
+Preprocessing module for the beeswarm plot visualization, using the Steam dataset.
+
+This module:
+- converts Steam ownership intervals into numeric sampled values (log-uniform)
+- classifies games by play mode (Solo, Hybride, Multijoueur)
+- filters out games with unknown owners or unclassified play modes
+
+These transformations are required to enable quantitative visual analysis for the beeswarm plot.
 '''
 import numpy as np
 import pandas as pd
 from utils.constants import (COL_CATEGORIES, COL_OWNERS, COL_OWNERS_AVG, COL_GAME_TYPE, SOLO_KEYWORDS, MULTI_KEYWORDS, COL_NAME)
 
 def _parse_owners_bounds(value):
-    '''
+    """
     Parse an owners range string like '20,000 - 50,000' into (low, high) integers.
 
     Args:
         value: Raw value from the 'Estimated owners' column.
+
     Returns:
-        Tuple (low, high) or (np.nan, np.nan) if parsing fails.
-    '''
+        tuple: (low, high) as integers, or (np.nan, np.nan) if parsing fails.
+    """
     if pd.isna(value):
         return np.nan, np.nan
     try:
@@ -29,22 +35,21 @@ def _parse_owners_bounds(value):
 
 
 def _sample_owners_range_log(low, high, rng):
-    '''
+    """
     Sample a single value log-uniformly within [low, high].
-    Uses log-uniform so points spread evenly on the log-scale x-axis.
 
-    For ranges that start at 0 (e.g. "0 - 20,000"), sampling from 1 would
-    spread points across 4+ log10 units and produce very flat, wide swarms.
-    Instead we clamp the lower bound to high/3, which concentrates the swarm
-    near the upper end of the range and keeps columns tall and circular.
+    Uses log-uniform sampling so points spread evenly on the log-scale x-axis.
+    For ranges starting at 0 (e.g. "0 - 20,000"), the lower bound is clamped
+    to high/10 to keep the swarm concentrated and visually dense.
 
     Args:
         low: Lower bound (may be 0).
         high: Upper bound.
         rng: numpy Generator instance.
+
     Returns:
-        float sampled value, or np.nan if bounds are invalid.
-    '''
+        float: Sampled value, or np.nan if bounds are invalid.
+    """
     if np.isnan(low) or np.isnan(high):
         return np.nan
     low = int(low)
@@ -58,14 +63,15 @@ def _sample_owners_range_log(low, high, rng):
 
 
 def _classify_game_type(genres_str):
-    '''
-    Classify a game as Solo, Hybride, or Multijoueur based on its Genres field.
+    """
+    Classify a game as Solo, Hybride, or Multijoueur based on its categories.
 
     Args:
         genres_str: Comma-separated string of Steam categories.
+
     Returns:
         str: One of 'Solo', 'Hybride', 'Multijoueur', or 'Autre'.
-    '''
+    """
     if pd.isna(genres_str):
         return "Autre"
     genres = str(genres_str)
@@ -80,16 +86,17 @@ def _classify_game_type(genres_str):
     return "Autre"
 
 
-def step1(df):
-    '''
+def sample_owners_and_classify(df):
+    """
     Sample a random owner count within each game's ownership range (log-uniform)
     and classify each game by play mode.
 
     Args:
         df: Raw games DataFrame.
+
     Returns:
-        DataFrame with added 'Estimated owners (average)' and 'game_type' columns.
-    '''
+        pd.DataFrame: DataFrame with added 'Estimated owners (average)' and 'game_type' columns.
+    """
     df = df.copy()
     rng = np.random.default_rng(42)
     bounds = df[COL_OWNERS].apply(_parse_owners_bounds)
@@ -103,16 +110,17 @@ def step1(df):
     return df
 
 
-def step2(df):
-    '''
+def filter_valid_games(df):
+    """
     Filter to games with known owners and a classified play mode.
     Removes games with zero owners and unclassified types.
 
     Args:
-        df: DataFrame from step1.
+        df: DataFrame from sample_owners_and_classify.
+
     Returns:
-        Cleaned DataFrame ready for plotting.
-    '''
+        pd.DataFrame: Cleaned DataFrame ready for plotting.
+    """
     df = df.copy()
     df = df.dropna(subset=[COL_OWNERS_AVG, COL_NAME])
     df = df[df[COL_OWNERS_AVG] > 0]

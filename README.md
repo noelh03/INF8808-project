@@ -22,7 +22,7 @@ src/
 │   ├──preprocess.py    
 │   └──viz1_scatter.py    
 │    
-├──viz2_box/                    #TODO Add brief title     
+├──viz2_beeswarm/                    #TODO Add brief title     
 │    
 ├──viz3_line/                   #TODO Add brief title     
 │    

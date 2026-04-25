@@ -1,36 +1,67 @@
-'''
-    Contains source code for the second visualisation of the project.
-    Beeswarm plot showing commercial success (Estimated owners)
-    by game play mode (Solo, Hybride, Multijoueur).
-'''
+"""
+Layout and figure controller for the beeswarm plot of commercial success by play mode.
+
+This module:
+- preprocesses the raw games DataFrame into owner samples and play mode categories
+- generates the beeswarm figure with statistical markers
+- defines the Dash layout wrapping the interactive graph
+- provides the info panel content with key findings and game highlights
+"""
 from dash import html, dcc
 
-import viz2_box.preprocess
-import viz2_box.plot_generate
+import viz2_beeswarm.preprocess
+import viz2_beeswarm.plot_generate
 
 
 def ensure_preprocessed(my_df):
+    """
+    Return the preprocessed DataFrame, computing it once if not already done.
+
+    Args:
+        my_df: Raw games DataFrame.
+
+    Returns:
+        pd.DataFrame: DataFrame with 'Estimated owners (average)' and 'game_type' columns.
+    """
     if "Estimated owners (average)" in my_df.columns and "game_type" in my_df.columns:
         return my_df.copy()
 
-    processed = viz2_box.preprocess.step1(my_df.copy())
-    processed = viz2_box.preprocess.step2(processed)
+    processed = viz2_beeswarm.preprocess.sample_owners_and_classify(my_df.copy())
+    processed = viz2_beeswarm.preprocess.filter_valid_games(processed)
     return processed
 
 
 def create_figure(my_df):
+    """
+    Build and return the beeswarm figure from the games DataFrame.
+
+    Args:
+        my_df: Raw or preprocessed games DataFrame.
+
+    Returns:
+        go.Figure: Fully configured beeswarm figure.
+    """
     my_df = ensure_preprocessed(my_df)
 
-    fig = viz2_box.plot_generate.generate_plot(my_df)
-    fig = viz2_box.plot_generate.update_template(fig)
-    fig = viz2_box.plot_generate.update_legend(fig)
-    fig = viz2_box.plot_generate.update_axes_labels(fig)
-    fig = viz2_box.plot_generate.update_hover_template(fig)
+    fig = viz2_beeswarm.plot_generate.generate_plot(my_df)
+    fig = viz2_beeswarm.plot_generate.update_template(fig)
+    fig = viz2_beeswarm.plot_generate.update_legend(fig)
+    fig = viz2_beeswarm.plot_generate.update_axes_labels(fig)
+    fig = viz2_beeswarm.plot_generate.update_hover_template(fig)
 
     return fig
 
 
 def create_layout(my_df):
+    """
+    Build the Dash layout containing the beeswarm plot.
+
+    Args:
+        my_df: Raw or preprocessed games DataFrame.
+
+    Returns:
+        html.Div: Dash component wrapping the beeswarm figure.
+    """
     fig = create_figure(my_df)
 
     fig.update_layout(height=560)
@@ -51,8 +82,14 @@ def create_layout(my_df):
             style={"width": "100%"},
         ),
     ])
-    
+
 def create_info_content():
+    """
+    Build the info panel content for the beeswarm visualization.
+
+    Returns:
+        html.Div: Dash component with the analysis text and game logo strip.
+    """
     return html.Div(
         className="info-slide",
         children=[

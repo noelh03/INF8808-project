@@ -1,13 +1,12 @@
-'''
-    Generates a horizontal beeswarm plot for visualisation 2.
-    Shows the distribution of commercial success (Estimated owners)
-    by game play mode (Solo, Hybride, Multijoueur).
+"""
+Visualization generation module for the beeswarm plot of commercial success by play mode.
 
-    X values are sampled randomly (log-uniform) within each Steam ownership
-    range.  Points are then packed into a true beeswarm: they are binned in
-    log-x space and stacked vertically within each bin so they touch without
-    overlapping, forming tight columns whose height reflects local density.
-'''
+This module:
+- samples owner counts log-uniformly and stacks points into true beeswarm columns
+- renders one scatter trace per play mode (Solo, Hybride, Multijoueur)
+- overlays Q1/Q3 statistical markers as vertical dashed lines
+- styles axes, legend, and hover labels consistently with the project theme
+"""
 import numpy as np
 import plotly.graph_objects as go
 
@@ -16,15 +15,16 @@ from utils.constants import (COL_GAME_TYPE, COL_NAME, COL_OWNERS, COL_OWNERS_AVG
 
 
 def _beeswarm_y(x_vals, center):
-    '''
+    """
     Compute y-positions for a beeswarm row.
 
     Args:
         x_vals: 1-D array of x-values (owner counts, positive).
         center: Numeric y-centre for this row.
+
     Returns:
-        1-D numpy array of y-positions, same length as x_vals.
-    '''
+        np.ndarray: 1-D array of y-positions, same length as x_vals.
+    """
     x_log = np.log10(np.maximum(x_vals, 1.0))
     bin_idx = np.floor(x_log / LOG_BIN_WIDTH).astype(int)
 
@@ -41,7 +41,15 @@ def _beeswarm_y(x_vals, center):
 
 
 def _owners_midpoint(range_str):
-    '''Return the midpoint of a Steam ownership range string like "20,000 - 50,000".'''
+    """
+    Compute the midpoint of a Steam ownership range string.
+
+    Args:
+        range_str: String like '20,000 - 50,000'.
+
+    Returns:
+        float: Midpoint value, or np.nan if parsing fails.
+    """
     if not isinstance(range_str, str):
         return np.nan
     parts = range_str.split(" - ")
@@ -56,7 +64,15 @@ def _owners_midpoint(range_str):
 
 
 def _format_owners(value):
-    '''Format an owner count as a short human-readable string (e.g. 10 k, 1,5 M).'''
+    """
+    Format an owner count as a short human-readable string.
+
+    Args:
+        value: Numeric owner count.
+
+    Returns:
+        str: Formatted string such as '10 k' or '1.5 M'.
+    """
     if value >= 1_000_000:
         v = value / 1_000_000
         s = f"{v:.1f}".rstrip("0").rstrip(".")
@@ -67,7 +83,15 @@ def _format_owners(value):
 
 
 def _format_range(range_str):
-    '''Format a Steam range string like "20,000 - 50,000" → "20 k - 50 k".'''
+    """
+    Format a Steam ownership range string into a compact human-readable form.
+
+    Args:
+        range_str: String like '20,000 - 50,000'.
+
+    Returns:
+        str: Formatted string such as '20 k - 50 k'.
+    """
     if not isinstance(range_str, str):
         return str(range_str)
     parts = range_str.split(" - ")
@@ -85,14 +109,15 @@ def _format_range(range_str):
 
 
 def generate_plot(df):
-    '''
-    Build the beeswarm figure.
+    """
+    Build the beeswarm figure with swarm points and statistical markers.
 
     Args:
         df: Preprocessed DataFrame.
+
     Returns:
-        go.Figure
-    '''
+        go.Figure: Beeswarm figure with traces and Q1/Q3 line shapes.
+    """
     fig = go.Figure()
 
     for game_type in GAME_TYPE_ORDER:
@@ -168,7 +193,15 @@ def generate_plot(df):
 
 
 def update_template(fig):
-    '''Apply the visual theme.'''
+    """
+    Apply the visual theme to the figure.
+
+    Args:
+        fig: Plotly figure to update.
+
+    Returns:
+        go.Figure: Figure with updated layout theme.
+    """
     fig.update_layout(
         template="plotly_white",
         paper_bgcolor="#FFFFFF",
@@ -194,7 +227,15 @@ def update_template(fig):
 
 
 def update_legend(fig):
-    '''Show legend in top-right corner.'''
+    """
+    Configure the legend position and style.
+
+    Args:
+        fig: Plotly figure to update.
+
+    Returns:
+        go.Figure: Figure with updated legend settings.
+    """
     fig.update_layout(
         showlegend=True,
         legend=dict(
@@ -213,7 +254,15 @@ def update_legend(fig):
 
 
 def update_axes_labels(fig):
-    '''Set axis titles, log scale on X, and named ticks on Y.'''
+    """
+    Set axis titles, log scale on X, and named category ticks on Y.
+
+    Args:
+        fig: Plotly figure to update.
+
+    Returns:
+        go.Figure: Figure with updated axis configuration.
+    """
     fig.update_xaxes(
         title_text="Succès commercial estimé (propriétaires)",
         type="log",
@@ -242,5 +291,13 @@ def update_axes_labels(fig):
 
 
 def update_hover_template(fig):
-    '''Hover templates are set per-trace in generate_plot.'''
+    """
+    Hover templates are set per-trace in generate_plot; this is a no-op.
+
+    Args:
+        fig: Plotly figure to update.
+
+    Returns:
+        go.Figure: Unchanged figure.
+    """
     return fig

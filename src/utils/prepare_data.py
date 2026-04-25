@@ -23,7 +23,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 from viz1_scatter.preprocess import preprocess_data as preprocess_viz1
-from viz2_box.preprocess import step1 as viz2_step1, step2 as viz2_step2
+from viz2_beeswarm.preprocess import step1 as viz2_step1, step2 as viz2_step2
 from viz3_line.preprocess import preprocess_data as preprocess_viz3
 from viz4_bubble.preprocess import preprocess_data as preprocess_viz4
 from viz5_dot.preprocess import compute_metrics as viz5_compute_metrics, filter_data as viz5_filter_data
@@ -87,7 +87,7 @@ def build_viz2(df_raw: pd.DataFrame) -> None:
         "game_type",
     ]
     df = df[keep_cols].copy()
-    save_csv(df, "viz2_box.csv")
+    save_csv(df, "viz2_beeswarm.csv")
 
 
 def build_viz3(df_raw: pd.DataFrame) -> None:

@@ -29,7 +29,7 @@ from dash.exceptions import PreventUpdate
 import pandas as pd
 
 from viz1_scatter import viz1_scatter
-from viz2_box import viz2_box
+from viz2_beeswarm import viz2_beeswarm
 from viz3_line import viz3_line
 from viz4_bubble import viz4_bubble
 from viz5_dot import viz5_dot
@@ -92,7 +92,7 @@ viz1_scatter_layout = viz1_scatter.create_layout(
     slider_id=SCATTER_SLIDER_ID,
     graph_id=SCATTER_GRAPH_ID,
 )
-viz2_box_layout = viz2_box.create_layout(data)
+viz2_beeswarm_layout = viz2_beeswarm.create_layout(data)
 viz3_line_layout = viz3_line.create_layout(data)
 viz4_bubble_layout = viz4_bubble.create_layout(BUBBLE_DATA)
 viz5_dot_layout = viz5_dot.create_layout(
@@ -135,8 +135,8 @@ app.layout = html.Div(
                             "Explorer si les jeux solo, hybrides ou exclusivement multijoueur "
                             "se distinguent par leur performance commerciale estimée, "
                             "et observer comment chaque catégorie se répartit sur l'échelle des propriétaires.",
-                            viz2_box_layout, "#scatter", "#line",
-                            info_content=viz2_box.create_info_content(),
+                            viz2_beeswarm_layout, "#scatter", "#line",
+                            info_content=viz2_beeswarm.create_info_content(),
                         ),
                         utils_app.make_section(
                             "line",
