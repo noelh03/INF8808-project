@@ -1,17 +1,34 @@
 '''
-    This file contains the code for the plot.
+This file contains the code for the dot plot (viz5).
+It includes generate_plot plus helpers to update axes, layout, and hover template.
 '''
 import math
 
 import numpy as np
 import pandas as pd
 import plotly.express as px
+
 from .hover_template import get_hover_template
-from utils.constants import (COL_NAME, COL_SAT_ROUNDED, COL_VIS, BEESWARM_HALF_SPAN, BEESWARM_MAX_PER_STRIP, COL_X_PLOT, COL_PLAYTIME)
+from utils.constants import (
+    BEESWARM_HALF_SPAN,
+    BEESWARM_MAX_PER_STRIP,
+    COL_NAME,
+    COL_PLAYTIME,
+    COL_SAT_ROUNDED,
+    COL_VIS,
+    COL_X_PLOT,
+)
 
 
-def _spread_indices_along_x(idx_order: np.ndarray, offsets: np.ndarray, x_lo: float, x_hi: float) -> None:
-    """Remplit offsets pour les indices 0..n-1 (idx_order triés par y), répartis entre x_lo et x_hi."""
+def _spread_indices_along_x(idx_order, offsets, x_lo, x_hi):
+    """
+        Fill horizontal offsets for indices ordered by y (one beeswarm strip).
+
+        Args:
+            idx_order: Indices in one bin, sorted by playtime.
+            offsets: Full offset array (mutated in place).
+            x_lo, x_hi: Horizontal span for this strip around rounded satisfaction.
+    """
     m = len(idx_order)
     if m == 0:
         return
@@ -21,10 +38,15 @@ def _spread_indices_along_x(idx_order: np.ndarray, offsets: np.ndarray, x_lo: fl
     offsets[idx_order] = np.linspace(x_lo, x_hi, m)
 
 
-def _beeswarm_offsets_one_satisfaction(y: np.ndarray) -> np.ndarray:
+def _beeswarm_offsets_one_satisfaction(y):
     """
-    Beeswarm (style Wilkinson / bandes) : fines tranches sur le temps de jeu ; dans chaque tranche,
-    les points sont triés par y puis répartis horizontalement. Bande trop dense → plusieurs colonnes en x.
+        X-offsets for one rounded-satisfaction group (Wilkinson-style beeswarm on playtime).
+
+        Args:
+            y (np.ndarray): Playtime values (hours) for games sharing the same rounded satisfaction.
+
+        Returns:
+            np.ndarray: Offsets to add to rounded satisfaction for plotting.
     """
     y = np.asarray(y, dtype=float)
     n = len(y)
@@ -66,9 +88,15 @@ def _beeswarm_offsets_one_satisfaction(y: np.ndarray) -> np.ndarray:
     return offsets
 
 
-def _add_beeswarm_x(df: pd.DataFrame) -> pd.DataFrame:
+def _add_beeswarm_x(df):
     """
-    Un beeswarm par palier de satisfaction arrondie. Le survol garde la vraie satisfaction (customdata).
+        Add COL_X_PLOT = rounded satisfaction + per-group beeswarm offset.
+
+        Args:
+            df (pd.DataFrame): Filtered dataframe with COL_SAT_ROUNDED and COL_PLAYTIME.
+
+        Returns:
+            pd.DataFrame: Copy with COL_X_PLOT column.
     """
     out = df.copy()
     offsets_series = pd.Series(0.0, index=out.index, dtype=float)
@@ -81,14 +109,16 @@ def _add_beeswarm_x(df: pd.DataFrame) -> pd.DataFrame:
 
 def update_axes(fig, max_playtime=6000, data_max_playtime=None):
     '''
-        Updates the axes labels with their corresponding titles and styling.
+        Updates axis titles, ranges, and ticks. Y-axis may be shortened when most points
+        sit well below the slider maximum (less empty vertical space).
 
         Args:
-            fig: The figure to be updated
-            max_playtime: The maximum playtime to display (used for filtering the data)
-            data_max_playtime: Max playtime among filtered points (tighter Y when data sit low).
+            fig: The figure to update.
+            max_playtime: Slider upper bound (hours).
+            data_max_playtime: Max playtime among points still shown after filtering.
+
         Returns:
-            The updated figure
+            The updated figure.
     '''
     fig.update_xaxes(
         title_text="Satisfaction (arrondie)",
@@ -112,7 +142,6 @@ def update_axes(fig, max_playtime=6000, data_max_playtime=None):
     else:
         padding = max_playtime * 0.03
         full_top = max_playtime + padding
-        # Évite un axe 0–6000 vide quand les points restent bas (slider max élevé).
         if (
             data_max_playtime is not None
             and data_max_playtime > 0
@@ -149,12 +178,13 @@ def update_axes(fig, max_playtime=6000, data_max_playtime=None):
 
 def update_layout(fig):
     '''
-        Updates the layout of the figure.
+        Updates paper margins, fonts, and horizontal colorbar below the plot.
 
         Args:
-            fig: The figure to update
+            fig: The figure to update.
+
         Returns:
-            The updated figure
+            The updated figure.
     '''
     fig.update_layout(
         autosize=True,
@@ -197,14 +227,14 @@ def update_layout(fig):
 
 def update_hover_template(fig):
     '''
-        Sets the hover template of the figure
+        Sets the hover template on all traces.
 
         Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
+            fig: The figure to update.
 
+        Returns:
+            The updated figure.
+    '''
     template = get_hover_template()
     fig.update_traces(hovertemplate=template)
 
@@ -213,14 +243,20 @@ def update_hover_template(fig):
 
 def generate_plot(df, max_playtime=6000):
     '''
-        Generates the plot.
+        Generates the scatter plot: beeswarm x, playtime y, colour = visibility.
 
         Args:
-            df: The dataframe to display
-            max_playtime: The maximum playtime to display (used for filtering the data)
+            df: The dataframe to display (preprocessed).
+            max_playtime: Upper bound on playtime (hours); rows above are excluded.
+
         Returns:
-            The generated figure
+            The generated figure.
     '''
+    required_columns = [COL_SAT_ROUNDED, COL_PLAYTIME, COL_VIS, COL_NAME]
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Colonnes manquantes : {missing}")
+
     filtered_df = _add_beeswarm_x(df[df[COL_PLAYTIME] <= max_playtime])
 
     fig = px.scatter(

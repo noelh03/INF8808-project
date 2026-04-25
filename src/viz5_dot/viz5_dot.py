@@ -1,20 +1,49 @@
 '''
-    Contains source code for the fifth visualisation of the project. 
-    It is a dot plot, showing the relationship between satisfaction and playtime, 
-    with the color of the dots representing the number of reviews.
+Contains source code for the fifth visualisation of the project.
+It is a scatter plot (beeswarm-style placement): satisfaction vs average playtime,
+with dot colour encoding total reviews (visibility).
+
+This module:
+- ensures the dataframe is preprocessed (or reuses columns if already present)
+- builds the Plotly figure and the Dash layout (graph + vertical playtime slider)
+- exposes the info-carousel layout for the scrollytelling section
+
+It connects preprocessing, plot generation, and Dash components in app.py.
 '''
-from dash import html, dcc
-import viz5_dot.preprocess as preprocess
+from dash import dcc, html
+
 import viz5_dot.plot_generate as plot_generate
-from utils.constants import (DOT_SLIDER_MIN, DOT_SLIDER_MAX, DOT_SLIDER_STEP, DOT_SLIDER_HEIGHT)
+import viz5_dot.preprocess as preprocess
+from utils.constants import (
+    COL_PLAYTIME,
+    COL_SAT,
+    COL_SAT_ROUNDED,
+    COL_VIS,
+    DOT_SLIDER_HEIGHT,
+    DOT_SLIDER_MAX,
+    DOT_SLIDER_MIN,
+    DOT_SLIDER_STEP,
+)
 
 
 def ensure_preprocessed(df):
+    """
+        Return a dataframe ready for viz5 (metrics + filter), with light caching logic.
+
+        If the expected columns already exist, returns a copy of df; otherwise runs
+        compute_metrics and filter_data.
+
+        Args:
+            df (pd.DataFrame): Raw or partially processed games dataframe.
+
+        Returns:
+            pd.DataFrame: Dataframe with COL_SAT, COL_VIS, COL_SAT_ROUNDED, COL_PLAYTIME, etc.
+    """
     if (
-        "Visibility" in df.columns
-        and "Satisfaction" in df.columns
-        and "Satisfaction rounded" in df.columns
-        and "Playtime hours" in df.columns
+        COL_VIS in df.columns
+        and COL_SAT in df.columns
+        and COL_SAT_ROUNDED in df.columns
+        and COL_PLAYTIME in df.columns
     ):
         return df.copy()
 
@@ -24,56 +53,96 @@ def ensure_preprocessed(df):
 
 
 def create_figure(df, max_playtime=6000):
+    '''
+        Build the Plotly figure for the dot plot (filtered playtime on y).
+
+        Args:
+            df (pd.DataFrame): Input dataframe (raw or preprocessed).
+            max_playtime (int): Upper bound on playtime (hours) for filtering and axis context.
+
+        Returns:
+            plotly.graph_objects.Figure: Scatter figure from plot_generate.generate_plot.
+    '''
     df = ensure_preprocessed(df)
     fig = plot_generate.generate_plot(df, max_playtime)
     return fig
 
 
 def create_layout(df, max_playtime=6000, slider_id="dot-slider", graph_id="dot-graph"):
-    fig = create_figure(df, max_playtime)
-    slider_marks = {i: f"{i//1000}k" for i in range(0, DOT_SLIDER_MAX + 1, 1000)}
+    '''
+        Creates the Dash layout: main graph column + vertical playtime slider.
 
-    return html.Div(className="viz-inner", children=[
-        html.Div(className="dot-main-layout", children=[
+        Args:
+            df (pd.DataFrame): Input dataframe used to build the initial figure.
+            max_playtime (int): Initial slider value and filter upper bound (hours).
+            slider_id (str): Dash component id for the slider.
+            graph_id (str): Dash component id for the graph.
+
+        Returns:
+            html.Div: Root layout (viz-inner) for this visualisation.
+    '''
+    fig = create_figure(df, max_playtime)
+    slider_marks = {i: f"{i // 1000}k" for i in range(0, DOT_SLIDER_MAX + 1, 1000)}
+
+    return html.Div(
+        className="viz-inner",
+        children=[
             html.Div(
-                className="dot-graph-column",
+                className="dot-main-layout",
                 children=[
-                    dcc.Graph(
-                        id=graph_id,
-                        figure=fig,
-                        config={"displayModeBar": False, "responsive": True},
-                        className="graph dot-graph",
-                        style={
-                            "height": "100%",
-                            "width": "100%",
-                            "minHeight": 0,
-                            "minWidth": 0,
-                        },
+                    html.Div(
+                        className="dot-graph-column",
+                        children=[
+                            dcc.Graph(
+                                id=graph_id,
+                                figure=fig,
+                                config={"displayModeBar": False, "responsive": True},
+                                className="graph dot-graph",
+                                style={
+                                    "height": "100%",
+                                    "width": "100%",
+                                    "minHeight": 0,
+                                    "minWidth": 0,
+                                },
+                            ),
+                        ],
+                    ),
+                    html.Div(
+                        className="dot-side-panel",
+                        children=[
+                            html.Div(
+                                "Filtrer par temps de jeu moyen",
+                                className="slider-title",
+                            ),
+                            dcc.Slider(
+                                id=slider_id,
+                                min=DOT_SLIDER_MIN,
+                                max=DOT_SLIDER_MAX,
+                                step=DOT_SLIDER_STEP,
+                                value=max_playtime,
+                                vertical=True,
+                                verticalHeight=DOT_SLIDER_HEIGHT,
+                                marks=slider_marks,
+                                tooltip={
+                                    "placement": "left",
+                                    "always_visible": True,
+                                },
+                            ),
+                        ],
                     ),
                 ],
             ),
+        ],
+    )
 
-            html.Div(className="dot-side-panel", children=[
-                html.Div("Filtrer par temps de jeu moyen", className="slider-title"),
-                dcc.Slider(
-                    id=slider_id,
-                    min=DOT_SLIDER_MIN,
-                    max=DOT_SLIDER_MAX,
-                    step=DOT_SLIDER_STEP,
-                    value=max_playtime,
-                    vertical=True,
-                    verticalHeight=DOT_SLIDER_HEIGHT,
-                    marks=slider_marks,
-                    tooltip={
-                        "placement": "left",
-                        "always_visible": True,
-                    },
-                ),
-            ])
-        ])
-    ])
-    
+
 def create_info_content():
+    """
+        Builds the info carousel (two slides + prev/next + progress dots) for the dot section.
+
+        Returns:
+            html.Div: Carousel layout; ids are prefixed with viz5-info-* for callbacks in app.py.
+    """
     return html.Div(
         className="info-carousel",
         children=[
@@ -86,9 +155,7 @@ def create_info_content():
                     html.H4(
                         className="info-block-title",
                         children=[
-                            html.I(
-                                className="fa-solid fa-clock info-slide-icon",
-                            ),
+                            html.I(className="fa-solid fa-clock info-slide-icon"),
                             html.Span(
                                 " Le temps de jeu moyen est-il lié à la satisfaction ?",
                             ),
@@ -116,9 +183,7 @@ def create_info_content():
                     html.H4(
                         className="info-block-title",
                         children=[
-                            html.I(
-                                className="fa-solid fa-palette info-slide-icon",
-                            ),
+                            html.I(className="fa-solid fa-palette info-slide-icon"),
                             html.Span(
                                 " Couleur du point et curseur vertical",
                             ),
