@@ -14,23 +14,27 @@ The application is built using Dash and Plotly, and follows a scrollytelling app
 ```bash
 src/    
 │    
-├──assets/                      # CSS, dataset, icon    
+├──assets/                      # CSS, dataset, icon, logos    
 │    
-├──viz1_scatter/                # Price vs Success    
+├──main_components/             # 
+│    
+├──utils/                       # 
+│    
+├──viz1_scatter/                # Price & Success    
 │   ├──hover_template.py    
 │   ├──plot_generate.py    
 │   ├──preprocess.py    
 │   └──viz1_scatter.py    
 │    
-├──viz2_beeswarm/                    #TODO Add brief title     
+├──viz2_beeswarm/               # Game mode & Success     
 │    
-├──viz3_line/                   #TODO Add brief title     
+├──viz3_line/                   # Genres & Success     
 │    
-├──viz4_bubble/                 #TODO Add brief title     
+├──viz4_bubble/                 # Visibility vs Satisfaction     
 │    
-├──viz5_dot/                    #TODO Add brief title     
+├──viz5_dot/                    # Satisfaction vs Time played     
 │    
-├──viz6_violin/                 #TODO Add brief title     
+├──viz6_violin/                 # Editors & Success     
 │    
 ├──app.py                       # Main Dash layout    
 └──server.py                    # Server entry point    
@@ -39,15 +43,15 @@ src/
 **Reference :**     
 - Source files were adapted from Lab 4
 
-
 **Visualizations & Questions :**     
-The application includes 6 interactive visualizations, each answering specific analytical questions :
-
+- The application includes 6 interactive visualizations, each answering specific analytical questions.     
 
 **Installation :**     
-- pip install -r requirements.txt
+- pip install --upgrade -r requirements.txt --upgrade-strategy eager
 
-**Run the App :**        
-- cd src & python server.py
-- Open : http://127.0.0.1:8050/
-
+**Run the App :**       
+- Local host :   
+    - cd src & python server.py       
+    - Open : http://127.0.0.1:8050/        
+       
+- Website : 
