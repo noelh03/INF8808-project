@@ -16,9 +16,9 @@ src/
 │    
 ├──assets/                      # CSS, dataset, icon, logos    
 │    
-├──main_components/             # 
+├──main_components/             # hero and sidebar components
 │    
-├──utils/                       # 
+├──utils/                       # util functions
 │    
 ├──viz1_scatter/                # Price & Success    
 │   ├──hover_template.py    
@@ -54,4 +54,4 @@ src/
     - cd src & python server.py       
     - Open : http://127.0.0.1:8050/        
        
-- Website : 
+- Website : https://a860086e-dc13-4b4e-ac3c-f7ead9eb360b.plotly.app
