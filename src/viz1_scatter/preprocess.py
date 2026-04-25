@@ -1,28 +1,32 @@
-"""
-Preprocessing module for Steam dataset.
+'''
+Preprocessing module for the scatter plot visualization, using the Steam dataset.
 
 This module:
 - converts Steam ownership intervals into numeric averages
 - cleans missing values
-- creates a categorical variable distinguishing free vs paid games
+- creates a categorical variable distinguishing free and paid games
 
-These transformations are required to enable quantitative visual analysis.
-"""
-
+These transformations are required to enable quantitative visual analysis for the scatter plot.
+'''
 import numpy as np
 import pandas as pd
-from utils.constants import (COL_ESTIMATED_OWNERS, COL_ESTIMATED_OWNERS_AVG, COL_PRICE, COL_NAME, COL_TYPE)
+
+from utils.constants import (
+    COL_ESTIMATED_OWNERS,
+    COL_ESTIMATED_OWNERS_AVG,
+    COL_PRICE,
+    COL_NAME,
+    COL_TYPE
+)
 
 
 def convert_owners_range_to_avg(value):
     """
-    Convert an owners range like '20,000-50,000' into its numeric average.
-
-    Args:
-        value: Raw value from the 'Estimated owners' column.
-
-    Returns:
-        float: Average of the lower and upper bounds, or np.nan if parsing fails.
+        Convert an owners range like '20,000-50,000' into its numeric average.
+        Args:
+            value (str): The input string representing the owners range.
+        Returns:
+            float: The average number of owners, or NaN if the input is invalid.
     """
     if pd.isna(value):
         return np.nan
@@ -31,32 +35,35 @@ def convert_owners_range_to_avg(value):
         value = str(value).replace(",", "").strip()
         low, high = [part.strip() for part in value.split("-")]
         return (int(low) + int(high)) / 2
-    except ValueError:
+    except:
         return np.nan
 
 
 def add_average_estimated_owners(df):
     """
-    Add a numeric average owners column derived from the owners range column.
+        Add numeric estimated owners column.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The dataframe with the added column for average estimated owners.
     """
-    if COL_ESTIMATED_OWNERS not in df.columns:
-        raise ValueError(f"Colonne manquante : {COL_ESTIMATED_OWNERS}")
-
     df = df.copy()
-    df[COL_ESTIMATED_OWNERS_AVG] = df[COL_ESTIMATED_OWNERS].apply(convert_owners_range_to_avg)
+    df[COL_ESTIMATED_OWNERS_AVG] = df[COL_ESTIMATED_OWNERS].apply(
+        convert_owners_range_to_avg
+    )
     return df
 
 
 def clean_price_and_game_type(df):
     """
-    Clean the price column, remove invalid rows, and create the game type label.
+        Clean price values and create the game type column.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The cleaned dataframe with the game type column added.
     """
-    required_columns = [COL_PRICE, COL_ESTIMATED_OWNERS_AVG, COL_NAME]
-    missing = [col for col in required_columns if col not in df.columns]
-    if missing:
-        raise ValueError(f"Colonnes manquantes : {missing}")
-
     df = df.copy()
+
     df[COL_PRICE] = pd.to_numeric(df[COL_PRICE], errors="coerce")
     df = df.dropna(subset=[COL_PRICE, COL_ESTIMATED_OWNERS_AVG, COL_NAME])
     df = df[df[COL_ESTIMATED_OWNERS_AVG] > 0]
@@ -68,7 +75,11 @@ def clean_price_and_game_type(df):
 
 def preprocess_data(df):
     """
-    Run the full preprocessing pipeline.
+        Full preprocessing pipeline.
+        Args:
+            df (pd.DataFrame): The input dataframe containing the game data.
+        Returns:
+            pd.DataFrame: The preprocessed dataframe, ready for visualization.
     """
     df = add_average_estimated_owners(df)
     df = clean_price_and_game_type(df)
