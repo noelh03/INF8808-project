@@ -54,4 +54,4 @@ src/
     - cd src & python server.py       
     - Open : http://127.0.0.1:8050/        
        
-- Website : https://a860086e-dc13-4b4e-ac3c-f7ead9eb360b.plotly.app
+- Website : https://dc4d60c2-dd52-44ae-b609-9107d3c4faf9.plotly.app/
