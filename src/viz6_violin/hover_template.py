@@ -1,21 +1,20 @@
 '''
-    Provides the template for the tooltips.
+    Provides the template for the tooltip template for the violin plot traces.
 '''
 
 
 def get_hover_template():
     '''
-        Sets the template for the hover tooltips.
+        Returns the hovertemplate string for Plotly violin traces.
         
-        Contains labels, followed by their corresponding
-        value and units where appropriate, separated by a
-        colon : Game name, publisher type, number of games published, 
-        commercial success.
+         Fields displayed:
+            - Game name (bold, from hovertext)
+            - Publisher type (from trace name)
+            - Number of games published (x-axis value) 
+            - Commercial success / estimated owners (y-axis value)
 
-        The labels' font is bold and the values are normal weight
-
-        returns:
-            The content of the tooltip
+        Returns:
+            str: A Plotly-compatible hovertemplate string
     '''
     tooltip = (
         "<b>%{hovertext}</b><br>"

@@ -26,21 +26,30 @@ def ensure_preprocessed(my_df):
 
 def create_figure(my_df):
     '''
-        Calls the functions to preprocess the data and generate the plot for the sixth visualisation.
+        Preprocesses the data and generates the violin plot figure.
+
+        Args:
+            my_df: Raw or preprocessed DataFrame
+        Returns:
+            The fully styled Plotly figure
     '''
     my_df = ensure_preprocessed(my_df)
     my_df = viz6_violin.plot_generate.filter_by_max_games(my_df, VIOLIN_SLIDER_MAX)
-
-    fig = viz6_violin.plot_generate.generate_plot(my_df)
-    fig = viz6_violin.plot_generate.update_template(fig)
-    fig = viz6_violin.plot_generate.update_legend(fig)
-    fig = viz6_violin.plot_generate.update_axes_labels(fig)
-    fig = viz6_violin.plot_generate.update_hover_template(fig)
-
-    return fig
+    return viz6_violin.plot_generate.generate_plot(my_df)
 
 
 def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
+    '''
+        Builds the full Dash layout for visualisation 6, including the
+        violin plot and the vertical slider panel.
+
+        Args:
+            my_df      : Raw or preprocessed DataFrame
+            slider_id  : Dash component ID for the slider
+            graph_id   : Dash component ID for the graph
+        Returns:
+            A Dash html.Div containing the full layout
+    '''
     preprocessed = ensure_preprocessed(my_df)
     real_max = int(preprocessed['nb_games_dev'].max())
 
@@ -48,7 +57,6 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
     VIOLIN_SLIDER_MAX = real_max
 
     fig = create_figure(preprocessed)
-    fig.update_layout(dragmode=False)
 
     slider_marks = {VIOLIN_SLIDER_MIN: str(VIOLIN_SLIDER_MIN)}
     for i in range(50, VIOLIN_SLIDER_MAX, 50):
@@ -95,6 +103,13 @@ def create_layout(my_df, slider_id="violin-slider", graph_id="violin-graph"):
     ])
     
 def create_info_content():
+    '''
+        Builds the informational carousel panel for visualisation 6,
+        with three slides explaining the key insights.
+
+        Returns:
+            A Dash html.Div containing the carousel layout
+    '''
     return html.Div(
         className="info-carousel",
         children=[

@@ -34,6 +34,7 @@ from viz3_line import viz3_line
 from viz4_bubble import viz4_bubble
 from viz5_dot import viz5_dot
 from viz6_violin import viz6_violin
+import viz6_violin.plot_generate as v6_plot
 import main_components.sidebar as sidebar
 import main_components.hero as hero
 import utils.utils_app as utils_app
@@ -468,7 +469,7 @@ def advance_viz6_info_carousel(prev_clicks, next_clicks, current_idx):
     styles = [{"display": "flex" if i == next_idx else "none"} for i in range(3)]
     dots = ["info-dot active" if i == next_idx else "info-dot" for i in range(3)]
     return next_idx, styles[0], styles[1], styles[2], dots[0], dots[1], dots[2]
-
+ 
 @app.callback(
     Output(VIOLIN_SLIDER_ID, "value"),
     Input("viz6-info-slide-idx", "data"),
@@ -483,22 +484,14 @@ def sync_violin_slider_to_slide(slide_idx):
     Input("viz6-info-slide-idx", "data"),
 )
 def update_violin(max_games, slide_idx):
-    import viz6_violin.plot_generate as v6_plot
- 
     if ctx.triggered_id == "viz6-info-slide-idx":
         max_games = VIOLIN_SLIDE_SLIDER_VALUES[(slide_idx or 0) % 3]
     elif max_games is None:
         max_games = VIOLIN_REAL_MAX
  
     my_df = v6_plot.filter_by_max_games(VIOLIN_DATA, max_games)
+    return v6_plot.generate_plot(my_df)
  
-    fig = v6_plot.generate_plot(my_df)
-    fig = v6_plot.update_axes_labels(fig)
-    fig = v6_plot.update_legend(fig)
-    fig = v6_plot.update_hover_template(fig)
-    fig.update_layout(dragmode=False)
-    return fig
-
-
+ 
 if __name__ == "__main__":
     app.run(debug=False)
