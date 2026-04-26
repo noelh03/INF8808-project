@@ -1,18 +1,40 @@
 '''
-    This file contains the code for the plot.
+    Contains the functions to generate and style the violin plot.
 '''
 
 import plotly.express as px
 
 from . import hover_template
+from .preprocess import OWNER_ORDER
+
+OWNER_TICK_LABELS = [
+    "0 - 20k",
+    "20k - 50k",
+    "50k - 100k",
+    "100k - 200k",
+    "200k - 500k",
+    "500k - 1M",
+    "1M - 2M",
+    "2M - 5M",
+    "5M - 10M",
+    "10M - 20M",
+]
+
+PUBLISHER_COLORS = {
+    "Independent": "#6fb6ff",
+    "Major": "#D98A6C",
+}
+
 
 def generate_plot(my_df):
     '''
-        Generates the plot.
+        Generates the violin plot figure with all styling applied.
+
         Args:
-            my_df: The dataframe to display
+            my_df: Preprocessed DataFrame with columns nb_games_dev,
+                   estimated_owners, publisher_type, and name
         Returns:
-            The generated figure
+            The fully styled Plotly figure
     '''
     fig = px.violin(
         my_df,
@@ -23,12 +45,9 @@ def generate_plot(my_df):
         box=True,
         points="all",
         orientation="h",
-        color_discrete_map={
-            "Independent": "#6fb6ff",
-            "Major": "#D98A6C"
-        }
+        color_discrete_map=PUBLISHER_COLORS,
     )
- 
+
     fig.update_traces(
         line=dict(width=1),
         meanline_visible=True,
@@ -37,16 +56,17 @@ def generate_plot(my_df):
         pointpos=0,
         jitter=0.3,
     )
-    
+
     fig = update_axes_labels(fig)
     fig = update_layout(fig)
     fig = update_hover_template(fig)
- 
+
     return fig
- 
+
+
 def update_axes_labels(fig):
     '''
-        Updates the axes labels with their corresponding titles.
+        Updates the x and y axes titles, grid styling, and tick formatting.
 
         Args:
             fig: The figure to be updated
@@ -63,7 +83,7 @@ def update_axes_labels(fig):
         title_font=dict(size=16, color="#2E4057"),
         tickfont=dict(size=12, color="#506784"),
     )
- 
+
     fig.update_yaxes(
         title_text="Succès commercial (Estimated Owners)",
         showgrid=True,
@@ -74,65 +94,18 @@ def update_axes_labels(fig):
         title_font=dict(size=16, color="#2E4057"),
         tickfont=dict(size=12, color="#506784"),
         categoryorder="array",
-        categoryarray=[
-            "0 - 20000",
-            "20000 - 50000",
-            "50000 - 100000",
-            "100000 - 200000",
-            "200000 - 500000",
-            "500000 - 1000000",
-            "1000000 - 2000000",
-            "2000000 - 5000000",
-            "5000000 - 10000000",
-            "10000000 - 20000000"
-        ],
-        tickvals=[
-            "0 - 20000",
-            "20000 - 50000",
-            "50000 - 100000",
-            "100000 - 200000",
-            "200000 - 500000",
-            "500000 - 1000000",
-            "1000000 - 2000000",
-            "2000000 - 5000000",
-            "5000000 - 10000000",
-            "10000000 - 20000000"
-        ],
-        ticktext=[
-            "0 - 20k",
-            "20k - 50k",
-            "50k - 100k",
-            "100k - 200k",
-            "200k - 500k",
-            "500k - 1M",
-            "1M - 2M",
-            "2M - 5M",
-            "5M - 10M",
-            "10M - 20M"
-        ],
+        categoryarray=OWNER_ORDER,
+        tickvals=OWNER_ORDER,
+        ticktext=OWNER_TICK_LABELS,
     )
- 
-    return fig
- 
 
-def update_template(fig):
-    '''
-        Updates the layout of the figure, setting
-        its template to 'simple_white'
-
-        Args:
-            fig: The figure to update
-        Returns:
-            The updated figure
-    '''
-    fig.update_layout(
-        dragmode=False
-    )
     return fig
- 
-def update_legend(fig):
+
+
+def update_layout(fig):
     '''
-        Updated the legend title
+        Applies the full layout styling: theme, colors, fonts, margins,
+        legend position, and violin display options.
 
         Args:
             fig: The figure to be updated
@@ -157,64 +130,42 @@ def update_legend(fig):
                 color="#2E4057",
             ),
         ),
-        margin=dict(l=72, r=24, t=52, b=62),
         legend=dict(
+            title_text="Type d'éditeur",
             orientation="h",
             x=0,
             y=1.05,
             xanchor="left",
             yanchor="bottom",
-            title_text="Type d'éditeur",
         ),
-        violingap=0.05,
-        violinmode="overlay",
-    )
-    return fig
- 
-def update_hover_template(fig):
-    template = hover_template.get_hover_template()
-    fig.update_traces(hovertemplate=template)
-    for frame in fig.frames:
-        for trace in frame.data:
-            trace.hovertemplate = template
-    return fig
- 
-def update_layout(fig):
-    fig.update_layout(
-        autosize=True,
-        template="plotly_white",
-        paper_bgcolor="#FFFFFF",
-        plot_bgcolor="#F5F7FB",
-        margin=dict(l=72, r=24, t=52, b=62),
-        font=dict(
-            family="Inter, Arial, sans-serif",
-            size=13,
-            color="#2E4057",
-        ),
-        hoverlabel=dict(
-            bgcolor="white",
-            bordercolor="#D9E2F2",
-            font=dict(
-                family="Inter, Arial, sans-serif",
-                size=12,
-                color="#2E4057",
-            ),
-        ),
-        legend_title_text="Type d'éditeur",
         violingap=0.05,
         violinmode="overlay",
     )
     return fig
 
+
+def update_hover_template(fig):
+    '''
+        Applies the hover tooltip template to all traces.
+
+        Args:
+            fig: The figure to be updated
+        Returns:
+            The updated figure
+    '''
+    fig.update_traces(hovertemplate=hover_template.get_hover_template())
+    return fig
+
+
 def filter_by_max_games(my_df, max_games):
     '''
         Filters the dataframe to only keep rows where nb_games_dev <= max_games.
         Called by the slider callback before regenerating the figure.
- 
+
         Args:
-            my_df     : preprocessed dataframe
+            my_df     : Preprocessed DataFrame
             max_games : int, maximum value of nb_games_dev to display
         Returns:
-            Filtered dataframe
+            Filtered DataFrame
     '''
     return my_df[my_df['nb_games_dev'] <= max_games]
